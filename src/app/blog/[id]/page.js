@@ -6,25 +6,29 @@ import Navbar from "@/components/Navbar";
 import NotFound from "@/app/[...not_found]/page";
 
 export default async function BlogPost({ params }) {
-  //get the files from posts/params.id
-  const { content, id, data, notFound } = await getPostFromId(params.id);
+	//get the files from posts/params.id
+	const { content, id, data, notFound } = await getPostFromId(params.id);
 
-  if (notFound) {
-    return <NotFound />;
-  }
+	if (notFound) {
+		return <NotFound />;
+	}
 
-  return (
-    <article>
-      - - -<h3>{data.title}</h3>
-      <p>created on {data.date}</p>
-      <p>
-        tags: [
-        {data.tags.map((tag, i) => {
-          return i < data.tags.length - 1 ? tag + ", " : tag;
-        })}
-        ] <br />- - -
-      </p>
-      <MDXRemote source={content} />
-    </article>
-  );
+	return (
+		<article>
+			- - -<h3>{data.title}</h3>
+			<p>created on {data.date}</p>
+			<p>
+				tags: [
+				{data.tags.map((tag, i) => {
+					return (
+						<a href={`/blog/tag/${tag}`} key={tag}>
+							{i < data.tags.length - 1 ? tag + ", " : tag}
+						</a>
+					);
+				})}
+				] <br />- - -
+			</p>
+			<MDXRemote source={content} />
+		</article>
+	);
 }
