@@ -4,43 +4,58 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400&display=swap");
 
+html {
+	overflow: auto;
+	scrollbar-color: #6a0dad #333333;
+	/* Purple Scrollbar */
+	scrollbar-width: thin;
+}
+
 /* General Styles */
 body {
 	font-family: "Open Sans", sans-serif;
 	font-size: 1.5em;
-	background-color: #1e1e1e; /* Dark Background */
-	color: #f8f8ff; /* Off-White Text */
+	background-color: #1e1e1e;
+	/* Dark Background */
+	color: #f8f8ff;
+	/* Off-White Text */
 	margin: 0;
 	padding: 0;
 }
 
 /* Header Styles */
 header {
-	background-color: #333333; /* Dark Grey Background */
-	color: #d8bfd8; /* Light Purple for Text */
+	background-color: #333333;
+	/* Dark Grey Background */
+	color: #d8bfd8;
+	/* Light Purple for Text */
 	padding: 20px;
 	text-align: center;
 	font-size: 2em;
 	font-family: "Montserrat", sans-serif;
-	border-bottom: 2px solid #6a0dad; /* Primary Purple Border */
+	border-bottom: 2px solid #6a0dad;
+	/* Primary Purple Border */
 }
 
 /* Navigation Bar Styles */
 nav {
-	background-color: #333333; /* Dark Grey Background */
+	background-color: #333333;
+	/* Dark Grey Background */
 	padding: 10px;
 	text-align: center;
 }
 
 nav a {
-	color: #9370db; /* Medium Purple Links */
+	color: #9370db;
+	/* Medium Purple Links */
 	text-decoration: none;
 	margin: 0 15px;
 	font-size: 1.2em;
 }
 
 nav a:hover {
-	color: #d8bfd8; /* Light Purple Hover Effect */
+	color: #d8bfd8;
+	/* Light Purple Hover Effect */
 }
 
 /* Main Section Styles */
@@ -51,7 +66,8 @@ main {
 h1,
 h2,
 h3 {
-	color: #d8bfd8; /* Light Purple for Headers */
+	color: #d8bfd8;
+	/* Light Purple for Headers */
 	font-family: "Montserrat", sans-serif;
 }
 
@@ -68,8 +84,10 @@ h3 {
 }
 
 button {
-	background-color: #6a0dad; /* Primary Purple Buttons */
-	color: #ffffff; /* White Text */
+	background-color: #6a0dad;
+	/* Primary Purple Buttons */
+	color: #ffffff;
+	/* White Text */
 	border: none;
 	padding: 10px 20px;
 	margin: 10px 0;
@@ -80,13 +98,16 @@ button {
 }
 
 button:hover {
-	background-color: #9370db; /* Medium Purple on Hover */
+	background-color: #9370db;
+	/* Medium Purple on Hover */
 }
 
 /* Footer Styles */
 footer {
-	background-color: #333333; /* Dark Grey Background */
-	color: #d8bfd8; /* Light Purple Text */
+	background-color: #333333;
+	/* Dark Grey Background */
+	color: #d8bfd8;
+	/* Light Purple Text */
 	text-align: center;
 	padding: 20px;
 	width: 100%;
@@ -107,11 +128,13 @@ section {
 }
 
 a {
-	color: #9370db; /* Medium Purple for Links */
+	color: #9370db;
+	/* Medium Purple for Links */
 	text-decoration: none;
 	font-family: "Open Sans", sans-serif;
 }
 
 a:hover {
-	color: #d8bfd8; /* Light Purple on Hover */
+	color: #d8bfd8;
+	/* Light Purple on Hover */
 }
