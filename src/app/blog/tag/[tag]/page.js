@@ -25,7 +25,7 @@ export default async function BlogTags({ params }) {
 					{tagData.map((post) => {
 						if (post)
 							return (
-								<li key={post.id}>
+								<li key={post.id} className="py-2">
 									<p>
 										<a href={`/blog/${post.id}`}>{post.data.title}</a> ({post.data.date})
 										<br />
