@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
 				<main>
 					<Navbar />
 					{children}
-					<footer className="bg-transparent py-10">
+					<footer className="bg-transparent">
 						<p>
 							made with{" "}
 							<a href="https://nextjs.org/" target="_blank">
@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
 							and <a href="https://tailwindcss.com/">tailwindcss</a> (although it
 							doesnt look like it lol)
 						</p>
-						<p>no laptops were harmed in the making of this website.</p>
+						<p>deployed with <a href="https://vercel.com/" target="_blank">vercel</a></p>
 						<p>
 							source code available{" "}
 							<a href="https://github.com/brrryry/personal-website" target="_blank">

@@ -18,7 +18,7 @@ export default function Home() {
 			<p>
 				wanna know more about my job experience and projects? check out my{" "}
 				<a href="/Chan_Bryan_Resume.pdf">resume</a>. alternatively, go to my{" "}
-				<a href="https://www.linkedin.com/in/bryan-chan-185a4b210/" target="_blank">
+				<a href="https://www.linkedin.com/in/brrryry" target="_blank">
 					linkedin
 				</a>
 				.
@@ -33,18 +33,28 @@ export default function Home() {
 				out my <a href="/blog">blog</a>.
 			</p>
 			<p>
-				wanna contact me? here some more links.
-				<br />
+				wanna contact me? here some more links (not all for contacting, but just where to find me).
+			</p>
+			<div className="flex-initial break-words space-x-3">
+							
 				<a href="mailto:thisisbryanchan@gmail.com">email</a>
-				<br />
-				<a href="https://www.linkedin.com/in/bryan-chan-185a4b210/" target="_blank">
+				{" "}
+				<a href="https://www.linkedin.com/in/brrryry" target="_blank">
 					linkedin
 				</a>
-				<br />
+				{" "}
 				<a href="https://github.com/brrryry" target="_blank">
 					github
 				</a>
-			</p>
+				{" "}
+				<a href="https://osu.ppy.sh/users/11781698" target="_blank">
+					osu!
+				</a>
+				{" "}
+				<a href="https://anilist.co/user/brrryry/" target="_blank">
+					anilist
+				</a>
+			</div>
 			<p>thanx</p>
 		</div>
 	);
