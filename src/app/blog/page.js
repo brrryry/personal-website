@@ -11,7 +11,7 @@ export default async function Blog() {
 
 	return (
 		<div className="flex">
-			<div className="space-y-5 w-4/5">
+			<div className="space-y-5 md:w-4/5">
 				{/* Keep the existing code here */}
 				{/* Add this <section> tag below the existing <section> tag */}- - -
 				<ul>
@@ -38,7 +38,7 @@ export default async function Blog() {
 					})}
 				</ul>
 			</div>
-			<div className="justify-end w-1/5 text-right">
+			<div className="justify-end text-right hidden md:block md:w-1/5">
 				- - -<br />
 				tags
 				<div>

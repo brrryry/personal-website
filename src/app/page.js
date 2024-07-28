@@ -29,33 +29,24 @@ export default function Home() {
 				there.
 			</p>
 			<p>
-				wanna know more about me? wanna know why i made this all lowercase? check
-				out my <a href="/blog">blog</a>.
-			</p>
-			<p>
-				wanna contact me? here some more links (not all for contacting, but just where to find me).
+				wanna know more about me? check out my <a href="/blog">blog</a>.
 			</p>
 			<div className="flex-initial break-words space-x-3">
-							
-				<a href="mailto:thisisbryanchan@gmail.com">email</a>
-				{" "}
+				<a href="mailto:thisisbryanchan@gmail.com">email</a>{" "}
 				<a href="https://www.linkedin.com/in/brrryry" target="_blank">
 					linkedin
-				</a>
-				{" "}
+				</a>{" "}
 				<a href="https://github.com/brrryry" target="_blank">
 					github
-				</a>
-				{" "}
+				</a>{" "}
 				<a href="https://osu.ppy.sh/users/11781698" target="_blank">
 					osu!
-				</a>
-				{" "}
+				</a>{" "}
 				<a href="https://anilist.co/user/brrryry/" target="_blank">
 					anilist
 				</a>
 			</div>
-			<p>thanx</p>
+			<p>thats it, thanx :)</p>
 		</div>
 	);
 }
