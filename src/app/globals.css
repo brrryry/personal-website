@@ -138,3 +138,16 @@ a:hover {
 	color: #d8bfd8;
 	/* Light Purple on Hover */
 }
+
+figure {
+	font-size: 0.9em;
+}
+
+
+img {
+	max-width: 750px;
+	height: auto;
+	padding-left: 0;
+	padding-right: 25px;
+	padding-top: 25px;
+}
