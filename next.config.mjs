@@ -1,14 +1,12 @@
-import pkg from './package.json' assert { type: 'json' };
-import { execSync } from 'child_process';
+import pkg from "./package.json" assert { type: "json" };
+import { execSync } from "child_process";
 
 // Starts a command line process to get the git hash
 const commitHash = execSync('git log --pretty=format:"%h" -n1')
   .toString()
   .trim();
 
-const fullCommitHash = execSync('git rev-parse HEAD')
-  .toString()
-  .trim();
+const fullCommitHash = execSync("git rev-parse HEAD").toString().trim();
 
 const nextConfig = {
   // Other configs
@@ -17,7 +15,7 @@ const nextConfig = {
     APP_VERSION: pkg.version,
     COMMIT_HASH: commitHash,
     FULL_COMMIT_HASH: fullCommitHash,
-  }
+  },
 };
 
 export default nextConfig;

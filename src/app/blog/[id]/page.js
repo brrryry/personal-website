@@ -12,36 +12,36 @@ import NotFound from "@/app/[...not_found]/page";
 //import code highlighting css
 import "@/../public/styles/atom-one-dark.css";
 
-
 export default async function BlogPost({ params }) {
-	//get the files from posts/params.id
+  //get the files from posts/params.id
 
-	const { content, data, notFound } = await getPostFromId(params.id);
+  const { content, data, notFound } = await getPostFromId(params.id);
 
-	if (notFound) {
-		return <NotFound />;
-	}
+  if (notFound) {
+    return <NotFound />;
+  }
 
-	return (
-        <div className="flex justify-center">
-		<article className="min-w-0 max-w-4xl">
-			- - -<h3>{data.title}</h3>
-			<p>created on {data.date}</p>
-			<p>
-				tags: [
-				{data.tags.map((tag, i) => {
-					return (
-						<a href={`/blog/tag/${tag}`} key={tag}>
-							{i < data.tags.length - 1 ? tag + ", " : tag}
-						</a>
-					);
-				})}
-				] <br />- - -
-			</p>
-
-			<MDXRemote source={content} components={{LatexWrapper, BlogImage, BlogList, BlogCode}}/>
-		
-		</article>
-        </div>
-	);
+  return (
+    <div className="flex justify-center">
+      <article className="min-w-0 max-w-4xl">
+        - - -<h3>{data.title}</h3>
+        <p>created on {data.date}</p>
+        <p>
+          tags: [
+          {data.tags.map((tag, i) => {
+            return (
+              <a href={`/blog/tag/${tag}`} key={tag}>
+                {i < data.tags.length - 1 ? tag + ", " : tag}
+              </a>
+            );
+          })}
+          ] <br />- - -
+        </p>
+        <MDXRemote
+          source={content}
+          components={{ LatexWrapper, BlogImage, BlogList, BlogCode }}
+        />
+      </article>
+    </div>
+  );
 }
