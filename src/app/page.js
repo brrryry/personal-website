@@ -4,6 +4,7 @@ export default function Home() {
 	return (
 		<div className="space-y-5">
 			<p>latest news: <a href="/blog/cat-or-car">cat or car project</a></p>
+			
 			<br />
 			<p>hi, im bryan.</p>
 			<p>heres some stuff about me:</p>
