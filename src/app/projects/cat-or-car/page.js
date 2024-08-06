@@ -68,9 +68,11 @@ export default function Home() {
             </form>
             {result && (
                 <div>
-                {img && (<img src={img.src} alt="Uploaded image" />)}
-                    <p>This is a <b>{result[0] < 0.5 ? 'car' : 'cat'}</b>.</p>
-                    <p>Output Value: {Math.round((1 - result[0]) * 10000) / 10000} (0 is cat, 1 is car)</p>
+                  <p>This is a <b>{result[0] < 0.5 ? 'car' : 'cat'}</b>.</p>
+                  <p>Output Value: {Math.round((1 - result[0]) * 10000) / 10000} </p>
+                  <p>0 is cat, 1 is car</p>
+                  {img && (<img src={img.src} style={{"max-width": "25%"}} alt="Uploaded image" />)}
+
                 </div>
             )}
         </div>

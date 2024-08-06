@@ -141,6 +141,8 @@ a:hover {
 
 figure {
 	font-size: 0.9em;
+	justify-content: center;
+	align-items: center;
 }
 
 
@@ -148,7 +150,9 @@ img {
 	object-fit: contain;
 	max-width: 100%;
 	height: auto;
-	padding-left: 0;
-	padding-right: 25px;
-	padding-top: 25px;
 }
+
+code {
+	background: #282c34;
+}
+

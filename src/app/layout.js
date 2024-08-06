@@ -1,7 +1,10 @@
 import { Inter } from "next/font/google";
+
 import "./globals.css";
+import 'katex/dist/katex.min.css'; // `rehype-katex` does not import the CSS for you
 
 import Navbar from "@/components/Navbar";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,11 +16,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
 	return (
 		<html lang="en">
-			<body className={inter.className}>
-				<main>
+			<body className={`${inter.className} overflow-x-hidden`}>
+				<main className="w-screen">
 					<Navbar />
 					{children}
 					<footer className="bg-transparent">
+						<p>.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.</p>
 						<p>
 							made with{" "}
 							<a href="https://nextjs.org/" target="_blank">

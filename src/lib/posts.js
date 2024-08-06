@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import { serialize } from "next-mdx-remote/serialize";
 
 const postsDirectory = path.join(process.cwd(), "src/posts");
 
@@ -26,7 +25,7 @@ export function getSortedPostsData(tag = "") {
 				...matterResult,
 			};
 		}
-	});
+	}).filter(Boolean);
 	// Sort posts by date
 	return allPostsData.sort((a, b) => {
 		if (a.data.date < b.data.date) {
@@ -39,15 +38,18 @@ export function getSortedPostsData(tag = "") {
 
 export async function getPostFromId(id) {
 	const allPosts = getSortedPostsData();
+
 	const post = allPosts.find((post) => post.id === id);
 	if (!post) {
 		return {
 			notFound: true,
 		};
 	}
+
 	const fullPath = path.join(postsDirectory, `${id}.mdx`);
 	const fileContent = fs.readFileSync(fullPath, "utf8");
 	let { data, content } = matter(fileContent);
+
 	return {
 		id,
 		data,
