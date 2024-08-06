@@ -12,16 +12,19 @@ export default function Home() {
       </p>
       <p>heres some cool projects:</p>
       <ul className="list-disc mx-6 space-y-2">
-      <li>
-          <a
-            href="/projects/cat-or-car"
-          >
-            cat or car?
-          </a>
+        <li>
+          <a href="/projects/cat-or-car">cat or car?</a>
           <p>
-            this personal project was meant to apply my small bit of knowledge in machine learning in preperation
-            for my <a href="https://online.stevens.edu/course/cs-559-machine-learning-fundamentals-and-applications/" target="_blank">
-            machine learning course (cs559)</a>. it uses a tensorflow.js model to predict whether an image is a cat or a car.
+            this personal project was meant to apply my small bit of knowledge
+            in machine learning in preperation for my{" "}
+            <a
+              href="https://online.stevens.edu/course/cs-559-machine-learning-fundamentals-and-applications/"
+              target="_blank"
+            >
+              machine learning course (cs559)
+            </a>
+            . it uses a tensorflow.js model to predict whether an image is a cat
+            or a car.
           </p>
         </li>
 
