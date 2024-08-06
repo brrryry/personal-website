@@ -10,6 +10,13 @@ const Navbar = () => {
 					</p>
 				</Link>
 				<Link
+					href="/"
+					className="flex m-0 items-center md:hidden">
+					<p className="inline text-2xl text-purple-200 text-nowrap font-bold align-middle">
+						-- home
+					</p>
+				</Link>
+				<Link
 					href="/Chan_Bryan_Resume.pdf"
 					target="_blank"
 					className="flex m-0 items-center md:hidden">
@@ -30,6 +37,11 @@ const Navbar = () => {
 			</div>
 
 			<ul className="space-x-6 hidden md:flex">
+			<li>
+					<Link href="/">
+						<p className="text-2xl text-purple-200 font-bold">home</p>
+					</Link>
+				</li>
 				<li>
 					<Link href="/Chan_Bryan_Resume.pdf" target="_blank">
 						<p className="text-2xl text-purple-200 font-bold">resume</p>
