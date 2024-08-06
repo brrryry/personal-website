@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import 'katex/dist/katex.min.css'; // `rehype-katex` does not import the CSS for you
 
+import { exec } from 'child_process';
+
 import Navbar from "@/components/Navbar";
 
 
@@ -13,24 +15,25 @@ export const metadata = {
 	description: "a typical cs portfolio",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+	console.log(process.env.COMMIT_HASH);
 	return (
 		<html lang="en">
 			<body className={`${inter.className} overflow-x-hidden`}>
 				<main className="w-screen">
 					<Navbar />
 					{children}
-					<footer className="bg-transparent">
+					<footer className="bg-transparent text-">
 						<p>.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.</p>
+						{process.env.COMMIT_HASH && <p>last commit hash: <a href={`https://github.com/brrryry/personal-website/commit/${process.env.FULL_COMMIT_HASH}`} target="_blank">{process.env.COMMIT_HASH}</a> | web version: {process.env.APP_VERSION}</p>}
 						<p>
-							made with{" "}
 							<a href="https://nextjs.org/" target="_blank">
 								next.js
-							</a>{" "}
-							and <a href="https://tailwindcss.com/">tailwindcss</a> (although it
-							doesnt look like it lol)
+							</a>{" | "}
+							<a href="https://tailwindcss.com/" target="_blank">tailwindcss
+							</a>{" | "}
+							<a href="https://vercel.com/" target="_blank">vercel</a>
 						</p>
-						<p>deployed with <a href="https://vercel.com/" target="_blank">vercel</a></p>
 						<p>
 							source code available{" "}
 							<a href="https://github.com/brrryry/personal-website" target="_blank">
