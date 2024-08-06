@@ -2,12 +2,15 @@ import React from "react";
 import ReactMarkdown from "react-markdown";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getPostFromId } from "@/lib/posts";
-import Navbar from "@/components/Navbar";
+import { LatexWrapper } from "@/components/LatexWrapper";
 import NotFound from "@/app/[...not_found]/page";
+
+import { InlineMath, BlockMath } from "react-katex";
 
 export default async function BlogPost({ params }) {
 	//get the files from posts/params.id
-	const { content, id, data, notFound } = await getPostFromId(params.id);
+
+	const { content, data, notFound } = await getPostFromId(params.id);
 
 	if (notFound) {
 		return <NotFound />;
@@ -28,7 +31,7 @@ export default async function BlogPost({ params }) {
 				})}
 				] <br />- - -
 			</p>
-			<MDXRemote source={content} />
+			<MDXRemote source={content} components={{LatexWrapper}}/>
 		</article>
 	);
 }
