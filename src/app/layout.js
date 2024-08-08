@@ -1,9 +1,6 @@
 import { Inter } from "next/font/google";
 
 import "./globals.css";
-import "katex/dist/katex.min.css"; // `rehype-katex` does not import the CSS for you
-
-import { exec } from "child_process";
 
 import Navbar from "@/components/Navbar";
 

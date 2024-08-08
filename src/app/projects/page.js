@@ -24,10 +24,22 @@ export default function Home() {
               machine learning course (cs559)
             </a>
             . it uses a tensorflow.js model to predict whether an image is a cat
-            or a car.
+            or a car. i wrote a <a href="/blog/cat-or-car">blog post</a> about it!
           </p>
         </li>
-
+        <li>
+          <a
+            href="https://github.com/brrryry/personal-website"
+            target="_blank"
+          >
+            portfolio website
+          </a>
+          <p>
+            you're literally looking at it...but...i made this website with nextjs in order to 
+            hone my web development skills and to have a place to put all my projects. 
+            i also have some <a href="/blog/tag/portfolio-dev">blogs</a> about it!
+          </p>
+        </li>
         <li>
           <a
             href="https://github.com/brrryry/osu-beatmap-generator"
