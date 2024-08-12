@@ -470,8 +470,9 @@ source="https://tumtarts.com"
 style={{border: "0.5rem white solid"}}
 />
 
-in the code shown earlier, you can see that the article tag has the class "min-w-0 max-w-4xl". this sets the minimum width of the article to 0 and the maximum width to 4xl. \
-\
+in the code shown earlier, you can see that the article tag has the class "min-w-0 max-w-4xl". this sets the minimum width of the article to 0 and the maximum width to 4xl. 
+
+<br />
 
 for the most part, this helped my text stay readable. however, i also wanted to add a template for images, as it was getting painful to type out the html for each image. for example,
 this was the html behind my first image in my blog (<a href="/blog/insure-2024">insure 2024</a>):
@@ -538,7 +539,7 @@ originally, i just used the ``<code>`` tag to write code. however, it looked sup
 this package adds classes to the code tags in the .mdx files. i then used the ``BlogCode`` component to render the code. this component takes in a language prop and a content prop. \
 \
 thankfully, since the ``BlogCode`` component was a sub-component, i could render it on the client side. this meant that i could use the ``highlight.js`` package to render the code.
-i also used the file ``atom-one-dark.css`` to style the "classified" code (the import line is in the main blog page). \
+i also used the file ``atom-one-dark.css`` to style the "classified" code (the import line is in the main blog page).
 
 <BlogCode language="js">
 {`
