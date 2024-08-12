@@ -1,5 +1,7 @@
 import { Inter } from "next/font/google";
 
+import { currentlyPlayingSong } from "@/lib/spotify";
+
 import "./globals.css";
 
 import Navbar from "@/components/Navbar";
@@ -12,7 +14,9 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  console.log(process.env.COMMIT_HASH);
+
+  const song = await currentlyPlayingSong();
+
   return (
     <html lang="en">
       <body className={`${inter.className} overflow-x-hidden`}>
@@ -21,6 +25,19 @@ export default async function RootLayout({ children }) {
           {children}
           <footer className="bg-transparent text-">
             <p>.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.</p>
+
+            {song.isPlaying &&
+              <>
+              <p>listening to: <a href={song.songUrl} target="_blank">{song.title} ({song.artist})</a> on spotify!</p>
+              </>
+            }
+
+            {!song.isPlaying &&
+              <>
+              <p>not listening to spotify rn</p>
+              </>
+            }
+
             {process.env.COMMIT_HASH && (
               <p>
                 last commit hash:{" "}
