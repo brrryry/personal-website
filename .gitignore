@@ -8,6 +8,8 @@
 .vscode
 .prettierignore
 
+.env.local
+
 # testing
 /coverage
 
