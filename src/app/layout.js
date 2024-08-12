@@ -8,6 +8,8 @@ import Navbar from "@/components/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
+let apiCalls = new Map();
+
 export const metadata = {
   title: "bryan",
   description: "a typical cs portfolio",
@@ -15,7 +17,18 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
 
-  const song = await currentlyPlayingSong();
+  let song = "";
+
+  if(!apiCalls.has("last_spotify_call")) apiCalls.set("last_spotify_call", 0);
+
+  if(Date.now() - apiCalls.get("last_spotify_call") > 5000) {
+    song = await currentlyPlayingSong();
+    apiCalls.set("last_spotify_song", song);
+    apiCalls.set("last_spotify_call", Date.now());
+  }
+  if(apiCalls.has("last_spotify_song") && song == "") {
+    song = apiCalls.get("last_spotify_song");
+  }
 
   return (
     <html lang="en">

@@ -30,6 +30,7 @@ export const currentlyPlayingSong = async () => {
         },
     });
 
+
     if (response.status === 204 || response.status > 400) {
         return {isPlaying: false}
       }
@@ -44,7 +45,6 @@ export const currentlyPlayingSong = async () => {
       const title = song.item.name;
       const artist = song.item.artists.map((_artist) => _artist.name).join(", ");
       const songUrl = song.item.external_urls.spotify;
-
     
       return {
         isPlaying,
