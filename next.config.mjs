@@ -1,4 +1,4 @@
-import pkg from "./package.json" assert { type: "json" };
+import pkg from "./package.json" with {type: "json"};
 import { execSync } from "child_process";
 
 // Starts a command line process to get the git hash
