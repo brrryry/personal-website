@@ -16,6 +16,20 @@ const nextConfig = {
     COMMIT_HASH: commitHash,
     FULL_COMMIT_HASH: fullCommitHash,
   },
+  async headers() {
+    return [
+      {
+        source: '/api/current-spotify',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'max-age=5',
+          },
+        ],
+      },
+    ]
+  },
+  reactStrictMode: false
 };
 
 export default nextConfig;

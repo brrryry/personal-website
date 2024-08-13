@@ -5,10 +5,9 @@ import { currentlyPlayingSong } from "@/lib/spotify";
 import "./globals.css";
 
 import Navbar from "@/components/Navbar";
+import { SpotifyEmbed } from "@/components/SpotifyEmbed";
 
 const inter = Inter({ subsets: ["latin"] });
-
-let apiCalls = new Map();
 
 export const metadata = {
   title: "bryan",
@@ -17,18 +16,8 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
 
-  let song = "";
 
-  if(!apiCalls.has("last_spotify_call")) apiCalls.set("last_spotify_call", 0);
 
-  if(Date.now() - apiCalls.get("last_spotify_call") > 5000) {
-    song = await currentlyPlayingSong();
-    apiCalls.set("last_spotify_song", song);
-    apiCalls.set("last_spotify_call", Date.now());
-  }
-  if(apiCalls.has("last_spotify_song") && song == "") {
-    song = apiCalls.get("last_spotify_song");
-  }
 
   return (
     <html lang="en">
@@ -39,17 +28,7 @@ export default async function RootLayout({ children }) {
           <footer className="bg-transparent text-">
             <p>.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.</p>
 
-            {song.isPlaying &&
-              <>
-              <p>listening to: <a href={song.songUrl} target="_blank">{song.title} ({song.artist})</a> on spotify!</p>
-              </>
-            }
-
-            {!song.isPlaying &&
-              <>
-              <p>not listening to spotify rn</p>
-              </>
-            }
+            <SpotifyEmbed/>
 
             {process.env.COMMIT_HASH && (
               <p>
