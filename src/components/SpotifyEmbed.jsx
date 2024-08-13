@@ -13,7 +13,6 @@ export function SpotifyEmbed() {
     
 
     useEffect(() => {
-        console.log('fire');
         (async () => {
             let song = await fetch('/api/current-spotify');
             let response = await song.json();
