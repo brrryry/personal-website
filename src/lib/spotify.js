@@ -1,3 +1,5 @@
+let access_token = ""
+
 async function getAccessToken() {
     const refresh_token = process.env.SPOTIFY_REFRESH_TOKEN;
   
@@ -19,14 +21,24 @@ async function getAccessToken() {
 
 
 export const currentlyPlayingSong = async () => {
-    const { access_token } = await getAccessToken();
-  
-    return fetch("https://api.spotify.com/v1/me/player/currently-playing", {
+    let response = await fetch("https://api.spotify.com/v1/me/player/currently-playing", {
       headers: {
         Authorization: `Bearer ${access_token}`,
       },
       next: {
-        revalidate: 5
+        revalidate: 5,
       }
     });
-  };
+
+    if(response.status == 200) return response;
+
+    const token = await getAccessToken();
+    access_token = token.access_token;
+
+
+    return fetch("https://api.spotify.com/v1/me/player/currently-playing", {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    });
+  }
