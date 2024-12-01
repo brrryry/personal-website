@@ -1,4 +1,4 @@
-import pkg from "./package.json" with {type: "json"};
+import pkg from "./package.json" with { type: "json" };
 import { execSync } from "child_process";
 
 // Starts a command line process to get the git hash
@@ -16,7 +16,7 @@ const nextConfig = {
     COMMIT_HASH: commitHash,
     FULL_COMMIT_HASH: fullCommitHash,
   },
-  reactStrictMode: false
+  reactStrictMode: false,
 };
 
 export default nextConfig;
