@@ -15,10 +15,6 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-
-
-
-
   return (
     <html lang="en">
       <body className={`${inter.className} overflow-x-hidden`}>
@@ -28,7 +24,7 @@ export default async function RootLayout({ children }) {
           <footer className="bg-transparent text-">
             <p>.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.</p>
 
-            <SpotifyEmbed/>
+            <SpotifyEmbed />
 
             {process.env.COMMIT_HASH && (
               <p>
