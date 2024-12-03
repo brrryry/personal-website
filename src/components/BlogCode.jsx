@@ -10,20 +10,19 @@ import DOMPurify from "dompurify";
 import { renderToString } from "react-dom/server";
 
 const escapeMap = {
-  '<': '&lt;',
-  '>': '&gt;',
-  '&': '&amp;',
-  '"': '&quot;',
-  "'": '&#x27;',
+  "<": "&lt;",
+  ">": "&gt;",
+  "&": "&amp;",
+  '"': "&quot;",
+  "'": "&#x27;",
 };
 
-
 const decodeMap = {
-  '&quot;': '"',
-  '&#x27;': "'",
-  '&lt;': '<',
-  '&gt;': '>',
-  '&amp;': '&',
+  "&quot;": '"',
+  "&#x27;": "'",
+  "&lt;": "<",
+  "&gt;": ">",
+  "&amp;": "&",
 };
 
 export function BlogCode({ children, language, ...props }) {
@@ -52,21 +51,26 @@ export function BlogCode({ children, language, ...props }) {
   return (
     <>
       <br />
-        <div className="flex justify-between items-center p-1 my-1 hljs-header">
-          <p className="text-sm mx-2">{language}</p>
-          <button
-            className="text-sm bg-blue-500 text-white py-1 px-3 mx-2 rounded"
-            onClick={() => {
-              let cleanChildren = children.replaceAll("&quot;", '"').replaceAll("&#x27;", "'").replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll("&amp;", "&");
-              let cleanChildrenSplit = cleanChildren.split("\n");
-              cleanChildren = cleanChildrenSplit.slice(1, -1).join("\n");
-              navigator.clipboard.writeText(cleanChildren);
-            }}
-          >
-            Copy
-          </button>
-        </div>
-        <div className="" dangerouslySetInnerHTML={{ __html: code }} />
+      <div className="flex justify-between items-center p-1 my-1 hljs-header">
+        <p className="text-sm mx-2">{language}</p>
+        <button
+          className="text-sm bg-blue-500 text-white py-1 px-3 mx-2 rounded"
+          onClick={() => {
+            let cleanChildren = children
+              .replaceAll("&quot;", '"')
+              .replaceAll("&#x27;", "'")
+              .replaceAll("&lt;", "<")
+              .replaceAll("&gt;", ">")
+              .replaceAll("&amp;", "&");
+            let cleanChildrenSplit = cleanChildren.split("\n");
+            cleanChildren = cleanChildrenSplit.slice(1, -1).join("\n");
+            navigator.clipboard.writeText(cleanChildren);
+          }}
+        >
+          Copy
+        </button>
+      </div>
+      <div className="" dangerouslySetInnerHTML={{ __html: code }} />
       <br />
     </>
   );
