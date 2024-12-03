@@ -33,9 +33,9 @@ jobs:
     # Step 5: Copy Docker Image to Server 
     - name: Copy Docker Image to Server
       env: 
-        REMOTE_USER: $({ secrets.REMOTE_SSH_USER })
-        REMOTE_HOST: $({ secrets.REMOTE_SSH_HOST })
-        REMOTE_PORT: $({ secrets.REMOTE_SSH_PORT })
+        REMOTE_USER: ${{ secrets.REMOTE_SSH_USER }}
+        REMOTE_HOST: ${{ secrets.REMOTE_SSH_HOST }}
+        REMOTE_PORT: ${{ secrets.REMOTE_SSH_PORT }}
       run: |
         mkdir -p ~/.ssh
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
