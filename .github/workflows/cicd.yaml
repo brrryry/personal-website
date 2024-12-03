@@ -60,4 +60,4 @@ jobs:
         docker run -d --name portfolio -p 80:80 portfolio:latest
 
         rm /tmp/image.tar
-      EOF
+        EOF
