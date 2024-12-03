@@ -22,10 +22,10 @@ jobs:
     # Step 3: Get Build Time
     - name: Get Build Time
       run: |
-        echo "Build Time: $(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_ENV
+        echo "Build Time: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
       
 
-    #Step 4: Compress Docker Image
+    # Step 4: Compress Docker Image
     - name: Compress Docker Image
       run: |
         docker save -o image.tar portfolio:latest
@@ -36,6 +36,16 @@ jobs:
         REMOTE_USER: $({ secrets.REMOTE_SSH_USER })
         REMOTE_HOST: $({ secrets.REMOTE_SSH_HOST })
         REMOTE_PORT: $({ secrets.REMOTE_SSH_PORT })
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H $REMOTE_HOST >> ~/.ssh/known_hosts
+    - name: Copy Docker Image to Server
+      env: 
+        REMOTE_USER: $({ secrets.SSH_REMOTE_USER })
+        REMOTE_HOST: $({ secrets.SSH_REMOTE_HOST })
+        REMOTE_PORT: $({ secrets.SSH_REMOTE_PORT })
       run: |
         mkdir -p ~/.ssh
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
