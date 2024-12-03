@@ -31,25 +31,25 @@ jobs:
         docker save -o image.tar portfolio:latest
 
     # Step 5: Copy Docker Image to Server 
-      - name: Copy Docker Image to Server
-        env: 
-          REMOTE_USER: $({ secrets.SSH_REMOTE_USER })
-          REMOTE_HOST: $({ secrets.SSH_REMOTE_HOST })
-          REMOTE_PORT: $({ secrets.SSH_REMOTE_PORT })
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H $REMOTE_HOST >> ~/.ssh/known_hosts
+    - name: Copy Docker Image to Server
+      env: 
+        REMOTE_USER: $({ secrets.REMOTE_SSH_USER })
+        REMOTE_HOST: $({ secrets.REMOTE_SSH_HOST })
+        REMOTE_PORT: $({ secrets.REMOTE_SSH_PORT })
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H $REMOTE_HOST >> ~/.ssh/known_hosts
 
-          scp image.tar $REMOTE_USER@$REMOTE_HOST:/tmp/image.tar
+        scp image.tar $REMOTE_USER@$REMOTE_HOST:/tmp/image.tar
 
     # Step 6: Deploy the Docker image
     - name: Deploy Docker Image
       env:
-        REMOTE_USER: ${{ secrets.SSH_REMOTE_USER }}
-        REMOTE_HOST: ${{ secrets.SSH_REMOTE_HOST }}
-        REMOTE_PORT: ${{ secrets.SSH_REMOTE_PORT }}
+        REMOTE_USER: ${{ secrets.REMOTE_SSH_USER }}
+        REMOTE_HOST: ${{ secrets.REMOTE_SSH_HOST }}
+        REMOTE_PORT: ${{ secrets.REMOTE_SSH_PORT }}
       run: |
         ssh $REMOTE_USER@$REMOTE_HOST -p $REMOTE_PORT << 'EOF'
         docker load -i /tmp/image.tar
@@ -60,4 +60,4 @@ jobs:
         docker run -d --name portfolio -p 80:80 portfolio:latest
 
         rm /tmp/image.tar
-      EOF
+        EOF
