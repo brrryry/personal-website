@@ -22,7 +22,7 @@ jobs:
     # Step 3: Get Build Time
     - name: Get Build Time
       run: |
-        echo "Build Time: $(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_ENV
+        echo "Build Time: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
       
 
     # Step 4: Compress Docker Image
