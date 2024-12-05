@@ -6,15 +6,27 @@ const postsDirectory = path.join(process.cwd(), "src/posts");
 
 export function getSortedPostsData(tag = "") {
   // Get file names under /posts
-  const fileNames = fs.readdirSync(postsDirectory);
+  let fileNames = fs.readdirSync(postsDirectory);
+
+  if(process.env.NODE_ENV === "development") {
+    const morePosts = fs.readdirSync(postsDirectory + "/drafts");
+    fileNames = fileNames.concat(morePosts.map((post) => "drafts/" + post));
+  }
+
   const allPostsData = fileNames
+    .filter((fileName) => fileName.endsWith(".mdx"))
     .map((fileName) => {
       // Remove ".md" from file name to get id
-      const id = fileName.replace(/\.mdx$/, "");
+      let id = fileName.replace(/\.mdx$/, "").replace(/drafts\//, "");
+      console.log(id);
 
       // Read markdown file as string
+
       const fullPath = path.join(postsDirectory, fileName);
+
+      
       const fileContents = fs.readFileSync(fullPath, "utf8");
+      
 
       // Use gray-matter to parse the post metadata section
       const matterResult = matter(fileContents);
@@ -42,14 +54,23 @@ export async function getPostFromId(id) {
   const allPosts = getSortedPostsData();
 
   const post = allPosts.find((post) => post.id === id);
+
   if (!post) {
     return {
       notFound: true,
     };
   }
 
+  let fileContent = null;
+
   const fullPath = path.join(postsDirectory, `${id}.mdx`);
-  const fileContent = fs.readFileSync(fullPath, "utf8");
+  try {
+    fileContent = fs.readFileSync(fullPath, "utf8");
+  } catch (e) {
+    fileContent = fs.readFileSync(path.join(postsDirectory, "drafts", `${id}.mdx`), "utf8");
+  }
+
+  
   let { data, content } = matter(fileContent);
 
   return {

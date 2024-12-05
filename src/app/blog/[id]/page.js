@@ -1,3 +1,5 @@
+// @refresh reset
+
 import React from "react";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getPostFromId } from "@/lib/posts";
