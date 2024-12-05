@@ -3,7 +3,6 @@
 set -e  # Exit immediately if a command exits with a non-zero status
 set -x  # Print commands and their arguments as they are executed
 
-
 # Configuration
 # REMOTE_USER="your_remote_user"      # Replace with your remote server username
 # REMOTE_HOST="your_remote_host"      # Replace with your server's IP or hostname
@@ -17,48 +16,26 @@ if [ -z "$SSH_PRIVATE_KEY" ]; then
   exit 1
 fi
 
+# Step 1: Integrate identity file
+echo "Integrating identity file..."
+echo "$SSH_PRIVATE_KEY" | tee $DEPLOY_KEY_PATH
+chmod -R 600 $DEPLOY_KEY_PATH
 
-# Step 1: Build the Docker image
-echo "Building Docker image..."
-docker build -t $DOCKER_IMAGE_NAME .
+eval `ssh-agent`
+ssh-add -k $DEPLOY_KEY_PATH
 
-# Step 2: Log build time
-BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-echo "Build Time: $BUILD_TIME"
-
-# Step 3: Compress the Docker image
-echo "Compressing Docker image..."
-docker save -o $DOCKER_IMAGE_TAR $DOCKER_IMAGE_NAME
-
-
-# Step 4: Set up SSH
-echo "Setting up SSH..."
-mkdir -p ~/.ssh
-echo "$SSH_PRIVATE_KEY" > ~/.ssh/server
-chmod 700 ~/.ssh/server
-ssh-keyscan -p $REMOTE_PORT -H $REMOTE_HOST >> ~/.ssh/known_hosts
-
-
-
-# Step 5: Copy the Docker image to the server
-echo "Copying Docker image to the server..."
-scp -i ~/.ssh/server -P $REMOTE_PORT $DOCKER_IMAGE_TAR $REMOTE_USER@$REMOTE_HOST:/home/bryan/
-
-# Step 6: Deploy the Docker image on the server
-echo "Deploying Docker image on the server..."
-ssh -p $REMOTE_PORT $REMOTE_USER@$REMOTE_HOST << EOF
-  docker load -i /home/bryan/$DOCKER_IMAGE_TAR
-  
-  docker stop portfolio || true
-  docker rm portfolio || true
-
-  docker run -d --name portfolio -p 80:80 $DOCKER_IMAGE_NAME
-
-  rm /home/bryan/$DOCKER_IMAGE_TAR
+# Step 1: SSH into the server
+echo "Connecting to the server..."
+ssh -o StrictHostKeyChecking=no -tt -i $DEPLOY_KEY_PATH -p $REMOTE_PORT $REMOTE_USER@$REMOTE_HOST << EOF
+  cd $REMOTE_PATH
+  git pull
+  docker compose up -d
+  exit
 EOF
 
-# Cleanup
-echo "Cleaning up local files..."
-rm -f $DOCKER_IMAGE_TAR
+
+
+# Clean up the key after use
+rm -f $DEPLOY_KEY_PATH
 
 echo "Deployment completed successfully!"
