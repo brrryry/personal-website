@@ -25,7 +25,7 @@ const decodeMap = {
   "&amp;": "&",
 };
 
-export function BlogCode({ children, language, ...props }) {
+export function BlogCode({ children, title, language, ...props }) {
   const [code, setCode] = useState("");
 
   children = `<pre className="text-base lg: text-lg"><code className="language-${language}">${renderToString(children)}</code></pre>`;
@@ -52,7 +52,7 @@ export function BlogCode({ children, language, ...props }) {
     <>
       <br />
       <div className="flex justify-between items-center p-1 my-1 hljs-header">
-        <p className="text-sm mx-2">{language}</p>
+        <p className="text-sm mx-2">{title ? `${title} (${language})`: language}</p>
         <button
           className="text-sm bg-blue-500 text-white py-1 px-3 mx-2 rounded"
           onClick={() => {

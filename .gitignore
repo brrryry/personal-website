@@ -44,3 +44,4 @@ package-lock.json
 
 # secret deployment things :)
 deploy/secret.sh
+src/posts/drafts/*
