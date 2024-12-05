@@ -12,7 +12,7 @@ RUN npm install -g pnpm
 
 RUN pnpm install
 
-RUN pnpm run build
+RUN pnpm run build && pnpm prune --production
 
 EXPOSE 3000
 
