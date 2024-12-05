@@ -29,8 +29,7 @@ echo "Connecting to the server..."
 ssh -o StrictHostKeyChecking=no -tt -i $DEPLOY_KEY_PATH -p $REMOTE_PORT $REMOTE_USER@$REMOTE_HOST << EOF
   cd $REMOTE_PATH
   git pull
-  docker compose up --build portfolio
-  docker compose up -d
+  docker compose up --build portfolio -d
   exit
 EOF
 

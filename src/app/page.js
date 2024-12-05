@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <div className="space-y-5">
       <p>
-        latest news: setting up secret santa and cicd pipeline for my software
+        latest news: setting up secret santa and cicd pipeline for my software (blog soon)
       </p>
 
       <br />
