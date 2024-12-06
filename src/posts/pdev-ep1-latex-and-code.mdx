@@ -194,6 +194,7 @@ import Link from "next/link";
 
 const Navbar = () => {
 return (
+
 <nav className="bg-transparent flex justify-between items-center p-0 h-48 md:h-32">
 <div className="inline space-y-2 md:flex">
 <Link href="/" className="flex m-0 items-center">
@@ -310,6 +311,7 @@ export default async function Blog() {
   allTags = allTags.sort((a, b) => a.localeCompare(b));
 
 return (
+
 <div className="flex">
 <div className="space-y-5 md:w-4/5">
 <ul>
@@ -439,6 +441,7 @@ return <NotFound />;
 }
 
 return (
+
 <div className="flex justify-center">
 <article className="min-w-0 max-w-4xl"> - - -<h3>{data.title}</h3>
 <p>created on {data.date}</p>
@@ -600,14 +603,13 @@ return <div>Loading...</div>;
 }
 
 return (
+
 <>
-<br />
-<div className="" dangerouslySetInnerHTML={{ __html: code }} />
-<br />
+  <br />
+  <div className="" dangerouslySetInnerHTML={{ __html: code }} />
+  <br />
 </>
-);
-}
-`}
+); } `}
 
 </BlogCode>
 
