@@ -18,7 +18,6 @@ export function getSortedPostsData(tag = "") {
     .map((fileName) => {
       // Remove ".md" from file name to get id
       let id = fileName.replace(/\.mdx$/, "").replace(/drafts\//, "");
-      console.log(id);
 
       // Read markdown file as string
 

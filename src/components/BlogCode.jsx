@@ -25,7 +25,13 @@ const decodeMap = {
   "&amp;": "&",
 };
 
-export function BlogCode({ children, title, language, ...props }) {
+export function BlogCode({
+  children,
+  title,
+  language,
+  copy = "true",
+  ...props
+}) {
   const [code, setCode] = useState("");
 
   children = `<pre className="text-base lg: text-lg"><code className="language-${language}">${renderToString(children)}</code></pre>`;
@@ -52,25 +58,27 @@ export function BlogCode({ children, title, language, ...props }) {
     <>
       <br />
       <div className="flex justify-between items-center p-1 my-1 hljs-header">
-        <p className="text-sm mx-2">
+        <p className="text-sm mx-2 py-3">
           {title ? `${title} (${language})` : language}
         </p>
-        <button
-          className="text-sm bg-blue-500 text-white py-1 px-3 mx-2 rounded"
-          onClick={() => {
-            let cleanChildren = children
-              .replaceAll("&quot;", '"')
-              .replaceAll("&#x27;", "'")
-              .replaceAll("&lt;", "<")
-              .replaceAll("&gt;", ">")
-              .replaceAll("&amp;", "&");
-            let cleanChildrenSplit = cleanChildren.split("\n");
-            cleanChildren = cleanChildrenSplit.slice(1, -1).join("\n");
-            navigator.clipboard.writeText(cleanChildren);
-          }}
-        >
-          Copy
-        </button>
+        {copy == "true" && (
+          <button
+            className="text-sm bg-blue-500 text-white py-1 px-3 mx-2 rounded"
+            onClick={() => {
+              let cleanChildren = children
+                .replaceAll("&quot;", '"')
+                .replaceAll("&#x27;", "'")
+                .replaceAll("&lt;", "<")
+                .replaceAll("&gt;", ">")
+                .replaceAll("&amp;", "&");
+              let cleanChildrenSplit = cleanChildren.split("\n");
+              cleanChildren = cleanChildrenSplit.slice(1, -1).join("\n");
+              navigator.clipboard.writeText(cleanChildren);
+            }}
+          >
+            Copy
+          </button>
+        )}
       </div>
       <div className="" dangerouslySetInnerHTML={{ __html: code }} />
       <br />

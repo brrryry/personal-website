@@ -30,7 +30,7 @@ export default async function BlogPost({ params }) {
         <p>created on {data.date}</p>
         <p>
           tags: [
-          {data.tags.map((tag, i) => {
+          {data.tags.sort().map((tag, i) => {
             return (
               <a href={`/blog/tag/${tag}`} key={tag}>
                 {i < data.tags.length - 1 ? tag + ", " : tag}
