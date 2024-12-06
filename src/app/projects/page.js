@@ -11,9 +11,11 @@ export default function Home() {
         , but ngl it is super cluttered so...
       </p>
       <p>heres some cool projects:</p>
-      <ul className="list-disc mx-6 space-y-2">
+      <ul className="list-disc mx-6 space-y-8">
         <li>
-          <a href="/projects/cat-or-car">cat or car?</a>
+          <a href="/projects/cat-or-car" className="underline">
+            cat or car?
+          </a>
           <p>
             this personal project was meant to apply my small bit of knowledge
             in machine learning in preperation for my{" "}
@@ -29,7 +31,11 @@ export default function Home() {
           </p>
         </li>
         <li>
-          <a href="https://github.com/brrryry/personal-website" target="_blank">
+          <a
+            href="https://github.com/brrryry/personal-website"
+            target="_blank"
+            className="underline"
+          >
             portfolio website
           </a>
           <p>
@@ -43,6 +49,7 @@ export default function Home() {
           <a
             href="https://github.com/brrryry/osu-beatmap-generator"
             target="_blank"
+            className="underline"
           >
             osu-beatmap-generator (wip)
           </a>
@@ -60,7 +67,11 @@ export default function Home() {
           </p>
         </li>
         <li>
-          <a href="https://github.com/Dedicated-RAM/brewreview" target="_blank">
+          <a
+            href="https://github.com/Dedicated-RAM/brewreview"
+            target="_blank"
+            className="underline"
+          >
             brew review
           </a>
           <p>
@@ -69,7 +80,11 @@ export default function Home() {
           </p>
         </li>
         <li>
-          <a href="https://github.com/JasonQiu21/goodminton" target="_blank">
+          <a
+            href="https://github.com/JasonQiu21/goodminton"
+            target="_blank"
+            className="underline"
+          >
             goodminton (wip)
           </a>
           <p>
@@ -79,7 +94,11 @@ export default function Home() {
           </p>
         </li>
         <li>
-          <a href="https://github.com/brrryry/discord-bot" target="_blank">
+          <a
+            href="https://github.com/brrryry/discord-bot"
+            target="_blank"
+            className="underline"
+          >
             discord bot
           </a>
           <p>
@@ -92,9 +111,9 @@ export default function Home() {
         </li>
       </ul>
       <p>heres some other cool projects that cant be linked:</p>
-      <ul className="list-disc mx-6 space-y-2">
+      <ul className="list-disc mx-6 space-y-5">
         <li>
-          border gateway protocol research
+          <p className="underline">border gateway protocol research</p>
           <p>
             under the{" "}
             <a
