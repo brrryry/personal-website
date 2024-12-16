@@ -8,7 +8,7 @@ export function getSortedPostsData(tag = "") {
   // Get file names under /posts
   let fileNames = fs.readdirSync(postsDirectory);
 
-  if(process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV === "development") {
     const morePosts = fs.readdirSync(postsDirectory + "/drafts");
     fileNames = fileNames.concat(morePosts.map((post) => "drafts/" + post));
   }
@@ -24,9 +24,7 @@ export function getSortedPostsData(tag = "") {
 
       const fullPath = path.join(postsDirectory, fileName);
 
-      
       const fileContents = fs.readFileSync(fullPath, "utf8");
-      
 
       // Use gray-matter to parse the post metadata section
       const matterResult = matter(fileContents);
@@ -67,10 +65,12 @@ export async function getPostFromId(id) {
   try {
     fileContent = fs.readFileSync(fullPath, "utf8");
   } catch (e) {
-    fileContent = fs.readFileSync(path.join(postsDirectory, "drafts", `${id}.mdx`), "utf8");
+    fileContent = fs.readFileSync(
+      path.join(postsDirectory, "drafts", `${id}.mdx`),
+      "utf8",
+    );
   }
 
-  
   let { data, content } = matter(fileContent);
 
   return {
