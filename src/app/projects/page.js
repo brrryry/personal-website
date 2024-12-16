@@ -11,7 +11,7 @@ export default function Home() {
         , but ngl it is super cluttered so...
       </p>
       <p>heres some cool projects:</p>
-      <ul className="list-disc mx-6 space-y-2">
+      <ul className="list-disc mx-6 space-y-5">
         <li>
           <a href="/projects/cat-or-car">cat or car?</a>
           <p>
