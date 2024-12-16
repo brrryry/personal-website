@@ -1,8 +1,7 @@
 ---
 title: "portfolio dev (part 1): latex and code"
 date: "2024-08-08"
-description:
-  "first detailed code analysis: my own portfolio! take a look at my funky setup :D"
+description: "first detailed code analysis: my own portfolio! take a look at my funky setup :D"
 tags: ["personal", "portfolio-dev", "coding"]
 ---
 
@@ -10,13 +9,18 @@ as the school year comes in (im writing this in early august), im expecting to s
 (even though this is not guaranteed to be the case). with this in mind, i would like to start documenting my
 development process so that:
 
-
 <BlogList>
-<li>i dont lose track of what im doing and dont end myself over deprecated packages in a year or so</li>
-<li>i can help other people understand how my blog works (and maybe even help them make their own one day)</li>
+  <li>
+    i dont lose track of what im doing and dont end myself over deprecated
+    packages in a year or so
+  </li>
+  <li>
+    i can help other people understand how my blog works (and maybe even help
+    them make their own one day)
+  </li>
 </BlogList>
 
-this will be my first attempt at a more "formal" post - im hoping that this blog will have no glaring errors by the time i publish it. 
+this will be my first attempt at a more "formal" post - im hoping that this blog will have no glaring errors by the time i publish it.
 after all, my last few blogs represented more of a tangent than an actual blog... \
 \
 i would like to express my gratitude to <a href="https://kevinthuhstink.com" target="_blank">this guy named kevin</a> for reading my blogs, checking my errors and (cough cough) breaking my models. \
@@ -26,12 +30,13 @@ with this in mind, let's start diving into the code.
 <br />
 
 ## setting up nextjs
+
 **as of right now, i am using nextjs 14.2.5.** \
 \
 i set up my nextjs project the way the <a href="https://nextjs.org/docs/getting-started/installation" target="_blank">tutorial on their website</a> described.
 
 <BlogCode language="bash">
-{`
+  {`
 npx create-next-app@latest
 `}
 </BlogCode>
@@ -39,7 +44,7 @@ npx create-next-app@latest
 here were the settings that i used:
 
 <BlogCode language="plaintext">
-{`
+  {`
 What is your project named? portfolio
 Would you like to use TypeScript? No 
 Would you like to use ESLint? No
@@ -55,25 +60,33 @@ this will create a next app in a folder with your project's name on it. \
 i installed these packages for my blog, but not all of them are necessary (obviously).
 
 <BlogList>
-<li>``next-mdx-remote`` - parsing remote .mdx files (honestly not necessary). i only use it for the mdxremote component.</li>
-<li>``gray-matter`` - parses frontmatter and content of .mdx files</li>
-<li>``dompurify`` - protects against xss attacks (specifically because i use html injection for code blocks)</li>
-<li>``husky`` - pre-commit and pre-push linting/formatting (make your code look good and readable)</li>
-<li>``rehype`` - adds classes to code tags to enable fancy code css</li>
+  <li>
+    ``next-mdx-remote`` - parsing remote .mdx files (honestly not necessary). i
+    only use it for the mdxremote component.
+  </li>
+  <li>``gray-matter`` - parses frontmatter and content of .mdx files</li>
+  <li>
+    ``dompurify`` - protects against xss attacks (specifically because i use
+    html injection for code blocks)
+  </li>
+  <li>
+    ``husky`` - pre-commit and pre-push linting/formatting (make your code look
+    good and readable)
+  </li>
+  <li>``rehype`` - adds classes to code tags to enable fancy code css</li>
 </BlogList>
 
 you should familiarize yourself with the directories and what they are meant for. \
 \
-if you enter the directory of your project and run the command ``npm run dev``, you should be able to view your website if you go to ``localhost:3000`` in your browser (i believe this is the default port - if it is not
+if you enter the directory of your project and run the command `npm run dev`, you should be able to view your website if you go to `localhost:3000` in your browser (i believe this is the default port - if it is not
 3000, the terminal will tell you which port to
 go to).
 
 <BlogImage
-src="/blogs/pdev-ep1-latex-and-code/next-welcome.png"
-alt="fig 1 - default next page after setup"
-caption="next@14.2.5: default page"
+  src="/blogs/pdev-ep1-latex-and-code/next-welcome.png"
+  alt="fig 1 - default next page after setup"
+  caption="next@14.2.5: default page"
 />
-
 
 that's essentially it for the setup, but now it's time for the coding. \
 \
@@ -82,15 +95,19 @@ that's essentially it for the setup, but now it's time for the coding. \
 <br />
 
 ## the home page!
+
 the app router works in a way such that each folder is a route. for example:
 
 <BlogList>
-<li>the page ``/`` renders the js file ``app/page.js``</li>
-<li>the page ``/blog`` renders the js file ``app/blog/page.js``.</li>
-<li>the page ``projects/[id]`` renders the js file ``app/projects/[id]/page.js`` (yes, this folder structure works for dynamic fetching as well!)</li>
+  <li>the page ``/`` renders the js file ``app/page.js``</li>
+  <li>the page ``/blog`` renders the js file ``app/blog/page.js``.</li>
+  <li>
+    the page ``projects/[id]`` renders the js file ``app/projects/[id]/page.js``
+    (yes, this folder structure works for dynamic fetching as well!)
+  </li>
 </BlogList>
 
-with that being said, my home page's source code (``app/page.js``) will be shown below!
+with that being said, my home page's source code (`app/page.js`) will be shown below!
 
 <BlogCode language="js">
 {`
@@ -111,10 +128,12 @@ export default function Home() {
         ...
       </ul>
       ...
-  );
+
+);
 }
 
 `}
+
 </BlogCode>
 
 of course, im not gonna show all of it. if you want to see all of it, you can just go to my full source code (in the footer).\
@@ -129,18 +148,23 @@ the class "space-y-5" causes all the inner elements to be seperated vertically. 
 ```
 margin-top: 1.25rem;
 ```
+
 \
 to the element. meanwhile, the "mx-6" sets the margin of each child element! \
 \
 the great thing about tailwind is that the documentation is very easily readable. you can actually just search up
 "tailwind space between" and get the classnames required to do what you want! \
 \
-<a href="https://tailwindcss.com/docs/installation" target="_blank">here</a> is the link to the docs!
 
-<BlogImage 
-src="/blogs/pdev-ep1-latex-and-code/tailwind-docs.png"
-alt="tailwind docs - margin"
-caption="look at these beautiful tailwind docs"
+<a href="https://tailwindcss.com/docs/installation" target="_blank">
+  here
+</a> 
+is the link to the docs!
+
+<BlogImage
+  src="/blogs/pdev-ep1-latex-and-code/tailwind-docs.png"
+  alt="tailwind docs - margin"
+  caption="look at these beautiful tailwind docs"
 />
 
 now, you may notice that im missing a navbar. where is it???
@@ -148,55 +172,62 @@ now, you may notice that im missing a navbar. where is it???
 <br />
 
 ## layout.js and components
+
 one of the great things about next (and react) is components. you can make custom js files that are both
 reusable and independent to the rest of the code where the component is used. for example, i have a few components:
 
 <BlogList>
-<li>navbar - to render the navigation bar at the top of my page</li>
-<li>bloglist - to make lists in my blog (you are literally looking at it right now)</li>
-<li>blogcode - to add code into my blog</li>
-<li>latexwrapper - to add latex into my blog</li>
+  <li>navbar - to render the navigation bar at the top of my page</li>
+  <li>
+    bloglist - to make lists in my blog (you are literally looking at it right
+    now)
+  </li>
+  <li>blogcode - to add code into my blog</li>
+  <li>latexwrapper - to add latex into my blog</li>
 </BlogList>
 
 in order to make a component, you just need a js file. i like to keep my stuff organized, so i have a folder:
-``src/components``. to give an example, ill show you my navbar code (``src/components/navbar.js``).
+`src/components`. to give an example, ill show you my navbar code (`src/components/navbar.js`).
 
 <BlogCode language="js">
 {`
 import Link from "next/link";
 
 const Navbar = () => {
-  return (
-    <nav className="bg-transparent flex justify-between items-center p-0 h-48 md:h-32">
-      <div className="inline space-y-2 md:flex">
-        <Link href="/" className="flex m-0 items-center">
-          <p className="inline text-2xl text-purple-200 text-nowrap font-bold align-middle">
-            bryan chan.
-          </p>
-        </Link>
-        <Link href="/" className="flex m-0 items-center md:hidden">
-          <p className="inline text-2xl text-purple-200 text-nowrap font-bold align-middle">
-            -- home
-          </p>
-        </Link>
-        ...
-      </div>
+return (
 
-      <ul className="space-x-6 hidden md:flex">
-        <li>
-          <Link href="/">
-            <p className="text-2xl text-purple-200 font-bold">home</p>
-          </Link>
-        </li>
-        ...
-      </ul>
-    </nav>
-  );
+  <nav className="bg-transparent flex justify-between items-center p-0 h-48 md:h-32">
+    <div className="inline space-y-2 md:flex">
+    <Link href="/" className="flex m-0 items-center">
+      <p className="inline text-2xl text-purple-200 text-nowrap font-bold align-middle">
+      bryan chan.
+      </p>
+    </Link>
+      <Link href="/" className="flex m-0 items-center md:hidden">
+      <p className="inline text-2xl text-purple-200 text-nowrap font-bold align-middle">
+      -- home
+      </p>
+    </Link>
+    ...
+    </div>
+
+    <ul className="space-x-6 hidden md:flex">
+      <li>
+        <Link href="/">
+          <p className="text-2xl text-purple-200 font-bold">home</p>
+        </Link>
+      </li>
+      ...
+    </ul>
+  </nav>
+
+);
 };
 
 export default Navbar;
 
 `}
+
 </BlogCode>
 
 the reason i have a duplicate link to each page is for responsiveness. if you read the tailwind css, you can see the word "hidden" in the class name.
@@ -207,7 +238,7 @@ it is important to note that tailwind is mobile-first. this means that the class
 if you would like to understand the css better, i highly recommend checking out the <a href="https://tailwindcss.com/docs" target="_blank">tailwind docs</a>! \
 \
 now...earlier, i mentioned that the navbar component was not in my home page's code. how did i add it? this is where **layout** comes in.
-this file (``app/layout.js``) is a wrapper for all of my pages. this is where i add my navbar and footer. everything else is rendered in the ``{children}`` prop.
+this file (`app/layout.js`) is a wrapper for all of my pages. this is where i add my navbar and footer. everything else is rendered in the `{children}` prop.
 
 <BlogCode language="js">
 {`
@@ -262,9 +293,10 @@ all in all, this becomes very useful when you have a lot of pages that need the 
 <br />
 
 ## the blog page
+
 the blog page is a bit more complicated than the home page. this is because i have to parse the frontmatter and content of the .mdx files from a different directory. \
 \
-all of my .mdx files are in the ``src/posts`` directory. the blog page (``app/blog/page.js``) is shown below.
+all of my .mdx files are in the `src/posts` directory. the blog page (`app/blog/page.js`) is shown below.
 
 <BlogCode language="js">
 {`
@@ -279,63 +311,64 @@ export default async function Blog() {
   allTags = [...new Set(allTags)];
   allTags = allTags.sort((a, b) => a.localeCompare(b));
 
-  return (
-    <div className="flex">
-      <div className="space-y-5 md:w-4/5">
-        <ul>
-          {allPostsData.map((post) => {
-            if (post)
+return (
+
+  <div className="flex">
+    <div className="space-y-5 md:w-4/5">
+      <ul>
+        {allPostsData.map((post) => {
+        if (post)
+        return (
+        <li key={post.id} className="py-2">
+          <p>
+          <a href={\`/blog/$\{post.id\}\`}>{post.data.title}</a> (
+            {post.data.date})
+            <br />
+            tags: [
+            {post.data.tags.map((tag, i) => {
               return (
-                <li key={post.id} className="py-2">
-                  <p>
-                    <a href={\`/blog/$\{post.id\}\`}>{post.data.title}</a> (
-                    {post.data.date})
-                    <br />
-                    tags: [
-                    {post.data.tags.map((tag, i) => {
-                      return (
-                        <a href={\`/blog/tag/$\{tag\}\`} key={post.id + tag}>
-                          {i < post.data.tags.length - 1 ? tag + ", " : tag}
-                        </a>
-                      );
-                    })}
-                    ]<br />
-                    {post.data.description}
-                  </p>
-                </li>
-              );
-          })}
-        </ul>
-      </div>
-      <div className="justify-end text-right hidden md:block md:w-1/5">
-        - - -<br />
-        tags
-        <div>
-          <a href="/blog">all</a>
-          <br />
-        </div>
-        {allTags.map((tag, i) => {
-          return (
-            <div key={tag + i}>
-              <a href={\`/blog/tag/$\{tag\}\`}>{tag}</a>
-              <br />
-            </div>
-          );
+                <a href={\`/blog/tag/$\{tag\}\`} key={post.id + tag}>
+                {i < post.data.tags.length - 1 ? tag + ", " : tag}
+                </a>
+                );
+                })}
+            ]<br />
+            {post.data.description}
+          </p>
+        </li>
+        );
         })}
-      </div>
-    </div>
+      </ul>
+  </div>
+  <div className="justify-end text-right hidden md:block md:w-1/5"> - - -<br />
+  tags
+  <div>
+  <a href="/blog">all</a>
+  <br />
+  </div>
+  {allTags.map((tag, i) => {
+  return (
+    <div key={tag + i}>
+    <a href={\`/blog/tag/$\{tag\}\`}>{tag}</a>
+  <br />
+  </div>
   );
+  })}
+  </div>
+  </div>
+);
 }
 `}
+
 </BlogCode>
 
-the important part here is the use of the ``getSortedPostsData()`` function. this function is in the ``src/lib/posts.js`` file. the "@" symbol 
+the important part here is the use of the `getSortedPostsData()` function. this function is in the `src/lib/posts.js` file. the "@" symbol
 is a shortcut to the "src" directory (we told the program not to change that shortcut when we initially set up the project). \
 \
-since this file is not in the app router (``src/app``), it is not able to be accessed by the browser. this means that the function is only used in the server-side rendering of the page. 
+since this file is not in the app router (`src/app`), it is not able to be accessed by the browser. this means that the function is only used in the server-side rendering of the page.
 this ended up causing some problems for me later, but we'll get to that when we cover it. \
 \
-the function essentially reads all the .mdx files in the ``src/posts`` directory and returns them in a sorted array. it also gets all blog tags and returns them to be rendered. 
+the function essentially reads all the .mdx files in the `src/posts` directory and returns them in a sorted array. it also gets all blog tags and returns them to be rendered.
 
 <BlogCode language="js">
 {`
@@ -362,24 +395,26 @@ export function getSortedPostsData(tag = "") {
       }
     })
     .filter(Boolean);
-  // Sort posts by date
-  return allPostsData.sort((a, b) => {
-    if (a.data.date < b.data.date) {
-      return 1;
-    } else {
-      return -1;
-    }
-  });
+
+// Sort posts by date
+return allPostsData.sort((a, b) => {
+if (a.data.date < b.data.date) {
+return 1;
+} else {
+return -1;
+}
+});
 }
 `}
+
 </BlogCode>
 
-this function uses the ``fs`` and ``path`` modules to read the files in the directory. it then uses the ``gray-matter`` package to parse the frontmatter of the .mdx files. \
+this function uses the `fs` and `path` modules to read the files in the directory. it then uses the `gray-matter` package to parse the frontmatter of the .mdx files. \
 \
-the function also takes in a tag as an argument. if the tag is not empty, the function will only return posts with that tag. this version of the function is used to render blogs in 
-the page ``/blog/[tag]/tag`` (filtered blogs by tag).
+the function also takes in a tag as an argument. if the tag is not empty, the function will only return posts with that tag. this version of the function is used to render blogs in
+the page `/blog/[tag]/tag` (filtered blogs by tag).
 \
-now, let's get into the actual blog post page! here is the code for the page ``app/blog/[id]/page.js`` (you're looking at this page right now)!
+now, let's get into the actual blog post page! here is the code for the page `app/blog/[id]/page.js` (you're looking at this page right now)!
 
 <BlogCode language="js">
 {`
@@ -400,37 +435,38 @@ import "@/../public/styles/atom-one-dark.css";
 export default async function BlogPost({ params }) {
   //get the files from posts/params.id
 
-  const { content, data, notFound } = await getPostFromId(params.id);
+const { content, data, notFound } = await getPostFromId(params.id);
 
-  if (notFound) {
-    return <NotFound />;
-  }
+if (notFound) {
+return <NotFound />;
+}
 
-  return (
-    <div className="flex justify-center">
-      <article className="min-w-0 max-w-4xl">
-        - - -<h3>{data.title}</h3>
-        <p>created on {data.date}</p>
-        <p>
-          tags: [
-          {data.tags.map((tag, i) => {
-            return (
-              <a href={\`/blog/tag/$\{tag\}\`} key={tag}>
-                {i < data.tags.length - 1 ? tag + ", " : tag}
-              </a>
-            );
-          })}
-          ] <br />- - -
-        </p>
-        <MDXRemote
-          source={content}
-          components={{ LatexWrapper, BlogImage, BlogList, BlogCode }}
-        />
-      </article>
-    </div>
-  );
+return (
+
+<div className="flex justify-center">
+<article className="min-w-0 max-w-4xl"> - - -<h3>{data.title}</h3>
+<p>created on {data.date}</p>
+<p>
+tags: [
+{data.tags.map((tag, i) => {
+return (
+<a href={\`/blog/tag/$\{tag\}\`} key={tag}>
+{i < data.tags.length - 1 ? tag + ", " : tag}
+</a>
+);
+})}
+] <br />- - -
+</p>
+<MDXRemote
+source={content}
+components={{ LatexWrapper, BlogImage, BlogList, BlogCode }}
+/>
+</article>
+</div>
+);
 }
 `}
+
 </BlogCode>
 the first part of my return statement simply renders the frontmatter of the .mdx file in a slightly nicer format. \
 \
@@ -439,7 +475,7 @@ the ``getPostFromId()`` function is in the same file as the ``getSortedPostsData
 the ``MDXRemote`` component is used to render the content. the ``components`` prop is used to render custom components (the ones i made) in the content. this allows me to write something like
 
 <BlogCode language="mdx">
-{`
+  {`
 <BlogCode language="js">
 {\`
 console.log("hello world");
@@ -456,21 +492,22 @@ ends here.
 <br />
 
 ## blog format and components
+
 **this part exists for the purpose of documenting my thought process.**\
 \
 i wanted to make my blog as readable as possible. this took me a long time to learn. originally, my blog was just a bunch of text and html that spread across the entire page.
-if you look at it now, it only takes up to a maximum of ``56rem (896px)``  of the page width. this was for the sake of responsiveness - it simply looked out of place when 
+if you look at it now, it only takes up to a maximum of `56rem (896px)` of the page width. this was for the sake of responsiveness - it simply looked out of place when
 viewing the original version of my blog on a mobile viewport. this was also due to the inspiration of other people's blogs, since most of them were also not a full page's width.
 
-<BlogImage 
-src="/blogs/pdev-ep1-latex-and-code/tumtarts.png"
-alt="tumtarts blog"
-caption="example: tumtarts blog - a blog that inspired me :D"
-source="https://tumtarts.com"
-style={{border: "0.5rem white solid"}}
+<BlogImage
+  src="/blogs/pdev-ep1-latex-and-code/tumtarts.png"
+  alt="tumtarts blog"
+  caption="example: tumtarts blog - a blog that inspired me :D"
+  source="https://tumtarts.com"
+  style={{ border: "0.5rem white solid" }}
 />
 
-in the code shown earlier, you can see that the article tag has the class "min-w-0 max-w-4xl". this sets the minimum width of the article to 0 and the maximum width to 4xl. 
+in the code shown earlier, you can see that the article tag has the class "min-w-0 max-w-4xl". this sets the minimum width of the article to 0 and the maximum width to 4xl.
 
 <br />
 
@@ -486,7 +523,7 @@ this was the html behind my first image in my blog (<a href="/blog/insure-2024">
     src="https://news.engineering.iastate.edu/files/2024/07/ECE-INSURE-Students-1-1024x576.jpg"
     alt="us at a tractor"
   />
-  <p>fig 1 - visiting the <a href="https://www.deere.com/en/stories/featured/cyber-tractor-challenge-2024/" target="_blank">2024 cyber tractor challenge</a> (<a href="https://news.engineering.iastate.edu/2024/07/18/iowa-state-hosts-first-insure-cybersecurity-workshop-in-the-country/" target="_blank">image citation</a>)</p> 
+  <p>fig 1 - visiting the <a href="https://www.deere.com/en/stories/featured/cyber-tractor-challenge-2024/" target="_blank">2024 cyber tractor challenge</a> (<a href="https://news.engineering.iastate.edu/2024/07/18/iowa-state-hosts-first-insure-cybersecurity-workshop-in-the-country/" target="_blank">image citation</a>)</p>
 
 </figure>
 
@@ -494,10 +531,10 @@ this was the html behind my first image in my blog (<a href="/blog/insure-2024">
 `}
 </BlogCode>
 
-i was getting quite tired of copy and pasting the same code over and over again. this is where the ``BlogImage`` component comes in. now, i am able to write this instead:
+i was getting quite tired of copy and pasting the same code over and over again. this is where the `BlogImage` component comes in. now, i am able to write this instead:
 
 <BlogCode language="html">
-{`
+  {`
 <BlogImage 
 src="/blogs/pdev-ep1-latex-and-code/tumtarts.png"
 alt="tumtarts blog"
@@ -520,82 +557,89 @@ the math api i used was <a href="https://math.vercel.app/home" target="_blank">t
 latex. it was kind of a lazy workaround, but...it works. \
 \
 after getting the image, i needed to render it - preferrably automatically - to scale, since not all latex expressions would be the same size.
-in order to do this seamlessly, i made the ``LatexWrapper`` component. this component takes in a latex string and renders the image in a way that scales with the text. it estimates
+in order to do this seamlessly, i made the `LatexWrapper` component. this component takes in a latex string and renders the image in a way that scales with the text. it estimates
 the size of the image based on the length of the text i pass in.
 
 <BlogCode language="html">
-{`
+  {`
 <LatexWrapper content="\\sum_{i=1}^{n} i = \\frac{n(n+1)}{2}"/>
 `}
 </BlogCode>
 
 gives me this:
 
-<LatexWrapper content="\sum_{i=1}^{n} i = \frac{n(n+1)}{2}"/>
+<LatexWrapper content="\sum_{i=1}^{n} i = \frac{n(n+1)}{2}" />
 
 cool! now i can write math in my blog. but...what about code? \
 \
-originally, i just used the ``<code>`` tag to write code. however, it looked super ugly. in order to get syntax highlighting, i used the ``rehype`` package.
-this package adds classes to the code tags in the .mdx files. i then used the ``BlogCode`` component to render the code. this component takes in a language prop and a content prop. \
+originally, i just used the `<code>` tag to write code. however, it looked super ugly. in order to get syntax highlighting, i used the `rehype` package.
+this package adds classes to the code tags in the .mdx files. i then used the `BlogCode` component to render the code. this component takes in a language prop and a content prop. \
 \
-thankfully, since the ``BlogCode`` component was a sub-component, i could render it on the client side. this meant that i could use the ``highlight.js`` package to render the code.
-i also used the file ``atom-one-dark.css`` to style the "classified" code (the import line is in the main blog page).
+thankfully, since the `BlogCode` component was a sub-component, i could render it on the client side. this meant that i could use the `highlight.js` package to render the code.
+i also used the file `atom-one-dark.css` to style the "classified" code (the import line is in the main blog page).
 
 <BlogCode language="js">
 {`
 export function BlogCode({ children, language, ...props }) {
   const [code, setCode] = useState("");
 
-  children = \`<pre className="text-base lg: text-lg"><code className="language-$\{language\}">$\{renderToString(children)\}</code></pre>\`;
-  useEffect(() => {
-    (async () => {
-      const code = await rehype()
-        .data("settings", { fragment: true })
-        .use(rehypeHighlight)
-        .use(rehypeCodeLines, {
-          showLineNumbers: true,
-          lineContainerTagName: "div",
-        })
-        .process(children);
-      const cleanCode = DOMPurify.sanitize(code.toString());
-      setCode(cleanCode);
-    })();
-  }, []);
+children = \`<pre className="text-base lg: text-lg"><code className="language-$\{language\}">$\{renderToString(children)\}</code></pre>\`;
+useEffect(() => {
+(async () => {
+const code = await rehype()
+.data("settings", { fragment: true })
+.use(rehypeHighlight)
+.use(rehypeCodeLines, {
+showLineNumbers: true,
+lineContainerTagName: "div",
+})
+.process(children);
+const cleanCode = DOMPurify.sanitize(code.toString());
+setCode(cleanCode);
+})();
+}, []);
 
-  if (code === "") {
-    return <div>Loading...</div>;
-  }
-
-  return (
-    <>
-      <br />
-      <div className="" dangerouslySetInnerHTML={{ __html: code }} />
-      <br />
-    </>
-  );
+if (code === "") {
+return <div>Loading...</div>;
 }
-`}
+
+return (
+
+<>
+  <br />
+  <div className="" dangerouslySetInnerHTML={{ __html: code }} />
+  <br />
+</>
+); } `}
+
 </BlogCode>
 
-the ``DOMPurify`` package is used to sanitize the code. this is to prevent cross-scripting xss attacks (code injection). \
+the `DOMPurify` package is used to sanitize the code. this is to prevent cross-scripting xss attacks (code injection). \
 \
 now, i can write code in my blog! \
 \
-that's basically all i have so far, so let's jump to our final section: 
+that's basically all i have so far, so let's jump to our final section:
 
 <br />
 
 ## conclusion + future work?
-it's been a while since i've touched nextjs (or any javascript for that matter), so this was a nice refresher. i am also happy that i am blogging, since this is a way to 
+
+it's been a while since i've touched nextjs (or any javascript for that matter), so this was a nice refresher. i am also happy that i am blogging, since this is a way to
 document my progress! \
 \
 there are a few things that i would like to do in the future:
 
 <BlogList>
-<li>add a search bar to my blog</li>
-<li>add a pagination system to my blog (especially if i keep blogging at this frequency)</li>
-<li>add a spotify api to my blog (maybe see what im listening to?)</li>
-<li>further optimize my blog components - maybe create new ones on demand (maybe cooking related, since im trying to learn how to cook - blog coming soon?)</li>
+  <li>add a search bar to my blog</li>
+  <li>
+    add a pagination system to my blog (especially if i keep blogging at this
+    frequency)
+  </li>
+  <li>add a spotify api to my blog (maybe see what im listening to?)</li>
+  <li>
+    further optimize my blog components - maybe create new ones on demand (maybe
+    cooking related, since im trying to learn how to cook - blog coming soon?)
+  </li>
 </BlogList>
 
 i hope you enjoyed this blog! i will be back soon with another one. \
