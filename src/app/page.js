@@ -4,8 +4,10 @@ export default function Home() {
   return (
     <div className="space-y-5">
       <p>
-        latest news: setting up secret santa and cicd pipeline for my software
-        (blog soon)
+        latest news: setting up{" "}
+        <a href="/blog/bbb-1-secretsanta">secret santa</a> and{" "}
+        <a href="/blog/pdev-ep2-cicd">cicd pipeline</a> for my software (blogs
+        linked)
       </p>
 
       <br />

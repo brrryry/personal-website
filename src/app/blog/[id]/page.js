@@ -27,7 +27,7 @@ export default async function BlogPost({ params }) {
     <div className="flex justify-center">
       <article className="min-w-0 max-w-4xl">
         - - -<h3>{data.title}</h3>
-        <p>created on {data.date}</p>
+        <p>originally posted on {data.date}</p>
         <p>
           tags: [
           {data.tags.sort().map((tag, i) => {
