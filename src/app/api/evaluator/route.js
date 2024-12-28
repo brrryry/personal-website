@@ -15,8 +15,9 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     const { db } = await connectToDatabase();
-    const { user_id, aura } = req.body;
-    const user = await db.collection("users").findOne({ user_id });
+    let newReq = await req.json();
+    const { user_id, aura } = newReq;
+    const user = await db.collection("users").findOne({ _id: new ObjectId(user_id) });
 
     if (!user) {
       return new Response(JSON.stringify({ error: "User not found" }), {
@@ -30,6 +31,8 @@ export async function POST(req) {
         { _id: new ObjectId(user_id) },
         { $set: { aura: Number(aura) } },
       );
+
+    return new Response(JSON.stringify({message: "User inputted!"}));
   } catch (e) {
     return new Response(JSON.stringify({ error: e.message }), { status: 500 });
   }
