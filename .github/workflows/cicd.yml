@@ -23,12 +23,11 @@ jobs:
       # Execute deployment script
       - name: Run Deployment Script
         env:
-          REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-          REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
-          REMOTE_PATH: ${{ secrets.REMOTE_PATH }}
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          DEPLOY_KEY_PATH: "${{ secrets.DEPLOY_KEY_PATH }}"
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
+          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+          IMAGE_TAG: ${{ secrets.IMAGE_TAG }}
+          CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
         run: |
           chmod +x ./deploy/build-and-deploy.sh
           ./deploy/build-and-deploy.sh
