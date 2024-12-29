@@ -25,4 +25,3 @@ jobs:
         run: |
           chmod +x ./deploy/build-and-deploy.sh
           ./deploy/build-and-deploy.sh
-
