@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import { useState, useEffect } from "react";
 import { rehype } from "rehype";
@@ -34,7 +34,9 @@ export function BlogCode({
 }) {
   const [code, setCode] = useState("");
 
+  // Convert children into raw HTML with preserved formatting
   children = `<pre className="text-base lg: text-lg"><code className="language-${language}">${renderToString(children)}</code></pre>`;
+
   useEffect(() => {
     (async () => {
       const code = await rehype()
@@ -48,7 +50,23 @@ export function BlogCode({
       const cleanCode = DOMPurify.sanitize(code.toString());
       setCode(cleanCode);
     })();
-  }, []);
+  }, [children]);
+
+  // This will ensure newlines are respected when copied to clipboard
+  const handleCopy = () => {
+    let cleanChildren = children
+      .replaceAll("&quot;", '"')
+      .replaceAll("&#x27;", "'")
+      .replaceAll("&lt;", "<")
+      .replaceAll("&gt;", ">")
+      .replaceAll("&amp;", "&");
+
+    // Clean the code string and replace newlines with actual line breaks
+    let cleanChildrenSplit = cleanChildren.split("\n");
+    cleanChildren = cleanChildrenSplit.slice(1, -1).join("\n");
+
+    navigator.clipboard.writeText(cleanChildren);
+  };
 
   if (code === "") {
     return <div>Loading...</div>;
@@ -64,17 +82,7 @@ export function BlogCode({
         {copy == "true" && (
           <button
             className="text-sm bg-blue-500 text-white py-1 px-3 mx-2 rounded"
-            onClick={() => {
-              let cleanChildren = children
-                .replaceAll("&quot;", '"')
-                .replaceAll("&#x27;", "'")
-                .replaceAll("&lt;", "<")
-                .replaceAll("&gt;", ">")
-                .replaceAll("&amp;", "&");
-              let cleanChildrenSplit = cleanChildren.split("\n");
-              cleanChildren = cleanChildrenSplit.slice(1, -1).join("\n");
-              navigator.clipboard.writeText(cleanChildren);
-            }}
+            onClick={handleCopy}
           >
             Copy
           </button>
