@@ -1,0 +1,214 @@
+---
+title: "baffingly built brainstorms #2: github aura"
+date: "2024-12-16"
+description: "i made a goofy aura rating system for github profiles"
+tags: ["project", "coding", "bbb", "ml"]
+---
+
+if you know me, you know that i am pretty fairly brainrotted. \
+people these days seem to criticize the younger generation for being too chronically online,
+and i am proud to announce that...i am one of these people. \
+this is merely a creative outlet to express this brainrot, and i only pray that you - 
+the user, possibly my friend or even my future employer - will understand. 
+
+<br />
+
+huge thank you to:
+
+<BlogList>
+<li><a href="https://www.jackeyy.me/" target="_blank">jackey</a> - for coming up with the idea and making the website</li>
+<li>dhruv - for helping to rate manually and structure the dataset and website</li>
+<li>jing - for keeping us company :)</li>
+</BlogList>
+
+## ...what?? why??????
+so...my friend <a href="https://www.jackeyy.me/" target="_blank">jackey</a> and i were 
+hanging out one day in the city. we went into a cafe, and i started talking about my 
+secret santa project that i was making (which you can read about <a href="/blog/bbb-1-secretsanta">here</a>). \
+\
+he was...not impressed. he actually told me that it was quite overengineered (a login system...really?) and
+gave me an example of a much simpler way to do it. anyways, one thing led to another, and we started talking about
+new project ideas. after all, i love making new projects for my portfolio. \
+\
+hence, with our combined mental capacity, we (mainly him, but i was there...) came up with the idea of 
+making a github aura rating system. 
+
+<br />
+
+## how it works
+the idea is simple. you input a github username, and the website (yes, we will make a website) will 
+give you a rating of how much "aura" the user has. this would be based on a few factors. originally, 
+these factors were:
+
+<BlogList>
+<li>number of followers</li>
+<li>number of repositories</li>
+<li>number of stars</li>
+<li>how many lines of code they've written</li>
+<li>(possibly) quality of commits (rated by an llm model?)</li>
+</BlogList>
+
+we would then take these factors and put them into a model. the model would then output a number - the aura rating. \
+\
+we would also have a leaderboard of the top aura ratings. perhaps we could even have a browser extension that automatically
+calculates the aura rating of the user you are looking at. \
+\
+now, the question comes to mind...where do we get the aura dataset? \
+\
+**obviously, we make it up ourselves.** 
+
+<br />
+
+## making the dataset ourselves
+one way to get github user data is to web scrape. however, it's both unreliable and a bit unethical.
+therefore, we will use the github rest api. \
+\
+i created a <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens" target="_blank">fine-grained personal access token</a> and used it to get the data. \
+from there, i started writing a python script to get the data. 
+
+<BlogCode title="fetch_data.py" language="python">
+{`
+"""
+This script fetches data from the github API and saves it to a local file.
+This python file should be run from the parent directory.
+"""
+
+import requests
+import json
+import os
+from dotenv import load_dotenv
+import pandas as pd
+import datetime
+from bs4 import BeautifulSoup
+
+
+def tprint(message):
+    print(f"{datetime.datetime.now()}: " + message)
+
+
+
+def fetch_contributions(username):
+    url = f"https://github.com/users/{username}/contributions"
+
+    response = requests.get(url)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        contributions = soup.find_all('h2', class_='f4 text-normal mb-2')
+        contributions = contributions[0].text.replace(',', '')
+        contributions_int = int(contributions.split()[0])
+    else:
+        contributions_int = 0
+
+    return contributions_int
+    
+
+if __name__ == "__main__":
+    # Load the environment variables
+    load_dotenv()
+    # Get the github token
+    token = os.getenv('GITHUB_PERSONAL_ACCESS_TOKEN')
+
+    # Create data directory if it does not exist
+    if not os.path.exists('data'):
+        os.makedirs('data')
+
+    headers = {
+        'Authorization': f'token {token}'
+    }
+    
+    url = 'https://api.github.com/users?per_page=100'
+    users = []
+    id_multiplier = 100000
+    pagination = 100
+    num_pages = 10
+    for i in range(1, num_pages + 1):
+        tprint(f"Fetching data for page (since parameter): {i * id_multiplier}")
+        response = requests.get(url, headers=headers, params={'since': i * id_multiplier, 'per_page': pagination})
+        if response.status_code == 200:
+            user_data = response.json()
+            for user in user_data:
+                user_info = {}
+                user_info['login'] = user['login']
+                user_info['link'] = user['html_url']
+                tprint(f"Fetching data for user: {user_info['login']}")
+
+                # Fetch user details
+                user_url = user['url']
+                user_response = requests.get(user_url, headers=headers)
+                if user_response.status_code == 200:
+                    user_details = user_response.json()
+                    user_info['followers'] = user_details['followers']
+                    user_info['following'] = user_details['following']
+
+                    user_info['follow_ratio'] = user_info['followers'] / user_info['following'] if user_info['following'] != 0 else 0
+
+                    user_info['public_repos'] = user_details['public_repos']
+
+                    # Fetch contributions
+                    user_info['contributions'] = fetch_contributions(user_info['login'])
+
+                    # Fetch repositories details
+                    repos_url = user_details['repos_url']
+                    repos_response = requests.get(repos_url, headers=headers)
+                    if repos_response.status_code == 200:
+                        repos = repos_response.json()
+                        user_info['stars'] = sum(repo['stargazers_count'] for repo in repos)
+                        user_info['total_size'] = sum(repo['size'] for repo in repos)
+
+                user_info['user_feedback'] = 0
+
+                users.append(user_info)
+                tprint(f"Data fetched for user: {user_info['login']}")
+
+    # Check if the file exists
+    file_path = 'data/users.csv'
+    if os.path.exists(file_path):
+        # Load the existing data
+        existing_df = pd.read_csv(file_path)
+        # Append the new data
+        new_df = pd.DataFrame(users)
+        combined_df = pd.concat([existing_df, new_df], ignore_index=True)
+    else:
+        # Create a new dataframe
+        combined_df = pd.DataFrame(users)
+
+    # Save the combined data to a csv file using pandas
+    combined_df.to_csv(file_path, index=False)
+    tprint('Data fetched and saved successfully')
+`}
+</BlogCode>
+
+We weren't able to get all the original data that we wanted, but we were able to get:
+
+<BlogList>
+<li>number of followers</li>
+<li>number of following</li>
+<li>follow ratio</li>
+<li>number of public repositories</li>
+<li>number of contributions</li>
+<li>number of stars</li>
+<li>total size of repositories (in kilobytes)</li>
+</BlogList>
+
+<br />
+we gathered this data for 1000 users (plus our own personal githubs for fun) and saved it to a csv file. \
+from here, we had to rate the aura of each user manually in order to created a supervised dataset. 
+this was quite tedious, but the task was split among several people. it was also really funny
+to sit in a discord call and just start rating people's githubs. \
+\
+on top of this, <a href="https://www.jackeyy.me/" target="_blank">jackey</a> made a small website to make the process more
+interactive. the source code for this website can be found <a href="https://github.com/gitaura-me/evaluator" target="_blank">here</a>.
+
+<br />
+
+## the original model idea
+since "aura" is a very subjective term, we had do deliberate on how the neural network would try to predict the rating. 
+since it was three people doing the ratings with no particular guidelines, we had values all across the board.
+in order to find some way to make the model more reasonable, we had two ideas:
+
+<BlogList>
+<li><u>normalizing the aura</u> - this would be done by taking the average of the ratings and then subtracting it from each rating.
+this would be followed by dividing by the standard deviation. this would allow the model to predict the rating in a more normalized way.</li>
+<li><u>sigmoid function (non-linear normalization)</u> - this would be done by taking the sigmoid of the rating. this would allow the model to predict the rating in a more non-linear way,
+as we weren't sure what our data looked like yet.</li>
+</BlogList>
