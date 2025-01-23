@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { rehype } from "rehype";
 import rehypeHighlight from "rehype-highlight";
-import rehypeCodeLines from "rehype-highlight-code-lines";
 
 import DOMPurify from "dompurify";
 
@@ -35,17 +34,13 @@ export function BlogCode({
   const [code, setCode] = useState("");
 
   // Convert children into raw HTML with preserved formatting
-  children = `<pre className="text-base lg: text-lg"><code className="language-${language}">${renderToString(children)}</code></pre>`;
+  children = `<pre className="text-base lg: text-lg"><code className="language-${language}">${renderToString(children.split("\n").slice(1).join("\n"))}</code></pre>`; //the extensive children part is to remove a blank newline
 
   useEffect(() => {
     (async () => {
       const code = await rehype()
         .data("settings", { fragment: true })
         .use(rehypeHighlight)
-        .use(rehypeCodeLines, {
-          showLineNumbers: true,
-          lineContainerTagName: "div",
-        })
         .process(children);
       const cleanCode = DOMPurify.sanitize(code.toString());
       setCode(cleanCode);
