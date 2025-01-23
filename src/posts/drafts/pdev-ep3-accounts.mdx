@@ -1,0 +1,59 @@
+---
+title: "portfolio dev ep3: accounts and comments"
+date: "2025-01-23"
+description: "i want feedback on my blogs. therefore..."
+tags: ["coding", "portfolio-dev"]
+---
+
+in honor of my <a href="https://stevens.smartcatalogiq.com/en/2022-2023/academic-catalog/courses/cs-computer-science/400/cs-442/" target="_blank">databases class (cs442)</a>, 
+i wanted to create a database for my portfolio. how would i do this? 
+
+<br />
+
+## accounts 
+wouldn't it be so cool to show off my database skills while also allowing people to comment on my blog? that would be pretty sick. \
+\
+first off, let's make a schema. 
+
+<BlogCode language="plaintext" copy="false" title="schema for accounts and comments">
+{`
+USERS
+- userID: string non-null
+- username: string non-null
+- password: string non-null
+- email: string non-null
+- dateCreated: date non-null
+- banned: boolean non-null
+- admin: boolean non-null
+
+SESSIONS
+- sessionID: string non-null
+- userID: string non-null
+- dateCreated: date non-null
+- dateLastUsed: date non-null
+- active: boolean non-null
+
+COMMENTS
+- commentID: string non-null
+- userID: string non-null
+- blogID: string non-null
+- parentID: string nullable
+- dateCreated: date non-null
+- content: string non-null
+- likes: int non-null
+- dislikes: int non-null
+- replies: int non-null
+- deleted: boolean non-null
+
+LIKES
+- userID: string non-null
+- commentID: string non-null
+
+`}
+</BlogCode>
+
+...good enough.
+
+<br />
+
+next, let's find a database to use. let's choose <a href="https://www.mongodb.com/" target="_blank">mongodb</a>.
