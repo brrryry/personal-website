@@ -14,6 +14,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Create Environment File
+        env:
+          ENV_FILE: ${{ secrets.ENV_FILE }}
+        run: |
+          echo "$ENV_FILE" > .env
+
       # Execute deployment script
       - name: Run Deployment Script
         env:
