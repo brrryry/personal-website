@@ -1,4 +1,4 @@
-import mysql from 'mysql';
+import mysql from 'mysql2';
 import { createSessionsTable, sqlSettings } from './sql';
 import { createAccountTable } from './sql';
 import bcrypt from 'bcrypt';
@@ -12,14 +12,14 @@ export const createAccount = (account) => {
     connection.connect();
 
     //check account parameters
-    if (!account.name || !account.password) {
+    if (!account.username || !account.password) {
         throw new Error('Invalid account parameters!');
     }
 
     //check if account already exists
     connection.query(
         'SELECT * FROM accounts WHERE name = ?',
-        [account.name],
+        [account.username],
         (err, result) => {
             if (err) throw err;
             if (result.length > 0) {
@@ -37,7 +37,7 @@ export const createAccount = (account) => {
     //create account
     connection.query(
         'INSERT INTO accounts (name, password) VALUES (?, ?)',
-        [account.name, account.password],
+        [account.username, account.password],
         (err, result) => {
             if (err) throw err;
             console.log('Account created!');
@@ -56,14 +56,14 @@ export const login = (account) => {
     let userid = null;
 
     //check account parameters
-    if (!account.name || !account.password) {
+    if (!account.username || !account.password) {
         throw new Error('Invalid account parameters!');
     }
 
     //check if account exists
     connection.query(
         'SELECT * FROM accounts WHERE name = ?',
-        [account.name],
+        [account.username],
         (err, result) => {
             if (err) throw err;
             if (result.length === 0) {
@@ -101,7 +101,7 @@ export const login = (account) => {
         [userid],
         (err, result) => {
             if (err) throw err;
-            console.log('Session created');
+            console.log('Session created!');
             console.log(result);
             sessionid = result.insertId;
         }
@@ -112,6 +112,7 @@ export const login = (account) => {
 
 export const logout = (sessionid) => {
     let connection = mysql.createConnection(sqlSettings());
+    createAccountTable();
     connection.connect();
 
     //check if session exists
@@ -121,7 +122,7 @@ export const logout = (sessionid) => {
         (err, result) => {
             if (err) throw err;
             if (result.length === 0) {
-                throw new Error('Session does not exist');
+                throw new Error('Session does not exist!');
             }
         }
     );
@@ -132,7 +133,7 @@ export const logout = (sessionid) => {
         [sessionid],
         (err, result) => {
             if (err) throw err;
-            console.log('Session deleted');
+            console.log('Session deleted!');
         }
     );
 
@@ -147,7 +148,7 @@ export const banAccount = (userid) => {
 
     //check account parameters
     if (!userid) {
-        throw new Error('Invalid account parameters');
+        throw new Error('Invalid account parameters!');
     }
 
     //check if account exists
@@ -157,7 +158,7 @@ export const banAccount = (userid) => {
         (err, result) => {
             if (err) throw err;
             if (result.length === 0) {
-                throw new Error('Account does not exist');
+                throw new Error('Account does not exist!');
             }
         }
     );
@@ -168,7 +169,7 @@ export const banAccount = (userid) => {
         [userid],
         (err, result) => {
             if (err) throw err;
-            console.log('Account banned');
+            console.log('Account banned!');
         }
     );
 
@@ -178,7 +179,7 @@ export const banAccount = (userid) => {
         [userid],
         (err, result) => {
             if (err) throw err;
-            console.log('Sessions deleted');
+            console.log('Sessions deleted!');
         }
     );
 
@@ -199,7 +200,7 @@ export const getUserFromSession = (sessionid) => {
         (err, result) => {
             if (err) throw err;
             if (result.length === 0) {
-                throw new Error('Session does not exist');
+                throw new Error('Session does not exist!');
             }
         }
     );
@@ -211,7 +212,7 @@ export const getUserFromSession = (sessionid) => {
         (err, result) => {
             if (err) throw err;
             if (result.length === 0) {
-                throw new Error('User does not exist');
+                throw new Error('User does not exist!');
             }
             user = result[0];
         }
@@ -235,7 +236,7 @@ export const getUserFromId = (userid) => {
         (err, result) => {
             if (err) throw err;
             if (result.length === 0) {
-                throw new Error('User does not exist');
+                throw new Error('User does not exist!');
             }
             user = result[0];
         }

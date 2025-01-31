@@ -1,3 +1,5 @@
+import mysql from 'mysql2';
+
 export const sqlSettings = () => {
     const env = process.env.NODE_ENV;
 
@@ -24,22 +26,24 @@ export const sqlSettings = () => {
 
 export const createAccountTable = () => {
     let connection = mysql.createConnection(sqlSettings());
-    connection.connect();
+    console.log(process.env.DB_HOST_DEV);
 
     //if the accounts table does not exist, create it
     connection.query(
         `CREATE TABLE IF NOT EXISTS accounts (
             userid BINARY(16) PRIMARY KEY,
-            name VARCHAR(32) NOT NULL,
+            username VARCHAR(32) NOT NULL,
+            bio TEXT DEFAULT NULL,
             password VARCHAR(255) NOT NULL,
             dateCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             lastLogin TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             banned BOOLEAN DEFAULT FALSE NOT NULL,
-            admin BOOLEAN DEFAULT FALSE NOT NULL,
+            admin BOOLEAN DEFAULT FALSE NOT NULL
         )`,
         (err, result) => {
             if (err) throw err;
             console.log('Table created or already exists');
+            console.log(result);
         }
     );
     connection.end();
