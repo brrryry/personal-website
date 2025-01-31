@@ -3,7 +3,7 @@ export async function BlogImage({ caption, src, ...props }) {
     <>
       <br />
       <figure className="items-center text-center">
-        <div className="flex justify-center">
+        <div className="flex justify-center mx-3">
           <img
             src={src}
             style={props.style ? props.style : {}}
@@ -12,7 +12,7 @@ export async function BlogImage({ caption, src, ...props }) {
           ></img>
         </div>
         <p>
-          {caption}{" "}
+          {caption ? caption : ""}{" "}
           {props.source && (
             <>
               {" "}
