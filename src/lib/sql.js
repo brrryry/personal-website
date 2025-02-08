@@ -26,7 +26,6 @@ export const sqlSettings = () => {
 
 export const createAccountTable = () => {
     let connection = mysql.createConnection(sqlSettings());
-    console.log(process.env.DB_HOST_DEV);
 
     //if the accounts table does not exist, create it
     connection.query(
