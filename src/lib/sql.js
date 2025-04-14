@@ -1,3 +1,5 @@
+import mysql from "mysql2";
+
 export const sqlSettings = () => {
   const env = process.env.NODE_ENV;
 

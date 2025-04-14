@@ -1,4 +1,4 @@
-import mysql from "mysql";
+import mysql from "mysql2";
 import { createSessionsTable, sqlSettings } from "./sql";
 import { createAccountTable } from "./sql";
 import bcrypt from "bcrypt";

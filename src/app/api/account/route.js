@@ -1,15 +1,16 @@
 import { getUserFromId } from "@/lib/accounts";
 
 export async function GET(req) {
-    const { userid } = req.params;
+  let req_json = await req.json();
+  let userid = req_json.params.userid;
 
-    let user = null;
+  let user = null;
 
-    try {
-        user = await getUserFromId(userid);
-    } catch (e) {
-        return new Response(JSON.stringify({ error: e.message }), { status: 400 });
-    }
+  try {
+    user = await getUserFromId(userid);
+  } catch (e) {
+    return new Response(JSON.stringify({ error: e.message }), { status: 400 });
+  }
 
-    return new Response(JSON.stringify(user), { status: 200 });
+  return new Response(JSON.stringify(user), { status: 200 });
 }
