@@ -6,10 +6,10 @@ import bcrypt from 'bcrypt';
 const saltRounds = 10;
 
 export const createAccount = (account) => {
-    createAccountTable();
+  createAccountTable();
 
-    let connection = mysql.createConnection(sqlSettings());
-    connection.connect();
+  let connection = mysql.createConnection(sqlSettings());
+  connection.connect();
 
     //check account parameters
     if (!account.username || !account.password) {
@@ -28,11 +28,11 @@ export const createAccount = (account) => {
         }
     );
 
-    //hash password
-    bcrypt.hash(account.password, saltRounds, (err, hash) => {
-        if (err) throw err;
-        account.password = hash;
-    });
+  //hash password
+  bcrypt.hash(account.password, saltRounds, (err, hash) => {
+    if (err) throw err;
+    account.password = hash;
+  });
 
     //create account
     connection.query(
@@ -44,16 +44,16 @@ export const createAccount = (account) => {
         }
     );
 
-    connection.end();
+  connection.end();
 
-    return true;
-}
+  return true;
+};
 
 export const login = (account) => {
-    let connection = mysql.createConnection(sqlSettings());
-    connection.connect();
+  let connection = mysql.createConnection(sqlSettings());
+  connection.connect();
 
-    let userid = null;
+  let userid = null;
 
     //check account parameters
     if (!account.username || !account.password) {
@@ -70,27 +70,24 @@ export const login = (account) => {
                 throw new Error('Username or password is incorrect. Try again.');
             }
 
-            if(result[0].banned) {
-                throw new Error('Account is banned. Contact for more information.');
-            }
+      if (result[0].banned) {
+        throw new Error("Account is banned. Contact for more information.");
+      }
 
-            //check password
-            bcrypt.compare(account.password, result[0].password, (err, res) => {
-                if (err) throw err;
-                if (!res) {
-                    throw new Error('Username or password is incorrect. Try again.');
-                }
-                console.log('Login successful!');
-            });
-
-            userid = result[0].userid;
+      //check password
+      bcrypt.compare(account.password, result[0].password, (err, res) => {
+        if (err) throw err;
+        if (!res) {
+          throw new Error("Username or password is incorrect. Try again.");
         }
-    );
+        console.log("Login successful!");
+      });
 
-    connection.end();
+      userid = result[0].userid;
+    },
+  );
 
-    //create session
-    createSessionsTable();
+  connection.end();
 
     let sessionid = null;
     //create session
@@ -107,8 +104,8 @@ export const login = (account) => {
         }
     );
 
-    return sessionid;
-}
+  return sessionid;
+};
 
 export const logout = (sessionid) => {
     let connection = mysql.createConnection(sqlSettings());
@@ -137,14 +134,14 @@ export const logout = (sessionid) => {
         }
     );
 
-    connection.end();
+  connection.end();
 
-    return true;
-}
+  return true;
+};
 
 export const banAccount = (userid) => {
-    let connection = mysql.createConnection(sqlSettings());
-    connection.connect();
+  let connection = mysql.createConnection(sqlSettings());
+  connection.connect();
 
     //check account parameters
     if (!userid) {
@@ -183,15 +180,15 @@ export const banAccount = (userid) => {
         }
     );
 
-    connection.end();
-    return true;
-}
+  connection.end();
+  return true;
+};
 
 export const getUserFromSession = (sessionid) => {
-    let connection = mysql.createConnection(sqlSettings());
-    connection.connect();
+  let connection = mysql.createConnection(sqlSettings());
+  connection.connect();
 
-    let user = null;
+  let user = null;
 
     //check if session exists
     connection.query(
@@ -218,16 +215,16 @@ export const getUserFromSession = (sessionid) => {
         }
     );
 
-    connection.end();
-    user.password = null;
-    return user;
-}
+  connection.end();
+  user.password = null;
+  return user;
+};
 
 export const getUserFromId = (userid) => {
-    let connection = mysql.createConnection(sqlSettings());
-    connection.connect();
+  let connection = mysql.createConnection(sqlSettings());
+  connection.connect();
 
-    let user = null;
+  let user = null;
 
     //check if user exists
     connection.query(
@@ -242,7 +239,7 @@ export const getUserFromId = (userid) => {
         }
     );
 
-    connection.end();
-    user.password = null;
-    return user;
-}
+  connection.end();
+  user.password = null;
+  return user;
+};
