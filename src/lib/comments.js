@@ -1,176 +1,127 @@
-import mysql from "mysql";
-import { createCommentsTable, sqlSettings } from "./sql.js";
+import {comments} from './accounts/mongoCollections.js';
+import {ObjectId} from 'mongodb';
 
-export const createComment = (comment) => {
-  let connection = mysql.createConnection(sqlSettings());
-  createCommentsTable(connection);
+import * as typecheck from './typecheck.js';
 
-  connection.connect();
+const createComment = async (accountId, blogId, content) => {
+  const commentCollection = await comments();
 
-  //check comment parameters
-  if (!comment.userid || !comment.postid || !comment.content) {
-    throw new Error("Invalid comment parameters");
+  typecheck.isValidString(accountId, 'Account ID');
+  typecheck.isValidString(blogId, 'Blog ID');
+  typecheck.isValidString(content, 'Content');
+
+  if (!ObjectId.isValid(accountId)) {
+    throw { status: 400, error: 'Invalid account or blog ID format' };
   }
 
-  //check if user exists
-  connection.query(
-    "SELECT * FROM accounts WHERE userid = ?",
-    [comment.userid],
-    (err, result) => {
-      if (err) throw err;
-      if (result.length === 0) {
-        throw new Error("User does not exist");
-      }
-    },
-  );
+  const newComment = {
+    accountId: new ObjectId(accountId),
+    blogId: blogId,
+    content: content,
+    createdAt: new Date()
+  };
 
-  //check if post exists
-  connection.query(
-    "SELECT * FROM posts WHERE postid = ?",
-    [comment.postid],
-    (err, result) => {
-      if (err) throw err;
-      if (result.length === 0) {
-        throw new Error("Post does not exist");
-      }
-    },
-  );
-
-  //check if parent comment exists
-  if (comment.parentid) {
-    connection.query(
-      "SELECT * FROM comments WHERE commentid = ?",
-      [comment.parentid],
-      (err, result) => {
-        if (err) throw err;
-        if (result.length === 0) {
-          throw new Error("Parent comment does not exist");
-        }
-      },
-    );
+  const insertInfo = await commentCollection.insertOne(newComment);
+  
+  if (insertInfo.insertedCount === 0) {
+    throw { status: 500, error: 'Could not add comment' };
   }
 
-  //check if user already commented
-  connection.query(
-    "SELECT * FROM comments WHERE userid = ? AND postid = ?",
-    [comment.userid, comment.postid],
-    (err, result) => {
-      if (err) throw err;
-      if (result.length > 0) {
-        throw new Error("User already commented on this post");
-      }
-    },
-  );
+  return {
+    _id: insertInfo.insertedId.toString(),
+    ...newComment
+  };
+}
 
-  //create comment
-  connection.query(
-    "INSERT INTO comments (userid, postid, content, parentid) VALUES (?, ?, ?)",
-    [
-      comment.userid,
-      comment.postid,
-      comment.content,
-      comment.parentid ? null : comment.parentid,
-    ],
-    (err, result) => {
-      if (err) throw err;
-      console.log("Comment created");
-    },
-  );
+const getBlogComments = async (blogId) => {
+  const commentCollection = await comments();
 
-  connection.end();
+  typecheck.isValidString(blogId, 'Blog ID');
 
-  return true;
-};
-
-export const getComments = (postid) => {
-  if (!postid) {
-    throw new Error("Invalid comment parameters");
+  if (!ObjectId.isValid(blogId)) {
+    throw { status: 400, error: 'Invalid blog ID format' };
   }
 
-  let connection = mysql.createConnection(sqlSettings());
-  createCommentsTable(connection);
+  const commentsList = await commentCollection.find({ blogId: blogId }).toArray();
 
-  connection.connect();
+  return commentsList.sort((a, b) => b.createdAt - a.createdAt).map(comment => ({
+    _id: comment._id.toString(),
+    accountId: comment.accountId.toString(),
+    content: comment.content,
+    createdAt: comment.createdAt
+  }));
+}
 
-  let comments = [];
-  let totalComments = 0;
+const editComment = async (commentId, newContent) => {
+  const commentCollection = await comments();
 
-  connection.query(
-    "SELECT * FROM comments WHERE postid = ?",
-    [postid],
-    (err, result) => {
-      if (err) throw err;
-      comments = result;
-      totalComments = result.length;
-    },
+  typecheck.isValidString(commentId, 'Comment ID');
+  typecheck.isValidString(newContent, 'New Content');
+
+  if (!ObjectId.isValid(commentId)) {
+    throw { status: 400, error: 'Invalid comment ID format' };
+  }
+
+  const updateInfo = await commentCollection.updateOne(
+    { _id: new ObjectId(commentId) },
+    { $set: { content: newContent,
+      updatedAt: new Date()
+     } }
   );
 
-  connection.end();
-
-  //create comment tree!
-  for (let i = 0; i < comments.length; i++) {
-    comments[i].replies = [];
+  if (updateInfo.modifiedCount === 0) {
+    throw { status: 404, error: 'Comment not found or no changes made' };
   }
 
-  for (let i = 0; i < comments.length; i++) {
-    if (comments[i].parentid) {
-      for (let j = 0; j < comments.length; j++) {
-        if (comments[j].commentid === comments[i].parentid) {
-          comments[j].replies.push(comments[i]);
-        }
-      }
-    }
+  return await getCommentById(commentId);
+}
+
+const getCommentById = async (commentId) => {
+  const commentCollection = await comments();
+
+  typecheck.isValidString(commentId, 'Comment ID');
+
+  if (!ObjectId.isValid(commentId)) {
+    throw { status: 400, error: 'Invalid comment ID format' };
   }
 
-  comments = comments.filter((comment) => !comment.parentid);
+  const comment = await commentCollection.findOne({ _id: new ObjectId(commentId) });
 
-  return { comments, totalComments };
-};
-
-export const deleteComment = (commentid) => {
-  if (!commentid) {
-    throw new Error("Invalid comment parameters");
+  if (!comment) {
+    throw { status: 404, error: 'Comment not found' };
   }
 
-  let connection = mysql.createConnection(sqlSettings());
-  createCommentsTable(connection);
+  return {
+    _id: comment._id.toString(),
+    accountId: comment.accountId.toString(),
+    blogId: comment.blogId,
+    content: comment.content,
+    createdAt: comment.createdAt
+  };
+}
 
-  connection.connect();
+const deleteComment = async (commentId) => {
+  const commentCollection = await comments();
 
-  connection.query(
-    "UPDATE comments SET deleted = true WHERE commentid = ?",
-    [commentid],
-    (err, result) => {
-      if (err) throw err;
-      console.log("Comment deleted");
-    },
-  );
+  typecheck.isValidString(commentId, 'Comment ID');
 
-  connection.end();
-
-  return true;
-};
-
-export const editComment = (commentid, content) => {
-  if (!commentid || !content) {
-    throw new Error("Invalid comment parameters");
+  if (!ObjectId.isValid(commentId)) {
+    throw { status: 400, error: 'Invalid comment ID format' };
   }
 
-  let connection = mysql.createConnection(sqlSettings());
-  createCommentsTable(connection);
+  const deleteInfo = await commentCollection.deleteOne({ _id: new ObjectId(commentId) });
 
-  connection.connect();
+  if (deleteInfo.deletedCount === 0) {
+    throw { status: 404, error: 'Comment not found' };
+  }
 
-  connection.query(
-    "UPDATE comments SET content = ? WHERE commentid = ?",
-    [content, commentid],
-    (err, result) => {
-      if (err) throw err;
-      console.log("Comment edited");
-    },
-  );
+  return { deleted: true };
+}
 
-  connection.end();
-
-  return true;
-};
+export {
+  createComment,
+  getBlogComments,
+  editComment,
+  getCommentById,
+  deleteComment
+}
