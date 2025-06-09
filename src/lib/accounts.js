@@ -1,247 +1,206 @@
-import mysql from "mysql2";
-import { createSessionsTable, sqlSettings } from "./sql";
-import { createAccountTable } from "./sql";
-import bcrypt from "bcrypt";
+import {accounts, sessions} from './accounts/mongoCollections.js';
+import {ObjectId} from 'mongodb';
+import bcrypt from 'bcrypt';
+import { v4 } from 'uuid';
 
-const saltRounds = 10;
+import * as typecheck from './typecheck.js';
+import { type } from 'os';
 
-export const createAccount = (account) => {
-  createAccountTable();
+const saltRounds = process.env.SALT_ROUNDS || 16;
 
-  let connection = mysql.createConnection(sqlSettings());
-  connection.connect();
+const createNewAccount = async (username, password) => {
+  const accountCollection = await accounts();
 
-  //check account parameters
-  if (!account.name || !account.password) {
-    throw new Error("Invalid account parameters!");
+  typecheck.isValidString(username, 'Username');
+  typecheck.isValidString(password, 'Password');
+
+  try {
+    await getAccountByUsername(username);
+    throw { status: 400, error: 'Username already exists' };
+  } catch(e) {
+    if (e?.status !== 404) throw e;
   }
 
-  //check if account already exists
-  connection.query(
-    "SELECT * FROM accounts WHERE name = ?",
-    [account.name],
-    (err, result) => {
-      if (err) throw err;
-      if (result.length > 0) {
-        throw new Error("Account already exists!");
-      }
-    },
-  );
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  const newAccount = {
+    username: username,
+    password: hashedPassword,
+    bio: '',
+    nano: false
+  };
 
-  //hash password
-  bcrypt.hash(account.password, saltRounds, (err, hash) => {
-    if (err) throw err;
-    account.password = hash;
+  let insertInfo;
+  
+  try {
+    insertInfo = await accountCollection.insertOne(newAccount);
+  } catch(e) {
+    console.log(`Error inserting new account: ${e}`);
+    throw { status: 500, error: 'Error inserting new account' };
+  }
+
+  if (!insertInfo.acknowledged || !insertInfo.insertedId) {
+    throw { status: 500, error: 'Could not create account' };
+  }
+
+  const newAccountId = insertInfo.insertedId.toString();
+  const createdAccount = await getAccountById(newAccountId);
+  return createdAccount;
+
+}
+
+const getAccountByUsername = async (username) => {
+  const accountCollection = await accounts();
+
+  typecheck.isValidString(username, 'Username');
+
+  const account = await accountCollection.findOne({
+    username: username
   });
 
-  //create account
-  connection.query(
-    "INSERT INTO accounts (name, password) VALUES (?, ?)",
-    [account.name, account.password],
-    (err, result) => {
-      if (err) throw err;
-      console.log("Account created!");
-    },
-  );
+  if (!account) throw { status: 404, error: 'Account not found' };
 
-  connection.end();
+  return account;
+}
 
-  return true;
-};
+const getAccountById = async (accountId) => {
+  const accountCollection = await accounts();
 
-export const login = (account) => {
-  let connection = mysql.createConnection(sqlSettings());
-  connection.connect();
+  typecheck.isValidString(accountId, 'Account ID');
 
-  let userid = null;
-
-  //check account parameters
-  if (!account.name || !account.password) {
-    throw new Error("Invalid account parameters!");
+  if (!ObjectId.isValid(accountId)) {
+    throw { status: 400, error: 'Invalid account ID format' };
   }
 
-  //check if account exists
-  connection.query(
-    "SELECT * FROM accounts WHERE name = ?",
-    [account.name],
-    (err, result) => {
-      if (err) throw err;
-      if (result.length === 0) {
-        throw new Error("Username or password is incorrect. Try again.");
-      }
+  const account = await accountCollection.findOne({
+    _id: new ObjectId(accountId)
+  }, {
+    projection: { password: 0 } // Exclude password
+  });
 
-      if (result[0].banned) {
-        throw new Error("Account is banned. Contact for more information.");
-      }
+  if (!account) throw { status: 404, error: 'Account not found' };
 
-      //check password
-      bcrypt.compare(account.password, result[0].password, (err, res) => {
-        if (err) throw err;
-        if (!res) {
-          throw new Error("Username or password is incorrect. Try again.");
-        }
-        console.log("Login successful!");
-      });
+  return account;
+}
 
-      userid = result[0].userid;
-    },
-  );
+const getAccountBySessionId = async (sessionId) => {
+  const sessionCollection = await sessions();
 
-  connection.end();
+  typecheck.isValidString(sessionId, 'Session ID');
 
-  //create session
-  createSessionsTable();
+  const session = await sessionCollection.findOne({ sessionId: sessionId });
 
-  let sessionid = null;
-  //create session
-  connection = mysql.createConnection(sqlSettings());
-  connection.connect();
-  connection.query(
-    "INSERT INTO sessions (sessionid, userid) VALUES (UUID_TO_BIN(UUID()), ?)",
-    [userid],
-    (err, result) => {
-      if (err) throw err;
-      console.log("Session created");
-      console.log(result);
-      sessionid = result.insertId;
-    },
-  );
+  if (!session) throw { status: 404, error: 'Session not found' };
 
-  return sessionid;
-};
+  const account = await getAccountById(session.accountId.toString());
 
-export const logout = (sessionid) => {
-  let connection = mysql.createConnection(sqlSettings());
-  connection.connect();
+  return {
+    _id: account._id.toString(),
+    username: account.username,
+    bio: account.bio,
+    nano: account.nano,
+    sessionId: session.sessionId,
+  };
+}
 
-  //check if session exists
-  connection.query(
-    "SELECT * FROM sessions WHERE sessionid = ?",
-    [sessionid],
-    (err, result) => {
-      if (err) throw err;
-      if (result.length === 0) {
-        throw new Error("Session does not exist");
-      }
-    },
-  );
+const updateAccountBio = async (accountId, newBio) => {
+  const accountCollection = await accounts();
 
-  //delete session
-  connection.query(
-    "DELETE FROM sessions WHERE sessionid = ?",
-    [sessionid],
-    (err, result) => {
-      if (err) throw err;
-      console.log("Session deleted");
-    },
-  );
+  typecheck.isValidString(accountId, 'Account ID');
+  typecheck.isValidString(newBio, 'New Bio');
 
-  connection.end();
-
-  return true;
-};
-
-export const banAccount = (userid) => {
-  let connection = mysql.createConnection(sqlSettings());
-  connection.connect();
-
-  //check account parameters
-  if (!userid) {
-    throw new Error("Invalid account parameters");
+  if (!ObjectId.isValid(accountId)) {
+    throw { status: 400, error: 'Invalid account ID format' };
   }
 
-  //check if account exists
-  connection.query(
-    "SELECT * FROM accounts WHERE userid = ?",
-    [userid],
-    (err, result) => {
-      if (err) throw err;
-      if (result.length === 0) {
-        throw new Error("Account does not exist");
-      }
-    },
+  const updateInfo = await accountCollection.updateOne(
+    { _id: new ObjectId(accountId) },
+    { $set: { bio: newBio } }
   );
 
-  //ban account
-  connection.query(
-    "UPDATE accounts SET banned = TRUE WHERE userid = ?",
-    [userid],
-    (err, result) => {
-      if (err) throw err;
-      console.log("Account banned");
-    },
-  );
+  if (updateInfo.modifiedCount === 0) {
+    throw { status: 404, error: 'Account not found or no changes made' };
+  }
 
-  //delete all sessions for the account
-  connection.query(
-    "DELETE FROM sessions WHERE userid = ?",
-    [userid],
-    (err, result) => {
-      if (err) throw err;
-      console.log("Sessions deleted");
-    },
-  );
+  return await getAccountById(accountId);
+}
 
-  connection.end();
-  return true;
-};
+const authenticateAccount = async (username, password) => {
+  const sessionCollection = await sessions();
 
-export const getUserFromSession = (sessionid) => {
-  let connection = mysql.createConnection(sqlSettings());
-  connection.connect();
+  typecheck.isValidString(username, 'Username');
+  typecheck.isValidString(password, 'Password');
 
-  let user = null;
+  let account;
 
-  //check if session exists
-  connection.query(
-    "SELECT * FROM sessions WHERE sessionid = ?",
-    [sessionid],
-    (err, result) => {
-      if (err) throw err;
-      if (result.length === 0) {
-        throw new Error("Session does not exist");
-      }
-    },
-  );
+  try {
+    account = await getAccountByUsername(username);
+  } catch(e) {
+    throw { status: 404, error: 'incorrect username or password.' };
+  }
 
-  //get user from session
-  connection.query(
-    "SELECT * FROM accounts WHERE userid = ?",
-    [result[0].userid],
-    (err, result) => {
-      if (err) throw err;
-      if (result.length === 0) {
-        throw new Error("User does not exist");
-      }
-      user = result[0];
-    },
-  );
+  const isPasswordValid = await bcrypt.compare(password, account.password);
+  if (!isPasswordValid) {
+    throw { status: 401, error: 'incorrect username or password.' };
+  }
 
-  connection.end();
-  user.password = null;
-  return user;
-};
+  // Create a new session
+  const sessionId = v4();
+  const newSession = {
+    accountId: account._id.toString(),
+    sessionId: sessionId,
+    createdAt: new Date()
+  };
 
-export const getUserFromId = (userid) => {
-  let connection = mysql.createConnection(sqlSettings());
-  connection.connect();
+  // Insert the session into the database with an expiration time of 24 hours
+  const insertInfo = await sessionCollection.insertOne(newSession);
+  
+  if (!insertInfo.acknowledged || !insertInfo.insertedId) {
+    throw { status: 500, error: 'Could not create session' };
+  }
+  
+  return {
+    _id: account._id.toString(),
+    username: account.username,
+    sessionId: sessionId,
+  };
+}
 
-  let user = null;
+const logoutAccount = async (sessionId) => {
+  const sessionCollection = await sessions();
 
-  //check if user exists
-  connection.query(
-    "SELECT * FROM accounts WHERE userid = ?",
-    [userid],
-    (err, result) => {
-      if (err) throw err;
-      if (result.length === 0) {
-        throw new Error("User does not exist");
-      }
-      user = result[0];
-    },
-  );
+  typecheck.isValidString(sessionId, 'Session ID');
 
-  connection.end();
-  user.password = null;
-  return user;
-};
+  const deleteInfo = await sessionCollection.deleteOne({ sessionId: sessionId });
+
+  if (deleteInfo.deletedCount === 0) {
+    throw { status: 404, error: 'Session not found' };
+  }
+  return { success: true };
+}
+
+const getCommentsByAccountId = async (accountId) => {
+  const commentCollection = await comments();
+
+  accountId = typecheck.stringToOid(accountId);
+
+  const comments = await commentCollection.find({ accountId: accountId }).toArray();
+
+  return comments.map(comment => ({
+    _id: comment._id.toString(),
+    blogId: comment.blogId.toString(),
+    content: comment.content,
+    createdAt: comment.createdAt,
+    accountId: comment.accountId.toString()
+  }));
+}
+
+export {
+  createNewAccount,
+  getAccountByUsername,
+  getAccountById,
+  updateAccountBio,
+  authenticateAccount,
+  getCommentsByAccountId,
+  getAccountBySessionId,
+  logoutAccount,
+}
