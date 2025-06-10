@@ -4,39 +4,22 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useSession } from "./SessionContext";
 
 
-const Navbar = ({loggedIn}) => {
+const Navbar = () => {
 
-  const [, setLoggedIn] = useState(loggedIn);
+  const { session, loading, logout } = useSession();
 
   const handleLogout = async (event) => {
     event.preventDefault();
 
-    //get cookie
-    const sessionId = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('sessionid='))
-      ?.split('=')[1];
-    //if sessionId is not found, return
-
-    if (!sessionId) {
-      return;
+    // Call the logout function from the session context
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Logout failed:", error);
     }
-
-    //make a post request to the logout endpoint
-    await fetch('/api/account/logout', {
-      method: 'POST', 
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ sessionId }),
-    })
-    .then(response => {
-      setLoggedIn(false);
-    })
-
-    document.cookie = 'sessionid=; path=/; max-age=0;'; // Clear the cookie
     
     //redirect to home page
     window.location.href = "/";
@@ -74,14 +57,14 @@ const Navbar = ({loggedIn}) => {
             -- blog
           </p>
         </Link>
-        {loggedIn && (
+        {session?.sessionId && !loading && (
           <Link onClick={handleLogout} href="/" className="flex m-0 items-center md:hidden">
             <p className="inline text-2xl text-purple-200 text-nowrap font-bold align-middle">
               -- logout
             </p>
           </Link>
         )}
-        {!loggedIn && (
+        {!session?.sessionId && !loading && (
           <Link href="/login" className="flex m-0 items-center md:hidden">
             <p className="inline text-2xl text-purple-200 text-nowrap font-bold align-middle">
               -- login
@@ -111,14 +94,14 @@ const Navbar = ({loggedIn}) => {
             <p className="text-2xl text-purple-200 font-bold">blog</p>
           </Link>
         </li>
-        {loggedIn && (
+        {session?.sessionId && !loading && (
           <li>
             <Link href="/" onClick={handleLogout}>
               <p className="text-2xl text-purple-200 font-bold">logout</p>
             </Link>
           </li>
         )}
-        {!loggedIn && (
+        {!session?.sessionId && !loading && (
           <li>
             <Link href="/login">
               <p className="text-2xl text-purple-200 font-bold">login</p>

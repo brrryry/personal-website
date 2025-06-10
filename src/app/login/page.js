@@ -1,59 +1,32 @@
 "use client"
 
 import Link from "next/link";
+import { useSession } from "@/components/SessionContext";
 
 const Login = () => {
 
+    const {login, session, loading} = useSession();
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         
         //get username and password
         const username = event.target[0].value;
         const password = event.target[1].value;
 
-        //try to login
-        let loginattempt = (callback) => {
-            fetch('/api/account/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password }),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('login failed');
-                }
-                return response.json();
-            })
-            .then(data => {
-                ///console.log('Login successful:', data);
-                callback(null, data);
-            })
-            .catch(error => {
-                callback(error, null);
-            });
-        }
-
-
-        // Call loginattempt with a callback
-        loginattempt((error, data) => {
-            if (error) {
-                // Handle error, e.g., show an error message
-                document.querySelector('.text-red-300').textContent = 'login failed. check your credentials.';
-                document.querySelector('.text-red-300').classList.remove('hidden');
-            } else {
-                // Handle successful login, e.g., redirect or update UI
-                document.querySelector('.text-red-300').classList.add('hidden');
-                // Redirect to home page or update UI accordingly
-
-                //set cookie 
-                document.cookie = `sessionid=${data.sessionId}; path=/; max-age=86400;`; // 1 day expiration
-
-                window.location.href = '/';
+        //validate username and password
+        try {
+            await login(username, password);
+            window.location.href = "/";
+        } catch(err) {
+            //console.error("Login failed:", err);
+            // Show error message to user
+            const errorElement = document.querySelector(".text-red-300");
+            if (errorElement) {
+                errorElement.classList.remove("hidden");
+                errorElement.textContent = err.message.toLowerCase();
             }
-        })
+        }
 
     }
 
