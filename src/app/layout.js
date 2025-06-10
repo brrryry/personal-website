@@ -6,6 +6,8 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { SpotifyEmbed } from "@/components/SpotifyEmbed";
 
+import { SessionProvider } from "@/components/SessionContext";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -23,8 +25,10 @@ export default async function RootLayout({ children }) {
     <html lang="en">
       <body className={`${inter.className} overflow-x-hidden`}>
         <main className="w-screen">
+          <SessionProvider>
           <Navbar loggedIn={isLoggedIn}/>
           {children}
+          </SessionProvider>
           <footer className="bg-transparent text-">
             <p>.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.</p>
 
