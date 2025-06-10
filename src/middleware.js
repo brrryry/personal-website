@@ -3,6 +3,7 @@ import {NextResponse} from 'next/server';
 
 export async function middleware(request) {
 
+    console.log(`Middleware triggered for ${request.nextUrl.pathname}`);
     const loginRoutes = ["/login", "/register"]
     
     // Get sessionid cookie
@@ -42,7 +43,14 @@ export async function middleware(request) {
         // If the session is valid, set the igLoggedIn header
         if(response.ok && loginRoutes.includes(request.nextUrl.pathname)) {
             //redirect to home page if logged in
-            return NextResponse.redirect(request.nextUrl.origin + '/');
+            return NextResponse.redirect(request.nextUrl.origin + '/', {
+                headers: {
+                    'isLoggedIn': 'true',
+                    'username': data?.username,
+                    'nano': data.nano ? 'true' : 'false',
+                    'sessionId': sessionId ? sessionId.value : '',
+                },
+            });
         }
 
 
