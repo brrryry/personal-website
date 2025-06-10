@@ -1,8 +1,12 @@
-import Navbar from "@/components/Navbar";
+import { headers } from "next/headers";
 
-export default function Home() {
+export default async function Home() {
 
-  // get 
+  // Get the headers to check if the user is logged in
+  const hdrs = await headers();
+
+  const isLoggedIn = hdrs.get("isLoggedIn") === "true";
+  const username = hdrs.get("username");
 
   return (
     <div className="space-y-5 justify-center items-center flex flex-col">

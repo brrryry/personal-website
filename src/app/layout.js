@@ -1,6 +1,5 @@
 import { Inter } from "next/font/google";
-
-import { currentlyPlayingSong } from "@/lib/spotify";
+import {headers} from "next/headers";
 
 import "./globals.css";
 
@@ -15,11 +14,16 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
+
+  // Get the headers to check if the user is logged in
+  const hdrs = await headers();
+  const isLoggedIn = hdrs.get("isLoggedIn") === "true";
+
   return (
     <html lang="en">
       <body className={`${inter.className} overflow-x-hidden`}>
         <main className="w-screen">
-          <Navbar />
+          <Navbar loggedIn={isLoggedIn}/>
           {children}
           <footer className="bg-transparent text-">
             <p>.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.</p>
