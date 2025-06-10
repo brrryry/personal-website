@@ -1,4 +1,5 @@
 import { authenticateAccount } from "@/lib/accounts";
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
     try {
@@ -6,7 +7,7 @@ export async function POST(req) {
     
         // Validate input
         if (!username || !password) {
-        return new Response(JSON.stringify({ error: "Username and password are required" }), { status: 400 });
+        return new Response(JSON.stringify({ error: "username and password are required" }), { status: 400 });
         }
     
         // Authenticate the account
@@ -16,6 +17,6 @@ export async function POST(req) {
         return new Response(JSON.stringify(account), { status: 200 });
     } catch (error) {
         console.error("Authentication error:", error);
-        return new Response(JSON.stringify({ error: error.error || "Authentication failed" }), { status: error.status || 500 });
+        return NextResponse.json({ error: error.error || "authentication failed" }, { status: error.status || 500 });
     }
 }
