@@ -11,6 +11,8 @@ import { BlogCode } from "@/components/BlogCode";
 
 import NotFound from "@/app/[...not_found]/page";
 
+import { headers } from "next/headers";
+
 //import code highlighting css
 import "@/../public/styles/atom-one-dark.css";
 

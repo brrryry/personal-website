@@ -6,7 +6,7 @@ import { v4 } from 'uuid';
 import * as typecheck from './typecheck.js';
 import { type } from 'os';
 
-const saltRounds = process.env.SALT_ROUNDS || 16;
+const saltRounds = Number(process.env.SALT_ROUNDS) || 16;
 
 const createNewAccount = async (username, password) => {
   const accountCollection = await accounts();
@@ -16,7 +16,7 @@ const createNewAccount = async (username, password) => {
 
   try {
     await getAccountByUsername(username);
-    throw { status: 400, error: 'Username already exists' };
+    throw { status: 400, error: 'username already exists' };
   } catch(e) {
     if (e?.status !== 404) throw e;
   }
@@ -48,16 +48,19 @@ const createNewAccount = async (username, password) => {
 
 }
 
-const getAccountByUsername = async (username) => {
+const getAccountByUsername = async (username, needPassword = false) => {
   const accountCollection = await accounts();
 
   typecheck.isValidString(username, 'Username');
 
   const account = await accountCollection.findOne({
     username: username
+  }, {
+    projection: needPassword ? {} : { password: 0 } // Exclude password if not needed
   });
 
-  if (!account) throw { status: 404, error: 'Account not found' };
+
+  if (!account) throw { status: 404, error: 'account not found' };
 
   return account;
 }
@@ -133,10 +136,11 @@ const authenticateAccount = async (username, password) => {
   let account;
 
   try {
-    account = await getAccountByUsername(username);
+    account = await getAccountByUsername(username, true);
   } catch(e) {
     throw { status: 404, error: 'incorrect username or password.' };
   }
+
 
   const isPasswordValid = await bcrypt.compare(password, account.password);
   if (!isPasswordValid) {

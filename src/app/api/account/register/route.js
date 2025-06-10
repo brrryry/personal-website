@@ -1,4 +1,5 @@
 import { createNewAccount } from "@/lib/accounts";
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
     try {
@@ -6,7 +7,7 @@ export async function POST(req) {
 
         // Validate input
         if (!username || !password) {
-            return new Response(JSON.stringify({ error: "Username and password are required" }), { status: 400 });
+            return new Response(JSON.stringify({ error: "username and password are required" }), { status: 400 });
         }
 
         // Create a new account
@@ -16,6 +17,6 @@ export async function POST(req) {
         return new Response(JSON.stringify(newAccount), { status: 201 });
     } catch (error) {
         console.error("Registration error:", error);
-        return new Response(JSON.stringify({ error: error.error || "Registration failed" }), { status: error.status || 500 });
+        return NextResponse.json({error: error.error || "registration failed"}, { status: error.status || 500 });
     }
 }

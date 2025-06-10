@@ -1,22 +1,27 @@
-import { getAccountById } from "@/lib/accounts";
+import {getAccountByUsername } from "@/lib/accounts";
+import { NextResponse } from "next/server";
 
-export async function POST(req) {
+export async function GET(req) {
     try {
-        // Parse the request body to get the session ID
-        const { sessionId } = await req.json();
+        // Extract the account ID from the request URL
+        const url = new URL(req.url);
+        const accountId = url.searchParams.get("id");
 
-        // Validate sessionId
-        if (!sessionId || typeof sessionId !== 'string') {
-            return new Response(JSON.stringify({ error: "Invalid session ID" }), { status: 400 });
+        // Validate account ID
+        if (!accountId) {
+            return NextResponse.json({ error: "account username is required" }, { status: 400 });
         }
 
-        // Get account details by session ID
-        const account = await getAccountById(sessionId);
+        // Fetch the account details
+        const account = await getAccountByUsername(accountId);
+
+
+
 
         // Return the account details
-        return new Response(JSON.stringify(account), { status: 200 });
+        return NextResponse.json(account, { status: 200 });
     } catch (error) {
         console.error("Error fetching account:", error);
-        return new Response(JSON.stringify({ error: error.error || "Failed to fetch account" }), { status: error.status || 500 });
+        return NextResponse.json({ error: error.error || "failed to fetch account" }, { status: error.status || 500 });
     }
 }
