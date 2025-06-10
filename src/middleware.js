@@ -9,8 +9,7 @@ export async function middleware(request) {
     const sessionId = request.cookies.get('sessionid');
 
     // If session ID exists, proceed with the request
-    const url = request.nextUrl.clone();
-    url.pathname = '/api/account/session';
+    const url = request.nextUrl.origin + '/api/account/session';
     
     try {
         //make a post request to the session endpoint
