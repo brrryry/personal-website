@@ -1,6 +1,6 @@
 import {accounts, sessions} from './accounts/mongoCollections.js';
 import {ObjectId} from 'mongodb';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { v4 } from 'uuid';
 
 import * as typecheck from './typecheck.js';

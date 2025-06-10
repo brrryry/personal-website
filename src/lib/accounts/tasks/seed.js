@@ -3,7 +3,7 @@ import { dbConnection, closeConnection } from "../mongoConnection.js";
 import { accounts, comments, sessions } from "../mongoCollections.js";
 import { ObjectId } from "mongodb";
 
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 const saltRounds = Number(process.env.SALT_ROUNDS);
 
 const db = await dbConnection();
