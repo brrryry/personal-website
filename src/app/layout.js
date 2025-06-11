@@ -29,8 +29,8 @@ export default async function RootLayout({ children }) {
           <Navbar loggedIn={isLoggedIn}/>
           {children}
           </SessionProvider>
-          <footer className="bg-transparent text-">
-            <p>.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.</p>
+          <footer className="bg-transparent text-purple-200 p-4 flex flex-col items-center justify-center">
+            <p>...................................................................</p>
 
             <SpotifyEmbed />
 
