@@ -19,7 +19,7 @@ const testAccount = await accountCol.insertOne({
     username: "test",
     bio: "This is a test account",
     password: testPass,
-    nano: false
+    nano: false,
 });
 
 let nanoPass = await bcrypt.hash("nano", saltRounds);
@@ -27,8 +27,20 @@ const nanoAccount = await accountCol.insertOne({
     username: "nano",
     bio: "This is a nano account",
     password: nanoPass,
-    nano: true
+    nano: true,
+    isNano: false
 });
+
+let adminPass = await bcrypt.hash("admin", saltRounds);
+const adminAccount = await accountCol.insertOne({
+    username: "admin",
+    bio: "This is an admin account",
+    password: adminPass,
+    nano: true,
+    isNano: true
+});
+
+
 
 console.log("Test account created with ID:", testAccount.insertedId);
 console.log("Seeding successful.")
