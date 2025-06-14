@@ -1,0 +1,441 @@
+---
+title: "baffingly built brainstorms #2: nanohub"
+date: "2025-06-04"
+description: "a little birthday project i made for my girlfriend"
+tags: ["coding", "bbb", "personal"]
+---
+
+### the nanohub: <a href="https://brrryry.com/nano">brrryry.com/nano</a>
+
+**guys i swear i have like 5 blogs in the works rn**
+
+<br />
+
+<BlogImage
+src="/blogs/bbb-2-nanohub/drafts.png"
+al="images of drafts"
+caption="i swear guys"
+/>
+
+
+## the intro
+recently, i have had the privilege and honor of dating my girlfriend. 
+personally, i think im very lucky to have her in my life.
+however, she currently lives far away (like...12-13 hour drive far). \
+\
+i wanted to do something special for her birthday (which is coincidentally exactly one month after we started dating).
+but...what do i do? it's not like i can just go to her house and give her a present. \
+\
+(well...i can...but i wouldnt deliver it myself, ig i would use amazon or something...)
+
+<br />
+## the brainstorming
+i had a few ideas in mind to begin with...
+
+<BlogList>
+<li>**a 2d top down game** - trivia game, get different birthday wishes from people (disguised as npcs) and guess who theyre from</li>
+<li>**a photo montage** - pictures of her!</li>
+<li>**a drawing** - made through code! she can see it be drawn in real time</li>
+<li>**a location choosing game** - choose a location to go to, and then we can go there together</li>
+</BlogList>
+
+however, all of these ideas felt wrong for different reasons. i will dive deeper into why in a bit, but i am (unfortunately) very insecure about gifts in general - i want them to be perfect. \
+\
+the trivia game would be too hard to make in the time that i had (especially with my small knowledge of game development). i tried to start it, but i just had a feeling that i wasnt experienced enough to make it in time.
+
+<BlogImage
+src="/blogs/bbb-2-nanohub/godot.gif"
+alt="gif of godot engine"
+caption="after 2 days of godot development..."
+/>
+
+the photo montage sounded too simple, and so did the drawing. the location choosing game would not be hard, but it has been done before. i didnt want to do something that seemed "generic". i didnt 
+try to make any of these (as you can probably tell, the game was my best idea imo). \
+\
+after a lot of nothing, i decided to just make a little section on my website for her. its been a while since i made a new section, and it would motivate me to try to make something new (a bunch of new components)!
+it was a win-win situation. 
+
+<br />
+
+## the website
+i started by making a new section on my website. this part was...pretty easy.
+
+<BlogImage
+src="/blogs/bbb-2-nanohub/start.png"
+alt="image of the start of the website"
+caption="the beautiful start"
+style={{ border: "0.5rem white solid" }}
+/>
+
+i wanted to put pictures of her on the website, but i did not want everyone in the world to see them. thus, i ran into my first problem - authentication. \
+\
+i wanted to make a comment section box for my blogs anyway, so making a login system was already on my to-do list. this just finally gave me the motivation to actually do it. 
+
+<br />
+
+## the authentication
+i started by spinning up a local mongodb instance. this database (for now, before comments) would have two
+collections - one for users, and one for sessions. the user collection had a total of five fields. two
+of them were used to determine if the user was "nano-approved" (allowed to see any of the content),
+and if the user was "nano" (the user that the website is dedicated to). the other three fields were...
+pretty basic.
+
+<BlogImage
+src="/blogs/bbb-2-nanohub/mongodb.png"
+alt="image of the mongodb database seed"
+caption="my basic mongodb seeding"
+style={{ border: "0.5rem white solid" }}
+/>
+
+i created some data functions for the database. here's an example of one of them:
+
+<BlogCode language="javascript" copy="false">
+{`
+const getAccountById = async (accountId) => {
+  const accountCollection = await accounts();
+
+  typecheck.isValidString(accountId, 'Account ID');
+
+  if (!ObjectId.isValid(accountId)) {
+    throw { status: 400, error: 'Invalid account ID format' };
+  }
+
+  const account = await accountCollection.findOne({
+    _id: new ObjectId(accountId)
+  }, {
+    projection: { password: 0 } // Exclude password
+  });
+
+  if (!account) throw { status: 404, error: 'Account not found' };
+
+  return account;
+}
+`}
+</BlogCode>
+
+a good amount of this initial code can be seen in <a href="https://github.com/brrryry/personal-website/commit/7db8f71f41bf00611d0fd9db35d2331d22c40c7e#diff-9f82b076cf9992dcec01453f475465bba0aed92c7d9202da22d3e856550171bc">
+this commit</a>. apologies for the lack of detail in the commit message - i had to ask my dad to help me with the commit message 
+because i had forgotten to push the code before i went to illinois for my summer research (blog coming soon?). \\
+\\
+after this, i created some basic api routes for the website. again, the commit above has all the code.
+these routes were pretty simple to make, although i did have some issues with stringifying and de-stringifying for a bit.
+
+<BlogImage
+src="/blogs/bbb-2-nanohub/postman.png"
+alt="image of postman testing the api"
+caption="yep, looks good to me."
+style={{ border: "0.5rem white solid" }}
+/>
+
+aight, now we have to design the login and register pages.
+
+<BlogCode language="javascript" title="src/components/Navbar.jsx" copy="false">
+{`
+"use client"
+
+import Link from "next/link";
+import { useSession } from "@/components/SessionContext";
+
+const Login = () => {
+
+    const {login, session, loading} = useSession();
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        
+        //get username and password
+        const username = event.target[0].value;
+        const password = event.target[1].value;
+
+        //validate username and password
+        try {
+            await login(username, password);
+            
+            // go back to previous page or home page after successful login
+            const previousPage = document.referrer || "/";
+
+            // Redirect to the previous page or home page
+            window.location.href = previousPage;
+        } catch(err) {
+            //console.error("Login failed:", err);
+            // Show error message to user
+            const errorElement = document.querySelector(".text-red-300");
+            if (errorElement) {
+                errorElement.classList.remove("hidden");
+                errorElement.textContent = err.message.toLowerCase();
+            }
+        }
+
+    }
+
+    return (
+        <div className="space-y-5 justify-center items-center flex flex-col">
+        <h2>login</h2>
+        <form className="flex flex-col space-y-3" onSubmit={handleSubmit}>
+            <input type="text" placeholder="username" className="bg-gray-300 border p-2 rounded text-black" />
+            <input type="password" placeholder="password" className="bg-gray-300 border p-2 rounded text-black" />
+            <button type="submit" className="bg-[#6a0dad] text-white p-2 rounded">login</button>
+        </form>
+        <p>need an account? <Link href="/register">register</Link></p>
+        <p className="text-red-300 hidden">this is error</p>
+        </div>
+    );
+}
+
+export default Login;
+`}
+</BlogCode>
+
+lets see how it looks.
+
+<BlogImage
+src="/blogs/bbb-2-nanohub/login.png"
+alt="image of the login page"
+caption="aight, cool."
+style={{ border: "0.5rem white solid" }}
+/>
+
+the next part is adjusting the navbar. it should say "login" if the user is not logged in, and "logout" if they are. \
+\
+in order to do this, i added a session context to the website. this context is used to store the session data, and it uses react hooks.
+we can use this context to determine if the user is logged in or not. 
+
+<BlogCode language="javascript" title="src/components/SessionContext.jsx" copy="false">
+{`
+// components/SessionContext.js
+'use client';
+
+import { createContext, useContext, useState, useEffect } from 'react';
+
+const SessionContext = createContext();
+
+export function SessionProvider({children}) {
+  const [session, setSession] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    //get "sessionid" cookie
+    const sessionid = document.cookie.split('; ').find(row => row.startsWith('sessionid='))?.split('=')[1];
+    const fetchSession = async (sessionid) => {
+      try {
+        //post request to /api/account/session
+        const response = await fetch('/api/account/session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ sessionId: sessionid }),
+        });
+        const data = await response.json();
+        setSession(data);
+      } catch (error) {
+        console.error('error fetching session:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSession(sessionid);
+  }, []);
+
+  const login = async (username, password) => {
+    //login code
+  }
+
+  const logout = async () => {
+    //logout code
+  };
+
+  return (
+    <SessionContext.Provider value={{ session, loading, login, logout }}>
+      {children}
+    </SessionContext.Provider>
+  );
+}
+
+export function useSession() {
+  const context = useContext(SessionContext);
+  if (!context) {
+    throw new Error('useSession must be used within a SessionProvider');
+  }
+  return context;
+}
+`}
+</BlogCode>
+
+now, we can use this context in our navbar component.
+
+<BlogCode language="javascript" title="/src/login/page.jsx" copy="false">
+{`
+"use client"
+
+import Link from "next/link";
+import { useState } from "react";
+import { useSession } from "./SessionContext";
+
+const Navbar = () => {
+  const { session, loading, logout } = useSession();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleLogout = async (event) => {
+    event.preventDefault();
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+    window.location.href = "/";
+  };
+
+
+  return (
+    ...
+    {session?.sessionId && !loading && (
+        <li>
+        <Link href="/" onClick={handleLogout}>
+            <p className="text-2xl text-purple-200 font-bold">logout</p>
+        </Link>
+        </li>
+    )}
+    {!session?.sessionId && !loading && (
+        <li>
+        <Link href="/login">
+            <p className="text-2xl text-purple-200 font-bold">login</p>
+        </Link>
+        </li>
+    )}
+    ...
+  );
+};
+
+export default Navbar;
+`}
+</BlogCode>
+
+nice. note that this took a lot of time to get right. at first, 
+i tried to make a ``middleware.js`` file to check if the user was logged in instead of a hook, but this
+ended up failing because it had to load the full mongodb driver. i also didn't know exactly
+how to make the session provider, so it took quite a bit of research. again, all the code can be seen
+in my commit history if you want to follow my fully raw train of thought. \
+\
+cool! now we start the nanohub.
+
+<br />
+
+## the nanohub
+i wanted to make a little space for her. wouldnt that be cool :D \
+\
+so! i started by making...a page. she likes flowers, so i had an idea:
+what if i made a garden of time for her? one flower for each year.
+i wanted to make something that was originally all mine, so...i had to draw. unfortunately,
+im not very good.
+
+<BlogImage
+src="/blogs/bbb-2-nanohub/drawing.png"
+alt="image of the flower drawing"
+caption="chat is this a peony????"
+style={{ border: "0.5rem white solid" }}
+/>
+
+i wanted this space to be a single page application, but this came to be quite a challenge.
+the first thing that i wanted to do was make a secret letter for her.
+here was what the component structure looked like at the time:
+
+<BlogCode language="plaintext" copy="false">
+{`
+/nano/page.js (server side)
+ - NanoHub (client side - requires nano-approved)
+  - NanoHubHome (client side?)
+  - Nano2025 (client side)
+   - Nano2025Secret (client side - incorrect - requires nano)
+`}
+</BlogCode>
+
+i made it complicated like this because i wanted to be able to animate the switch 
+between components (nanohubhome and nano2025). i wanted to make it so that when you clicked on a button, it would animate
+a fade in/out. \
+\
+i originally made the mistake of making the secret component client side, which...leaks
+the secret. the component may not be hydrated on the page, but a tech-savvy user could
+easily find the code in the source. \
+\
+the pain of having to make it server side was quite annoying. i tried to come up with
+this architecture using interleaved server and client components:
+
+<BlogCode language="plaintext" copy="false">
+{`
+/nano/page.js (server side)
+ - NanoHub (client side)
+  - NanoHubHomeWrapper (server side)
+    - NanoHubHome (client side)
+  - Nano2025Wrapper (server side)
+   - Nano2025Secret (server side)
+`}
+</BlogCode>
+
+this still doesn't work, because i want the 2025 component to also be animated.
+i wanted the message to appear after the animation, so i had to make it client side.
+how do i do this????? \
+\
+after a bunch of vibe coding, i finally decided to think. i realized it was simpler than i thought.
+
+<BlogCode language="plaintext" copy="false">
+{`
+/nano/page.js (server side)
+ - NanoHub (client side)
+  - NanoHubHome (client side)
+  - Nano2025 (client side)
+   - Nano2025Secret (server side)
+`}
+</BlogCode>
+
+this...works. basically, i import the 2025 secret in the page.js file.
+then, i make a dictionary.
+
+<BlogCode language="javascript" title="page.js (.jsx)" copy="false">
+{`
+const secretMessages = {
+    2025: isNano ? [<Nano2025Secret />] : null,
+    // other years...}
+`}
+</BlogCode>
+
+this dictionary is set conditionally based on the user's session.
+from there, i return the nanohub component as follows: ``NanoHub secretMessages={secretMessages}``. \
+\
+whenever i need to render the nano2025 component from nanohub, i do this:
+
+<BlogCode language="javascript" title="nano hub (.jsx)" copy="false">
+{`
+return (
+        <Nano2025 switchYear={switchYear} >
+          {secretMessages[2025]}
+        </Nano2025>
+    );
+`}
+</BlogCode>
+
+as a reminder, the dictionary secret messages is either the secret message (if logged in), or null (if not logged in).
+all i have to do now is render the secret message if it exists.
+
+## conclusion
+and that's it! the rest was all styling and making the page look nice. \
+\
+i don't want to share the source code, but you can see the final product at <a href="https://brrryry.com/nano">brrryry.com/nano</a>. \
+if you want to get nano-approved, reach out to me! it's not like there's much you can see now, but i will be adding more content in the future. \
+\
+please let me know if there are any errors hehe \
+\
+this is another unstructured blog post (because tbh im lazy), but i hope you enjoyed it! next blog will
+probably be on summer research or a comment section system. woohoo!! \
+\
+to nano, i hope you have a great birthday. cheers to a month of dating, and many more to come. 
+
+<br />
+
+<BlogImage
+src="/blogs/bbb-2-nanohub/kc.png"
+alt="chat log of kc and i talking about login"
+caption="thanks kc as per usual :sunglasses:"
+style={{ border: "0.5rem white solid" }}
+/>

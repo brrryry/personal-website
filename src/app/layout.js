@@ -15,7 +15,7 @@ export const metadata = {
   description: "a typical cs portfolio",
 };
 
-export default async function RootLayout({ children }) {
+export default async function RootLayout({ children, hideFooter = false }) {
 
   // Get the headers to check if the user is logged in
   const hdrs = await headers();
@@ -29,6 +29,8 @@ export default async function RootLayout({ children }) {
           <Navbar loggedIn={isLoggedIn}/>
           {children}
           </SessionProvider>
+
+          {!hideFooter && (
           <footer className="bg-transparent text-purple-200 p-4 flex flex-col items-center justify-center">
             <p>...................................................................</p>
 
@@ -69,6 +71,7 @@ export default async function RootLayout({ children }) {
               </a>
             </p>
           </footer>
+          )}
         </main>
       </body>
     </html>
