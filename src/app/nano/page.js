@@ -1,16 +1,54 @@
-import { headers } from "next/headers";
+"use server";
 
-export default async function Home() {
+import { getAccountBySessionId } from "@/lib/accounts";
+import {NanoHome} from "@/components/nanohub/NanoHome";
+import { cookies } from "next/headers";
+import Link from "next/link";
 
-  // Get the headers to check if the user is logged in
-  const hdrs = await headers();
+import { SecretMessage2025 } from "@/components/nanohub/2025/SecretMessage2025";
 
-  const isLoggedIn = hdrs.get("isLoggedIn") === "true";
-  const username = hdrs.get("username");
+export default async function Home({year}) {
+
+  const cookiesList = cookies();
+  const sessionCookie = cookiesList.get("sessionid");
+  let session = null;
+
+  try {
+    session = await getAccountBySessionId(sessionCookie?.value);
+  } catch (e) {}
+
+  const username = session?.username;
+  const nano = session?.nano;
+  const isNano = session?.isNano;
+
+  const secretMessages = {
+    2025: isNano ? [<SecretMessage2025 key={1}/>] : null,
+  }
+
+
+  if (!session) {
+    return (
+      <div className="flex flex-col items-center min-h-screen">
+        <p>you cannot see this page unless you are logged into a nano-approved account.</p>
+        <p>please <Link href="/login">log in.</Link></p>
+      </div>
+    );
+  }
+
+  if (!nano) {
+    return (
+      <div className="flex flex-col items-center min-h-screen">
+        <p>you are not a nano-approved account!.</p>
+        <p>please <Link href={`/profile/${username}`}>check your profile</Link> for reference.</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-5 justify-center items-center flex flex-col">
-      <h1>for nano</h1>
-    </div>
-  );
+    <NanoHome
+      nano={nano}
+      isNano={isNano}
+      secretMessages={secretMessages}
+    />
+  )
 }

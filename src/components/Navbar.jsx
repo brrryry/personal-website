@@ -24,9 +24,9 @@ const Navbar = () => {
 
   return (
     <nav className="bg-transparent p-0 h-auto md:h-32 flex flex-col md:flex-row justify-between items-start md:items-center">
-      <div className="flex justify-between items-center w-full px-4 py-4 md:py-0 md:w-auto">
-        <Link href="/" className="flex items-center">
-          <p className="text-2xl text-purple-200 font-bold whitespace-nowrap">bryan chan.</p>
+      <div className="flex justify-between items-center w-full py-4 md:py-0 md:w-auto">
+        <Link href="/" className="flex items-center p-0 mx-0">
+          <p className="text-2xl text-purple-200 font-bold whitespace-nowrap mx-0">bryan chan.</p>
         </Link>
         <button
           onClick={toggleMobileMenu}

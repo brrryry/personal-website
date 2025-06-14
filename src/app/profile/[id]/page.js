@@ -8,6 +8,7 @@ const Profile = ({params}) => {
 
     const [username, setUsername] = useState("");
     const [nano, setNano] = useState("");
+    const [isNano, setIsNano] = useState(false);
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -20,6 +21,7 @@ const Profile = ({params}) => {
                 const data = await response.json();
                 setUsername(data.username);
                 setNano(data.nano);
+                setIsNano(data.isNano);
             } catch (error) {
                 setError(error.message);
             }
@@ -41,6 +43,10 @@ const Profile = ({params}) => {
                 <div className="mb-4">
                     <label className="block mb-2">nano account?</label>
                     <p>{nano ? "yes" : "no"}</p>
+                </div>
+                <div className="mb-4">
+                    <label className="block mb-2">is nano?</label>
+                    <p>{isNano ? "yes" : "no"}</p>
                 </div>
             </div>
         </div>

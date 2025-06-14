@@ -26,7 +26,8 @@ const createNewAccount = async (username, password) => {
     username: username,
     password: hashedPassword,
     bio: '',
-    nano: false
+    nano: false,
+    isNano: false, // Default to false, can be updated later
   };
 
   let insertInfo;
@@ -101,6 +102,7 @@ const getAccountBySessionId = async (sessionId) => {
     username: account.username,
     bio: account.bio,
     nano: account.nano,
+    isNano: account.isNano,
     sessionId: session.sessionId,
   };
 }

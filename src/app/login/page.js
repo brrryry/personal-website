@@ -17,7 +17,12 @@ const Login = () => {
         //validate username and password
         try {
             await login(username, password);
-            window.location.href = "/";
+            
+            // go back to previous page or home page after successful login
+            const previousPage = document.referrer || "/";
+
+            // Redirect to the previous page or home page
+            window.location.href = previousPage;
         } catch(err) {
             //console.error("Login failed:", err);
             // Show error message to user
