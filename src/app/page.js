@@ -4,10 +4,8 @@ export default function Home() {
   return (
     <div className="space-y-5">
       <p>
-        latest news: setting up{" "}
-        <a href="/blog/bbb-1-secretsanta">secret santa</a> and{" "}
-        <a href="/blog/pdev-ep2-cicd">cicd pipeline</a> for my software (blogs
-        linked)
+        latest news: {" "}
+        <a href="/blog/bbb-2-nanohub">the nanohub</a> (blog linked)
       </p>
 
       <br />
@@ -52,7 +50,8 @@ export default function Home() {
         </a>{" "}
         <a href="https://anilist.co/user/brrryry/" target="_blank">
           anilist
-        </a>
+        </a>{" "}
+        <a href="/nano">nanohub</a>
       </div>
       <p>thats it, thanx :)</p>
     </div>
