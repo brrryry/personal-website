@@ -51,7 +51,6 @@ export default function Home() {
         <a href="https://anilist.co/user/brrryry/" target="_blank">
           anilist
         </a>{" "}
-        <a href="/nano">nanohub</a>
       </div>
       <p>thats it, thanx :)</p>
     </div>
