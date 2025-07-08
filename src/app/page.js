@@ -5,7 +5,7 @@ export default function Home() {
     <div className="space-y-5">
       <p>
         latest news: {" "}
-        <a href="/blog/bbb-2-nanohub">the nanohub</a> (blog linked)
+        working on <a href="https://github.com/brrryry/rag" target="_blank">rag security</a> :D
       </p>
 
       <br />
