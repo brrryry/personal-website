@@ -1,6 +1,4 @@
 // @refresh reset
-
-import React from "react";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getPostFromId } from "@/lib/posts";
 
@@ -11,7 +9,7 @@ import { BlogCode } from "@/components/BlogCode";
 
 import NotFound from "@/app/[...not_found]/page";
 
-import { headers } from "next/headers";
+import {BlogComments} from "@/components/BlogComments";
 
 //import code highlighting css
 import "@/../public/styles/atom-one-dark.css";
@@ -21,12 +19,13 @@ export default async function BlogPost({ params }) {
 
   const { content, data, notFound } = await getPostFromId(params.id);
 
+
   if (notFound) {
     return <NotFound />;
   }
 
   return (
-    <div className="flex justify-center">
+    <div className="max-w-4xl mx-auto px-4">
       <article className="min-w-0 max-w-4xl">
         - - -<h3>{data.title}</h3>
         <p>originally created on {data.date}</p>
@@ -51,6 +50,10 @@ export default async function BlogPost({ params }) {
           components={{ LatexWrapper, BlogImage, BlogList, BlogCode }}
         />
       </article>
+
+      <BlogComments blogId={params.id} />
+
+
     </div>
   );
 }

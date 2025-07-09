@@ -7,6 +7,12 @@ const Login = () => {
 
     const {login, session, loading} = useSession();
 
+    // If user is already logged in, redirect to home page
+    if (session && !loading) {
+        window.location.href = "/";
+        return null; // Prevent rendering the login form
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         
