@@ -49,9 +49,8 @@ const Register = () => {
     
     return (
         <div className="flex justify-center items-center p-4">
-        <form onSubmit={handleSubmit} className="rounded shadow-md">
+        <form onSubmit={handleSubmit} className="rounded shadow-md max-w-2xl">
             <h2 className="text-2xl mb-4">register</h2>
-            {error && <p className="text-red-500 mb-4">{error}</p>}
             <div className="mb-4">
             <label className="block mb-2">username</label>
             <input
@@ -82,10 +81,14 @@ const Register = () => {
                 required
             />
             </div>
-            <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">
-            Register
+            <button type="submit" className="w-full bg-[#6a0dad] text-white p-2 rounded">
+            register
             </button>
             <p>already have an account? <Link href="/login">login</Link></p>
+
+            <div className="mb-4 min-h-[24px] max-w-full">
+                {error && <p className="text-red-500">{error}</p>}
+            </div>
         </form>
         </div>
     );

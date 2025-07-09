@@ -14,6 +14,7 @@ const createNewAccount = async (username, password) => {
   typecheck.isValidString(username, 'Username');
   typecheck.isValidString(password, 'Password');
 
+
   try {
     await getAccountByUsername(username);
     throw { status: 400, error: 'username already exists' };
@@ -21,14 +22,19 @@ const createNewAccount = async (username, password) => {
     if (e?.status !== 404) throw e;
   }
 
+  //make sure username can be used in a url query
+  if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+    throw { status: 400, error: 'username can only contain alphanumeric characters, underscores, and hyphens.' };
+  }
+
   const hashedPassword = await bcrypt.hash(password, saltRounds);
   const newAccount = {
     username: username,
     password: hashedPassword,
-    bio: '',
-    nano: false,
-    isNano: false, // Default to false, can be updated later
+    bio: ''
   };
+
+
 
   let insertInfo;
   
@@ -101,8 +107,6 @@ const getAccountBySessionId = async (sessionId) => {
     _id: account._id.toString(),
     username: account.username,
     bio: account.bio,
-    nano: account.nano,
-    isNano: account.isNano,
     sessionId: session.sessionId,
   };
 }
