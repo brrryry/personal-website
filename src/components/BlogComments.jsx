@@ -153,6 +153,7 @@ export function BlogComments({ blogId }) {
 
     return (
         <div className="comments-section">
+            - - - - -
             <h3>comments</h3>
 
             {comments.length === 0 && <p>No comments yet. Be the first to comment!</p>}
