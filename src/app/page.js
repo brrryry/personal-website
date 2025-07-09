@@ -13,8 +13,7 @@ export default function Home() {
       <p>heres some stuff about me:</p>
       <ul className="list-disc mx-6 space-y-2">
         <li>
-          im a college student at stevens institute of technology (grad. 2025
-          with a b.s. degree).
+          im a college student at stevens institute of technology (grad. 2026 with a m.s. in data science, grad. 2025 with a b.s. in computer science).
         </li>
         <li>i like data science, but im down for anything cs related.</li>
         <li>i play tennis and badminton.</li>
@@ -37,7 +36,7 @@ export default function Home() {
       <p>
         wanna know more about me? check out my <a href="/blog">blog</a>.
       </p>
-      <div className="flex-initial break-words space-x-3">
+      <div className="flex flex-wrap gap-x-5 break-words">
         <a href="mailto:thisisbryanchan@gmail.com">email</a>{" "}
         <a href="https://www.linkedin.com/in/brrryry" target="_blank">
           linkedin
