@@ -43,7 +43,7 @@ const Profile = ({params}) => {
                     {comments.length > 0 ? (
                         <ul>
                             {comments.map(comment => (
-                                <li key={comment._id} className="border-b py-2">
+                                <li key={comment._id} className="border-b py-2 break-words">
                                     <a href={`/blog/${comment.blogId}#comments-section`} className="text-[#d8bfd8] hover:underline">
                                         {comment.blogId}
                                     </a> - {comment.content} {" "}
