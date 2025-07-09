@@ -40,6 +40,13 @@ const adminAccount = await accountCol.insertOne({
     isNano: true
 });
 
+let testComment = await commentCol.insertOne({
+    accountId: new ObjectId(testAccount.insertedId),
+    blogId: "insure-2025",
+    content: "This is a test comment",
+    createdAt: new Date()
+});
+
 
 
 console.log("Test account created with ID:", testAccount.insertedId);
