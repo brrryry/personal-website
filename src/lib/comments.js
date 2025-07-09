@@ -1,10 +1,14 @@
 import {comments} from './accounts/mongoCollections.js';
 import {ObjectId} from 'mongodb';
 
+import { getAccountById } from './accounts.js';
+
 import * as typecheck from './typecheck.js';
 
 const createComment = async (accountId, blogId, content) => {
   const commentCollection = await comments();
+
+  console.log('Creating comment for blog:', blogId, 'by account:', accountId);
 
   typecheck.isValidString(accountId, 'Account ID');
   typecheck.isValidString(blogId, 'Blog ID');
@@ -14,8 +18,17 @@ const createComment = async (accountId, blogId, content) => {
     throw { status: 400, error: 'Invalid account or blog ID format' };
   }
 
+  //make sure only one comment can be made by an account on a blog
+  const existingComment = await commentCollection.findOne({ accountId: new ObjectId(accountId), blogId: blogId });
+  if (existingComment) {
+    throw { status: 400, error: 'You have already commented on this blog' };
+  }
+
+  const account = await getAccountById(accountId);
+
   const newComment = {
     accountId: new ObjectId(accountId),
+    username: account.username,
     blogId: blogId,
     content: content,
     createdAt: new Date()
@@ -35,21 +48,31 @@ const createComment = async (accountId, blogId, content) => {
 
 const getBlogComments = async (blogId) => {
   const commentCollection = await comments();
+  let returnComments = [];
 
   typecheck.isValidString(blogId, 'Blog ID');
 
-  if (!ObjectId.isValid(blogId)) {
-    throw { status: 400, error: 'Invalid blog ID format' };
-  }
-
   const commentsList = await commentCollection.find({ blogId: blogId }).toArray();
 
-  return commentsList.sort((a, b) => b.createdAt - a.createdAt).map(comment => ({
-    _id: comment._id.toString(),
-    accountId: comment.accountId.toString(),
-    content: comment.content,
-    createdAt: comment.createdAt
-  }));
+
+
+  for (let comment of commentsList) {
+    let acc = await getAccountById(comment.accountId.toString());
+    let user = acc.username;
+
+    returnComments.push({
+      _id: comment._id.toString(),
+      accountId: comment.accountId.toString(),
+      blogId: comment.blogId,
+      content: comment.content,
+      createdAt: comment.createdAt,
+      updatedAt: comment.updatedAt ? comment.updatedAt : null,
+      username: user
+    });
+  }
+
+  return returnComments;
+
 }
 
 const editComment = async (commentId, newContent) => {
@@ -96,7 +119,8 @@ const getCommentById = async (commentId) => {
     accountId: comment.accountId.toString(),
     blogId: comment.blogId,
     content: comment.content,
-    createdAt: comment.createdAt
+    createdAt: comment.createdAt,
+    updatedAt: comment.updatedAt ? comment.updatedAt : null,
   };
 }
 
@@ -118,10 +142,36 @@ const deleteComment = async (commentId) => {
   return { deleted: true };
 }
 
+const getUserComments = async (username) => {
+  const commentCollection = await comments();
+  let returnComments = [];
+
+  typecheck.isValidString(username, 'username');
+
+  const commentsList = await commentCollection.find({ username: username }).toArray();
+  for (let comment of commentsList) {
+    let acc = await getAccountById(comment.accountId.toString());
+    let user = acc.username;
+
+    returnComments.push({
+      _id: comment._id.toString(),
+      accountId: comment.accountId.toString(),
+      blogId: comment.blogId,
+      content: comment.content,
+      createdAt: comment.createdAt,
+      updatedAt: comment.updatedAt ? comment.updatedAt : null,
+      username: user
+    });
+  }
+
+  return returnComments;
+}
+
 export {
   createComment,
   getBlogComments,
   editComment,
   getCommentById,
-  deleteComment
+  deleteComment,
+  getUserComments,
 }
