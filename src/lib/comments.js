@@ -26,6 +26,10 @@ const createComment = async (accountId, blogId, content) => {
 
   const account = await getAccountById(accountId);
 
+  if (content.length > 500) {
+    throw { status: 400, error: 'you cannot exceed maximum length of 500 characters' };
+  }
+
   const newComment = {
     accountId: new ObjectId(accountId),
     username: account.username,
@@ -83,6 +87,10 @@ const editComment = async (commentId, newContent) => {
 
   if (!ObjectId.isValid(commentId)) {
     throw { status: 400, error: 'Invalid comment ID format' };
+  }
+
+  if (newContent.length > 500) {
+    throw { status: 400, error: 'Content cannot exceed 500 characters' };
   }
 
   const updateInfo = await commentCollection.updateOne(
