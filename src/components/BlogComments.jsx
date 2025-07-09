@@ -152,7 +152,7 @@ export function BlogComments({ blogId }) {
     }
 
     return (
-        <div className="comments-section">
+        <div className="comments-section max-w-4xl">
             - - - - -
             <h3>comments</h3>
 
@@ -182,7 +182,7 @@ export function BlogComments({ blogId }) {
                                 </div>
                             ) : (
                                 <>
-                                    <p>{comment.content}{" "}
+                                    <p className="break-words">{comment.content}{" "}
                                     <span className="text-sm mb-0">{timeAgo(comment.createdAt)}</span>
                                     <span className="text-sm mb-0">
                                         {comment.updatedAt ? `, updated ${timeAgo(comment.updatedAt)}` : ""}
