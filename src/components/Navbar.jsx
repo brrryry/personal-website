@@ -30,33 +30,33 @@ const Navbar = () => {
         </Link>
         <button
           onClick={toggleMobileMenu}
-          className="md:hidden text-purple-200 text-3xl focus:outline-none"
+          className="md:hidden text-purple-200text-3xl focus:outline-none"
         >
           ☰
         </button>
       </div>
 
       {/* Mobile Menu */}
-      <div className={`flex-col px-4 space-y-2 md:hidden ${mobileOpen ? "flex" : "hidden"}`}>
-        <Link href="/" className="flex items-center">
+      <div className={`flex-col space-y-1 mx-0 pb-5 items-start md:hidden ${mobileOpen ? "flex" : "hidden"}`}>
+        <Link href="/" className="flex items-center mx-0">
           <p className="text-2xl text-purple-200 font-bold">-- home</p>
         </Link>
-        <Link href="/Chan_Bryan_Resume.pdf" target="_blank" className="flex items-center">
+        <Link href="/Chan_Bryan_Resume.pdf" target="_blank" className="flex items-center mx-0">
           <p className="text-2xl text-purple-200 font-bold">-- resume</p>
         </Link>
-        <Link href="/projects" className="flex items-center">
+        <Link href="/projects" className="flex items-center mx-0">
           <p className="text-2xl text-purple-200 font-bold">-- projects</p>
         </Link>
-        <Link href="/blog" className="flex items-center">
+        <Link href="/blog" className="flex items-center mx-0">
           <p className="text-2xl text-purple-200 font-bold">-- blog</p>
         </Link>
         {session?.sessionId && !loading && (
-          <Link href="/" onClick={handleLogout} className="flex items-center">
+          <Link href="/" onClick={handleLogout} className="flex items-center mx-0">
             <p className="text-2xl text-purple-200 font-bold">-- logout</p>
           </Link>
         )}
         {!session?.sessionId && !loading && (
-          <Link href="/login" className="flex items-center">
+          <Link href="/login" className="flex items-center mx-0">
             <p className="text-2xl text-purple-200 font-bold">-- login</p>
           </Link>
         )}
