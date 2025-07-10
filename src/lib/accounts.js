@@ -5,26 +5,27 @@ import { v4 } from 'uuid';
 
 import * as typecheck from './typecheck.js';
 import { type } from 'os';
+import { BadRequestError, RouteError, NotFoundError, AuthenticationError } from './errors.ts';
+import NotFound from '@/app/[...not_found]/page.js';
 
 const saltRounds = Number(process.env.SALT_ROUNDS) || 16;
 
 const createNewAccount = async (username, password) => {
   const accountCollection = await accounts();
 
-  typecheck.isValidString(username, 'Username');
-  typecheck.isValidString(password, 'Password');
+  typecheck.isValidString(username, 'username');
+  typecheck.isValidString(password, 'password');
 
 
   try {
     await getAccountByUsername(username);
-    throw { status: 400, error: 'username already exists' };
+    throw BadRequestError("username already exists")
   } catch(e) {
-    if (e?.status !== 404) throw e;
   }
 
   //make sure username can be used in a url query
   if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
-    throw { status: 400, error: 'username can only contain alphanumeric characters, underscores, and hyphens.' };
+    throw BadRequestError("username can only contain alphanumeric characters, underscores, and hyphens.");
   }
 
   const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -41,12 +42,11 @@ const createNewAccount = async (username, password) => {
   try {
     insertInfo = await accountCollection.insertOne(newAccount);
   } catch(e) {
-    console.log(`Error inserting new account: ${e}`);
-    throw { status: 500, error: 'Error inserting new account' };
+    throw RouteError(`error inserting new account on backend...`)
   }
 
   if (!insertInfo.acknowledged || !insertInfo.insertedId) {
-    throw { status: 500, error: 'Could not create account' };
+    throw RouteError(`could not create account on backend...`)
   }
 
   const newAccountId = insertInfo.insertedId.toString();
@@ -58,7 +58,7 @@ const createNewAccount = async (username, password) => {
 const getAccountByUsername = async (username, needPassword = false) => {
   const accountCollection = await accounts();
 
-  typecheck.isValidString(username, 'Username');
+  typecheck.isValidString(username, 'username');
 
   const account = await accountCollection.findOne({
     username: username
@@ -67,7 +67,7 @@ const getAccountByUsername = async (username, needPassword = false) => {
   });
 
 
-  if (!account) throw { status: 404, error: 'account not found' };
+  if (!account) throw NotFoundError(`account with username "${username}" not found`);
 
   return account;
 }
@@ -75,11 +75,10 @@ const getAccountByUsername = async (username, needPassword = false) => {
 const getAccountById = async (accountId) => {
   const accountCollection = await accounts();
 
-  typecheck.isValidString(accountId, 'Account ID');
+  typecheck.isValidString(accountId, 'account id');
 
-  if (!ObjectId.isValid(accountId)) {
-    throw { status: 400, error: 'Invalid account ID format' };
-  }
+  if (!ObjectId.isValid(accountId)) throw BadRequestError("Invalid account ID format");
+  
 
   const account = await accountCollection.findOne({
     _id: new ObjectId(accountId)
@@ -87,7 +86,7 @@ const getAccountById = async (accountId) => {
     projection: { password: 0 } // Exclude password
   });
 
-  if (!account) throw { status: 404, error: 'Account not found' };
+  if (!account) throw NotFoundError(`account with ID "${accountId}" not found`);
 
   return account;
 }
@@ -95,11 +94,11 @@ const getAccountById = async (accountId) => {
 const getAccountBySessionId = async (sessionId) => {
   const sessionCollection = await sessions();
 
-  typecheck.isValidString(sessionId, 'Session ID');
+  typecheck.isValidString(sessionId, 'session id');
 
   const session = await sessionCollection.findOne({ sessionId: sessionId });
 
-  if (!session) throw { status: 404, error: 'Session not found' };
+  if (!session) throw NotFoundError(`session with ID "${sessionId}" not found`);
 
   const account = await getAccountById(session.accountId.toString());
 
@@ -114,11 +113,11 @@ const getAccountBySessionId = async (sessionId) => {
 const updateAccountBio = async (accountId, newBio) => {
   const accountCollection = await accounts();
 
-  typecheck.isValidString(accountId, 'Account ID');
-  typecheck.isValidString(newBio, 'New Bio');
+  typecheck.isValidString(accountId, 'account id');
+  typecheck.isValidString(newBio, 'new bio');
 
   if (!ObjectId.isValid(accountId)) {
-    throw { status: 400, error: 'Invalid account ID format' };
+    throw BadRequestError("invalid account id format");
   }
 
   const updateInfo = await accountCollection.updateOne(
@@ -127,7 +126,7 @@ const updateAccountBio = async (accountId, newBio) => {
   );
 
   if (updateInfo.modifiedCount === 0) {
-    throw { status: 404, error: 'Account not found or no changes made' };
+    throw NotFoundError(`account with ID "${accountId}" not found or no changes made`);
   }
 
   return await getAccountById(accountId);
@@ -136,21 +135,21 @@ const updateAccountBio = async (accountId, newBio) => {
 const authenticateAccount = async (username, password) => {
   const sessionCollection = await sessions();
 
-  typecheck.isValidString(username, 'Username');
-  typecheck.isValidString(password, 'Password');
+  typecheck.isValidString(username, 'username');
+  typecheck.isValidString(password, 'password');
 
   let account;
 
   try {
     account = await getAccountByUsername(username, true);
   } catch(e) {
-    throw { status: 404, error: 'incorrect username or password.' };
+    throw AuthenticationError(`incorrect username or password.`);
   }
 
 
   const isPasswordValid = await bcrypt.compare(password, account.password);
   if (!isPasswordValid) {
-    throw { status: 401, error: 'incorrect username or password.' };
+    throw AuthenticationError(`incorrect username or password.`);
   }
 
   // Create a new session
@@ -165,7 +164,7 @@ const authenticateAccount = async (username, password) => {
   const insertInfo = await sessionCollection.insertOne(newSession);
   
   if (!insertInfo.acknowledged || !insertInfo.insertedId) {
-    throw { status: 500, error: 'Could not create session' };
+    throw RouteError(`Could not create session`);
   }
   
   return {
@@ -178,12 +177,12 @@ const authenticateAccount = async (username, password) => {
 const logoutAccount = async (sessionId) => {
   const sessionCollection = await sessions();
 
-  typecheck.isValidString(sessionId, 'Session ID');
+  typecheck.isValidString(sessionId, 'session id');
 
   const deleteInfo = await sessionCollection.deleteOne({ sessionId: sessionId });
 
   if (deleteInfo.deletedCount === 0) {
-    throw { status: 404, error: 'Session not found' };
+    throw NotFoundError(`session with id "${sessionId}" not found`);
   }
   return { success: true };
 }
@@ -191,7 +190,7 @@ const logoutAccount = async (sessionId) => {
 const getCommentsByAccountId = async (accountId) => {
   const commentCollection = await comments();
 
-  accountId = typecheck.stringToOid(accountId);
+  accountId = typecheck.stringToOid(accountId, "account id");
 
   const comments = await commentCollection.find({ accountId: accountId }).toArray();
 
