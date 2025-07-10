@@ -4,24 +4,25 @@ import {ObjectId} from 'mongodb';
 import { getAccountById } from './accounts.js';
 
 import * as typecheck from './typecheck.js';
+import { BadRequestError, RouteError } from './errors.js';
 
 const createComment = async (accountId, blogId, content) => {
   const commentCollection = await comments();
 
   console.log('Creating comment for blog:', blogId, 'by account:', accountId);
 
-  typecheck.isValidString(accountId, 'Account ID');
-  typecheck.isValidString(blogId, 'Blog ID');
-  typecheck.isValidString(content, 'Content');
+  typecheck.isValidString(accountId, 'account ID');
+  typecheck.isValidString(blogId, 'blog ID');
+  typecheck.isValidString(content, 'content');
 
   if (!ObjectId.isValid(accountId)) {
-    throw { status: 400, error: 'Invalid account or blog ID format' };
+    throw new BadRequestError('invalid account id format')
   }
 
   //make sure only one comment can be made by an account on a blog
   const existingComment = await commentCollection.findOne({ accountId: new ObjectId(accountId), blogId: blogId });
   if (existingComment) {
-    throw { status: 400, error: 'You have already commented on this blog' };
+    throw new BadRequestError('you have already commented on this blog');
   }
 
   const account = await getAccountById(accountId);
@@ -41,7 +42,7 @@ const createComment = async (accountId, blogId, content) => {
   const insertInfo = await commentCollection.insertOne(newComment);
   
   if (insertInfo.insertedCount === 0) {
-    throw { status: 500, error: 'Could not add comment' };
+    throw new RouteError(`could not add comment`);
   }
 
   return {
@@ -54,7 +55,7 @@ const getBlogComments = async (blogId) => {
   const commentCollection = await comments();
   let returnComments = [];
 
-  typecheck.isValidString(blogId, 'Blog ID');
+  typecheck.isValidString(blogId, 'blog id');
 
   const commentsList = await commentCollection.find({ blogId: blogId }).toArray();
 
@@ -82,15 +83,15 @@ const getBlogComments = async (blogId) => {
 const editComment = async (commentId, newContent) => {
   const commentCollection = await comments();
 
-  typecheck.isValidString(commentId, 'Comment ID');
-  typecheck.isValidString(newContent, 'New Content');
+  typecheck.isValidString(commentId, 'comment id');
+  typecheck.isValidString(newContent, 'new content');
 
   if (!ObjectId.isValid(commentId)) {
-    throw { status: 400, error: 'Invalid comment ID format' };
+    throw new BadRequestError('invalid comment id format');
   }
 
   if (newContent.length > 500) {
-    throw { status: 400, error: 'Content cannot exceed 500 characters' };
+    throw new BadRequestError('content cannot exceed 500 characters');
   }
 
   const updateInfo = await commentCollection.updateOne(
@@ -101,7 +102,7 @@ const editComment = async (commentId, newContent) => {
   );
 
   if (updateInfo.modifiedCount === 0) {
-    throw { status: 404, error: 'Comment not found or no changes made' };
+    throw new NotFoundError(`comment with id "${commentId}" not found or no changes made`);
   }
 
   return await getCommentById(commentId);
@@ -110,16 +111,16 @@ const editComment = async (commentId, newContent) => {
 const getCommentById = async (commentId) => {
   const commentCollection = await comments();
 
-  typecheck.isValidString(commentId, 'Comment ID');
+  typecheck.isValidString(commentId, 'comment id');
 
   if (!ObjectId.isValid(commentId)) {
-    throw { status: 400, error: 'Invalid comment ID format' };
+    throw new BadRequestError('invalid comment id format');
   }
 
   const comment = await commentCollection.findOne({ _id: new ObjectId(commentId) });
 
   if (!comment) {
-    throw { status: 404, error: 'Comment not found' };
+    throw new NotFoundError(`comment with id "${commentId}" not found`);
   }
 
   return {
@@ -135,16 +136,16 @@ const getCommentById = async (commentId) => {
 const deleteComment = async (commentId) => {
   const commentCollection = await comments();
 
-  typecheck.isValidString(commentId, 'Comment ID');
+  typecheck.isValidString(commentId, 'comment id');
 
   if (!ObjectId.isValid(commentId)) {
-    throw { status: 400, error: 'Invalid comment ID format' };
+    throw new BadRequestError('invalid comment id format');
   }
 
   const deleteInfo = await commentCollection.deleteOne({ _id: new ObjectId(commentId) });
 
   if (deleteInfo.deletedCount === 0) {
-    throw { status: 404, error: 'Comment not found' };
+    throw new NotFoundError(`comment with id "${commentId}" not found`);
   }
 
   return { deleted: true };
