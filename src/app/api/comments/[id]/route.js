@@ -1,6 +1,7 @@
 import { getBlogComments, createComment, deleteComment, editComment } from "@/lib/comments";
 import { getAccountBySessionId } from "@/lib/accounts";
 import { NextResponse } from "next/server";
+import { handleError, RouteError } from "@/lib/errors";
 
 export async function GET(req, { params }) {
   const comments = await getBlogComments(params.id);
@@ -10,67 +11,38 @@ export async function GET(req, { params }) {
 export async function POST(req, { params }) {
     const { content, sessionId } = await req.json();
 
-    
-    if (!content || !sessionId) {
-        return NextResponse.json({ error: "either no commment content or you aren't logged in" }, { status: 400 });
-    }
-
-    // Validate sessionId
-    const account = await getAccountBySessionId(sessionId);
-    if (!account) {
-        return NextResponse.json({ error: "Invalid session ID" }, { status: 401 });
-    }
-
     try {
+    const account = await getAccountBySessionId(sessionId);
     const newComment = await createComment(account._id, params.id, content);
     return NextResponse.json(newComment);
   } catch (error) {
-    console.error("error creating comment:", error);
-    return NextResponse.json({ error: error.error.toLowerCase() || "failed to create comment!"}, { status: 500 });
+    const err = RouteError.fromBaseError(error, "post /api/comments/[id]");
+    return handleError(err);
   }
 }
 
 export async function DELETE(req, { params }) {
   const { commentId, sessionId } = await req.json();
 
-  if (!commentId || !sessionId) {
-    return NextResponse.json({ error: "Comment ID and session ID are required" }, { status: 400 });
-  }
-
-  // Validate sessionId
-  const account = await getAccountBySessionId(sessionId);
-  if (!account) {
-    return NextResponse.json({ error: "Invalid session ID" }, { status: 401 });
-  }
-
-
   try {
+    const account = await getAccountBySessionId(sessionId);
     await deleteComment(commentId, account._id);
-    return NextResponse.json({ message: "Comment deleted successfully" });
+    return NextResponse.json({ message: "comment deleted successfully" });
   } catch (error) {
-    console.error("error deleting comment:", error);
-    return NextResponse.json({ error: error.error.toLowerCase() || "failed to delete comment!"}, { status: 500 });
+      const err = RouteError.fromBaseError(error, "post /api/comments/[id]");
+      return handleError(err);
   }
 }
 
 export async function PUT(req, { params }) {
   const { commentId, content, sessionId } = await req.json();
 
-  if (!commentId || !content || !sessionId) {
-    return NextResponse.json({ error: "invalid commentid, content or session. are you logged in?" }, { status: 400 });
-  }
-
-  // Validate sessionId
-  const account = await getAccountBySessionId(sessionId);
-  if (!account) {
-    return NextResponse.json({ error: "invalid session id. maybe logout and log back in?" }, { status: 401 });
-  }
-
-
   try {
-    const updatedComment = await editComment(commentId, content);
+    const account = await getAccountBySessionId(sessionId);
+    const updatedComment = await editComment(commentId, content, account._id);
     return NextResponse.json(updatedComment);
   } catch (error) {
-    return NextResponse.json({ error: error.error.toLowerCase() || "failed to edit comment!"}, { status: 500 });
+    const err = RouteError.fromBaseError(error, "put /api/comments/[id]");
+    return handleError(err);
   }
 }

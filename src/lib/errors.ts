@@ -1,3 +1,5 @@
+import { NextResponse } from "../../node_modules/next/server";
+
 export class RouteError extends Error {
     readonly route: string;
 
@@ -14,12 +16,12 @@ export class RouteError extends Error {
         }
 
         if(headers) responseMetadata.headers = headers;
-        return new Response(JSON.stringify({
+        return NextResponse.json({
             status: "failed",
             route: this.route,
             reason: this.message,
             ...kwargs
-        }), responseMetadata);
+        });
     }
 
     static fromBaseError(baseError: unknown, route: string): RouteError {
@@ -31,8 +33,8 @@ export class RouteError extends Error {
         err.name = baseError instanceof Error ? baseError.name : "UnknownError";
 
         //logging
-        console.log(`Error in route ${route}:`, err);
-        if (baseError instanceof Error) console.error(baseError);
+        //console.log(`Error in route ${route}:`, err);
+        //if (baseError instanceof Error) console.error(baseError);
         
 
         return err;

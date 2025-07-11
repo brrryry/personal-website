@@ -24,7 +24,10 @@ export function SessionProvider({children}) {
           body: JSON.stringify({ sessionId: sessionid }),
         });
         const data = await response.json();
-        setSession(data);
+
+        if (data.status === "failed") setSession(null);
+        else setSession(data);
+
       } catch (error) {
         console.error('error fetching session:', error);
       } finally {
@@ -47,15 +50,15 @@ export function SessionProvider({children}) {
 
       const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.error || 'login failed');
-      }
+      if(data.status === "failed") throw data;
 
       document.cookie = `sessionid=${data.sessionId}; path=/; max-age=604800;`; // 7 days
 
       setSession(data);
+      return true;
     } catch (error) {
-      throw new Error(error.message.toLowerCase());
+      setSession(null);
+      throw error;
     }
   }
 

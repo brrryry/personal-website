@@ -4,7 +4,7 @@ import {ObjectId} from 'mongodb';
 import { getAccountById } from './accounts.js';
 
 import * as typecheck from './typecheck.js';
-import { BadRequestError, RouteError } from './errors.js';
+import { BadRequestError, RouteError } from './errors.ts';
 
 const createComment = async (accountId, blogId, content) => {
   const commentCollection = await comments();
@@ -28,7 +28,7 @@ const createComment = async (accountId, blogId, content) => {
   const account = await getAccountById(accountId);
 
   if (content.length > 500) {
-    throw { status: 400, error: 'you cannot exceed maximum length of 500 characters' };
+    throw new BadRequestError('content cannot exceed 500 characters');
   }
 
   const newComment = {
@@ -80,11 +80,12 @@ const getBlogComments = async (blogId) => {
 
 }
 
-const editComment = async (commentId, newContent) => {
+const editComment = async (commentId, newContent, accountId) => {
   const commentCollection = await comments();
 
   typecheck.isValidString(commentId, 'comment id');
   typecheck.isValidString(newContent, 'new content');
+  typecheck.isValidString(accountId, 'account id');
 
   if (!ObjectId.isValid(commentId)) {
     throw new BadRequestError('invalid comment id format');
@@ -93,6 +94,10 @@ const editComment = async (commentId, newContent) => {
   if (newContent.length > 500) {
     throw new BadRequestError('content cannot exceed 500 characters');
   }
+
+  const comment = await commentCollection.findOne({ _id: new ObjectId(commentId) });
+  if (!comment) throw new NotFoundError(`comment with id "${commentId}" not found`);
+  if (comment.accountId.toString() !== accountId) throw new BadRequestError('you can only edit your own comments');
 
   const updateInfo = await commentCollection.updateOne(
     { _id: new ObjectId(commentId) },
