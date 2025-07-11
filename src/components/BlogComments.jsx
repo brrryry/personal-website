@@ -53,7 +53,7 @@ export function BlogComments({ blogId }) {
 
             const commentData = await response.json();
 
-            if (!response.ok) {
+            if(commentData.status === "failed") {
                 setError(commentData.reason || "failed to post comment");
                 throw new Error(commentData.reason || "failed to post comment");
             }
@@ -77,7 +77,11 @@ export function BlogComments({ blogId }) {
                 body: JSON.stringify({ commentId, sessionId: session?.sessionId }),
             });
 
-            if (!response.ok) throw new Error("failed to delete comment");
+            const res = await response.json();
+            if (res.status === "failed") {
+                setError(res.reason || "failed to delete comment");
+                throw new Error(res.reason || "failed to delete comment");
+            }
 
             setComments(comments.filter((comment) => comment._id !== commentId));
             setError(null);
@@ -112,9 +116,9 @@ export function BlogComments({ blogId }) {
 
             const updated = await response.json();
 
-            if (!response.ok) {
-                setError(updated.error || "failed to edit comment");
-                throw new Error(updated.error || "failed to edit comment");
+            if (updated.status === "failed") {
+                setError(updated.reason || "failed to edit comment");
+                throw new Error(updated.reason || "failed to edit comment");
             }
 
             setComments(
