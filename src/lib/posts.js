@@ -39,7 +39,7 @@ export function getSortedPostsData(tag = "") {
     .filter((fileName) => fileName.endsWith(".mdx"))
     .map((fileName) => {
       // Remove ".md" from file name to get id and remove all prefixes like "drafts/"
-      let id = fileName.replace(/\.mdx$/, "").replace(/^.*\//, "");
+      let id = fileName.replace(/\.mdx$/, "").replace(/^.*[\\/]/, "");
 
 
       // Read markdown file as string
@@ -55,6 +55,7 @@ export function getSortedPostsData(tag = "") {
       if (tag.length === 0 || matterResult.data.tags.includes(tag)) {
         return {
           id,
+          fileName,
           ...matterResult,
         };
       }
@@ -83,7 +84,8 @@ export async function getPostFromId(id) {
 
   let fileContent = null;
 
-  const fullPath = path.join(postsDirectory, `${id}.mdx`);
+  const fullPath = path.join(postsDirectory, post.fileName);
+  console.log(fullPath)
   try {
     fileContent = fs.readFileSync(fullPath, "utf8");
   } catch (e) {
