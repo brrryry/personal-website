@@ -9,7 +9,11 @@ export function SpotifyEmbed() {
 
   useEffect(() => {
     (async () => {
-      let song = await fetch("/api/current-spotify");
+      let song = await fetch("/api/current-spotify", {
+        next: {
+          revalidate: 5,
+        },
+      });
       let response = await song.json();
       setSong(response);
     })();

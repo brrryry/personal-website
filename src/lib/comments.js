@@ -4,7 +4,7 @@ import {ObjectId} from 'mongodb';
 import { getAccountById } from './accounts.js';
 
 import * as typecheck from './typecheck.js';
-import { BadRequestError, RouteError } from './errors.ts';
+import { BadRequestError, RouteError, NotFoundError } from './errors.ts';
 
 const createComment = async (accountId, blogId, content) => {
   const commentCollection = await comments();

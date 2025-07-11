@@ -11,6 +11,8 @@ export default async function Blog() {
   allTags = allTags.filter((tag) => tag !== "series"); //remove "series" tag - should not be queryable
 
 
+  console.log(allPostsData.map((post) => post.id));
+
   return (
     <div className="flex flex-col md:flex-row">
       {/* Tags on top for small screens */}
