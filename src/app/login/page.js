@@ -7,6 +7,12 @@ const Login = () => {
 
     const {login, session, loading} = useSession();
 
+    if (session) {
+        // If the user is already logged in, redirect to home page
+        window.location.href = "/";
+        return null;
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         
@@ -41,7 +47,7 @@ const Login = () => {
         <form className="flex flex-col space-y-3" onSubmit={handleSubmit}>
             <input type="text" placeholder="username" className="bg-gray-300 border p-2 rounded text-black" />
             <input type="password" placeholder="password" className="bg-gray-300 border p-2 rounded text-black" />
-            <button type="submit" className="bg-[#6a0dad] text-white p-2 rounded">login</button>
+            <button type="submit" className="bg-[#6a0dad] text-white p-2 rounded">{loading ? "loading..." : "login"}</button>
         </form>
         <p>need an account? <Link href="/register">register</Link></p>
         <p className="text-red-300 hidden">this is error</p>
