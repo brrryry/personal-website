@@ -4,7 +4,7 @@ import { accounts, comments, sessions } from "../mongoCollections.js";
 import { ObjectId } from "mongodb";
 
 import bcrypt from "bcryptjs";
-const saltRounds = Number(process.env.SALT_ROUNDS);
+const saltRounds = Number(process.env.SALT_ROUNDS) || 16;
 
 const db = await dbConnection();
 await db.dropDatabase();

@@ -9,6 +9,7 @@ const Register = () => {
     const [password, setPassword] = useState("");
     const [retypedPassword, setRetypedPassword] = useState("");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
     
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -25,6 +26,7 @@ const Register = () => {
         }
     
         try {
+            setLoading(true);
         const response = await fetch("/api/account/register", {
             method: "POST",
             headers: {
@@ -35,6 +37,8 @@ const Register = () => {
     
 
         const data = await response.json();
+
+        setLoading(false);
 
         if(data.status === "failed") {
             setError(data.reason || "registration failed due to an unknown error.");
@@ -84,7 +88,7 @@ const Register = () => {
             />
             </div>
             <button type="submit" className="w-full bg-[#6a0dad] text-white p-2 rounded">
-            register
+            {loading ? "loading..." : "register"}
             </button>
             <p>already have an account? <Link href="/login">login</Link></p>
 

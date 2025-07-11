@@ -13,6 +13,7 @@ export function SessionProvider({children}) {
 
     //get "sessionid" cookie
     const sessionid = document.cookie.split('; ').find(row => row.startsWith('sessionid='))?.split('=')[1];
+    setLoading(true);
     const fetchSession = async (sessionid) => {
       try {
         //post request to /api/account/session
@@ -40,6 +41,7 @@ export function SessionProvider({children}) {
 
   const login = async (username, password) => {
     try {
+      setLoading(true);
       const response = await fetch('/api/account/login', {
         method: 'POST',
         headers: {
@@ -49,6 +51,7 @@ export function SessionProvider({children}) {
       });
 
       const data = await response.json();
+      setLoading(false);
 
       if(data.status === "failed") throw data;
 
@@ -64,10 +67,13 @@ export function SessionProvider({children}) {
 
   const logout = async () => {
     try {
+      setLoading(true);
       const response = await fetch('/api/account/logout', {
         method: 'POST',
         body: JSON.stringify({ sessionId: session?.sessionId }),
       });
+
+      setLoading(false);
 
       if (!response.ok) {
         throw new Error('logout failed');
