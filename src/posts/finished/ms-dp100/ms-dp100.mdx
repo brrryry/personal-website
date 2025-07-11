@@ -3,9 +3,14 @@ title: "the microsoft dp-100 experience"
 date: "2025-07-11"
 updated: "2025-07-11"
 description: "what in the world is a data scientist anyway"
-tags: ["ms-dp100"]
+tags: ["ms-dp100-series"]
 ---
 
+preface: this is the first series blog on my website. if a tag has "series" in it,
+that means that there are multiple blogs that are hidden under that tag.
+you can access the hidden blogs by clicking the tag in the blog list (bryanchan.org/blog/\<tag\>).
+for example, [here](/blog/tag/ms-dp100-series) is the tag for this series. \
+\
 this summer, i had the opportunity to go to the insure+e program in normal, il.
 i made a blog about it [here](/blog/insure-2025). \
 \
@@ -73,66 +78,14 @@ of effectiveness. still debating whether or not to use them.</li>
 
 i plan to document my entire study notebook in a blog series (finally using the tags for something useful hehe) \
 \
-ill keep hyperlinking the sections as i go alone, so you can check out blog by blog!
+ill keep hyperlinking the sections as i go along, so you can check out blog by blog!
 
 <br />
 
 ## step 3: the study series
+nothing here yet! i will post hyperlinks here to the blogs as i write them.
 
-### day 1 (july 11th)
-started the "explore azure machine learning workspace resources and assets" module.
-
-<BlogImage
-src="/blogs/ms-dp100/module1.png"
-alt="module 1 submodules"
-caption="not too shabby - i should know most of this stuff already since ive worked with it before"
-source="https://learn.microsoft.com/en-us/training/paths/explore-azure-machine-learning-workspace/"
-/>
-
-the first two submodules detail what is in a machine learning service (the workspace) as well as how to create one.
-in order to make one, you need to:
-
-<BlogList>
-<li>get access to an azure account and subscription (as you do with most cloud services)</li>
-<li>create a resource group (aka a container to organize an azure "solution")</li>
-<li>create a machine learning workspace (the actual service - "workspace" and "service" seem to be used interchangeably)</li>
-</BlogList>
-
-there are multiple ways to do the last step as well, those methods being:
-
-<BlogList>
-<li>using the azure portal (yay, fancy ui)</li>
-<li>using the azure command line interface (cli)</li>
-<li>using the python sdk</li>
-</BlogList>
-
-i tried to create a workspace using the azure portal, and it was pretty straightforward.
-in the future, i would like to try using the sdk. clis are usually not my thing, and i prefer using either the 
-portal of the sdk for the time being. they provided some nice code snippets though!
-
-<BlogCode language="python" title="creating workspace (ripped from the material)" copy="false">
-{`
-from azure.ai.ml.entities import Workspace
-
-workspace_name = "mlw-example"
-
-ws_basic = Workspace(
-    name=workspace_name,
-    location="eastus",
-    display_name="Basic workspace-example",
-    description="This example shows how to create a basic workspace",
-)
-ml_client.workspaces.begin_create(ws_basic)
-`}
-</BlogCode>
-
-<BlogImage
-src="/blogs/ms-dp100/created-azure-portal.png"
-alt="created workspace in azure portal"
-caption="i created a workspace! yay!"
-/>
-
-
+<br />
 
 ## step 4: taking the test <span id="actual-test"/>
 i have not taken the test yet, as it is set for august 12th. i will update this section
@@ -144,7 +97,7 @@ also i really need to fix my website code. that will probably be my next blog
 <BlogImage
 src="/blogs/ms-dp100/kc.png"
 alt="kc checking my source code"
-caption="thank you so much kc for checking up and improving my code ;-; i really need that"
+caption="thank you so much kc for checking up and improving my code"
 style={{border: "1px solid white"}}
 />
 

@@ -3,8 +3,61 @@ title: "ms-dp100 self-learning course: module 1"
 date: "2025-07-11"
 updated: "2025-07-11"
 description: "my knowledge base of the microsoft dp-100 self-learning course (first module)"
-tags: ["ms-dp100", "series"]
+tags: ["ms-dp100-series", "series"]
 ---
 
 this is my overview/notes for the first module of the microsoft dp-100 self-learning course! 
 i hope you find this helpful :)
+
+### day 1 (july 11th)
+started the "explore azure machine learning workspace resources and assets" module.
+
+<BlogImage
+src="/blogs/ms-dp100/module1.png"
+alt="module 1 submodules"
+caption="not too shabby - i should know most of this stuff already since ive worked with it before"
+source="https://learn.microsoft.com/en-us/training/paths/explore-azure-machine-learning-workspace/"
+/>
+
+the first two submodules detail what is in a machine learning service (the workspace) as well as how to create one.
+in order to make one, you need to:
+
+<BlogList>
+<li>get access to an azure account and subscription (as you do with most cloud services)</li>
+<li>create a resource group (aka a container to organize an azure "solution")</li>
+<li>create a machine learning workspace (the actual service - "workspace" and "service" seem to be used interchangeably)</li>
+</BlogList>
+
+there are multiple ways to do the last step as well, those methods being:
+
+<BlogList>
+<li>using the azure portal (yay, fancy ui)</li>
+<li>using the azure command line interface (cli)</li>
+<li>using the python sdk</li>
+</BlogList>
+
+i tried to create a workspace using the azure portal, and it was pretty straightforward.
+in the future, i would like to try using the sdk. clis are usually not my thing, and i prefer using either the 
+portal of the sdk for the time being. they provided some nice code snippets though!
+
+<BlogCode language="python" title="creating workspace (ripped from the material)" copy="false">
+{`
+from azure.ai.ml.entities import Workspace
+
+workspace_name = "mlw-example"
+
+ws_basic = Workspace(
+    name=workspace_name,
+    location="eastus",
+    display_name="Basic workspace-example",
+    description="This example shows how to create a basic workspace",
+)
+ml_client.workspaces.begin_create(ws_basic)
+`}
+</BlogCode>
+
+<BlogImage
+src="/blogs/ms-dp100/created-azure-portal.png"
+alt="created workspace in azure portal"
+caption="i created a workspace! yay!"
+/>
