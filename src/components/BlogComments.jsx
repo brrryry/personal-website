@@ -54,8 +54,8 @@ export function BlogComments({ blogId }) {
             const commentData = await response.json();
 
             if (!response.ok) {
-                setError(commentData.error || "failed to post comment");
-                throw new Error(commentData.error || "failed to post comment");
+                setError(commentData.reason || "failed to post comment");
+                throw new Error(commentData.reason || "failed to post comment");
             }
 
             setComments([...comments, commentData]);

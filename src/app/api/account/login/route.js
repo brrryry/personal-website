@@ -1,22 +1,20 @@
 import { authenticateAccount } from "@/lib/accounts";
 import { NextResponse } from "next/server";
 
+import { handleError, RouteError } from "@/lib/errors";
+
 export async function POST(req) {
     try {
         const { username, password } = await req.json();
-    
-        // Validate input
-        if (!username || !password) {
-        return new Response(JSON.stringify({ error: "username and password are required" }), { status: 400 });
-        }
     
         // Authenticate the account
         const account = await authenticateAccount(username, password);
     
         // Return the authenticated account details
-        return new Response(JSON.stringify(account), { status: 200 });
+        return NextResponse.json(account, { status: 200 });
     } catch (error) {
-        console.error("Authentication error:", error);
-        return NextResponse.json({ error: error.error || "authentication failed" }, { status: error.status || 500 });
+        let err = RouteError.fromBaseError(error, "post /api/account/login");
+        return handleError(err);
     }
 }
+
