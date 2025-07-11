@@ -16,20 +16,20 @@ const Login = () => {
 
         //validate username and password
         try {
-            await login(username, password);
-            
-            // go back to previous page or home page after successful login
-            const previousPage = document.referrer || "/";
+            if(await login(username, password)) {
+                // go back to previous page or home page after successful login
+                const previousPage = document.referrer || "/";
 
-            // Redirect to the previous page or home page
-            window.location.href = previousPage;
+                // Redirect to the previous page or home page
+                window.location.href = previousPage;
+            }
         } catch(err) {
             //console.error("Login failed:", err);
             // Show error message to user
             const errorElement = document.querySelector(".text-red-300");
             if (errorElement) {
                 errorElement.classList.remove("hidden");
-                errorElement.textContent = err.message.toLowerCase();
+                errorElement.textContent = err.reason;
             }
         }
 

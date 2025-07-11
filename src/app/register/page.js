@@ -36,9 +36,11 @@ const Register = () => {
 
         const data = await response.json();
 
-        if (!response.ok) {;
-            throw new Error(data.error || "failed to register");
+        if(data.status === "failed") {
+            setError(data.reason || "registration failed due to an unknown error.");
+            return;
         }
+
     
         // Redirect to login or home page
         window.location.href = "/login";

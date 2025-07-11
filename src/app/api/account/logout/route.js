@@ -1,5 +1,8 @@
 import { logoutAccount } from "@/lib/accounts";
 
+import { handleError, RouteError } from "@/lib/errors";
+import { NextResponse } from "../../../../../node_modules/next/server";
+
 export async function POST(req) {
     try {
         // Parse the request body to get the session ID
@@ -9,9 +12,9 @@ export async function POST(req) {
         await logoutAccount(sessionId);
 
         // Return a success response
-        return new Response(JSON.stringify({ message: "Logout successful" }), { status: 200 });
+        return NextResponse.json({ message: "logged out successfully" }, { status: 200 });
     } catch (error) {
-        console.error("Logout error:", error);
-        return new Response(JSON.stringify({ error: error.error || "Logout failed" }), { status: error.status || 500 });
+        let err = RouteError.fromBaseError(error, "post /api/account/logout");
+        return handleError(err);
     }
 }

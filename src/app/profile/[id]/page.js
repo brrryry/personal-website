@@ -18,11 +18,14 @@ const Profile = ({params}) => {
                     throw new Error("failed to fetch profile");
                 }
                 const data = await response.json();
-                console.log(data);
-                setUsername(data.account.username);
-                setComments(data.comments || []);
+                
+                if (!data.account) setError(data.reason);
+                else {
+                    setUsername(data.account.username || "");
+                    setComments(data.comments || []);
+                }
             } catch (error) {
-                setError(error.message);
+                setError(error.reason);
             }
         };
 
