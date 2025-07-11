@@ -1,0 +1,150 @@
+---
+title: "the microsoft dp-100 experience"
+date: "2025-07-11"
+updated: "2025-07-11"
+description: "what in the world is a data scientist anyway"
+tags: ["ms-dp100"]
+---
+
+this summer, i had the opportunity to go to the insure+e program in normal, il.
+i made a blog about it [here](/blog/insure-2025). \
+\
+however, this was only part of my summer (most of june). now, im back at home
+and continuing to work on what we started. however, i need to do **more** if 
+i want to get a job in this market. thus, i wanted certifications. \
+\
+i looked online at dozens of applications (and applied to most of them),
+and...not gonna lie, i got rejected. a **lot**. however, what i also noticed is that
+a lot of data scientist jobs required knowledge in cloud computing. in particular,
+i saw a lot of aws and azure requirements (and a bit of gcp as well). 
+so...i decided to prove that i knew this stuff. i have done my fair share of projects,
+but they are all incomplete and not published. so, whats the next best way 
+to prove that i know this stuff? **certifications**. \
+\
+aight, lets do this.
+
+<br />
+
+## step 1: signing up <span id="step-1"/>
+after some thinking, i decided to go with the microsoft dp-100 certification to start (as you can see in the title).
+"azure data scientist associate". not a bad title! 
+
+<BlogImage
+src="/blogs/ms-dp100/logo.png"
+alt="microsoft dp-100 description"
+caption="wow, it even has a fancy logo on it or something"
+source="https://learn.microsoft.com/en-us/credentials/certifications/azure-data-scientist/?practice-assessment-type=certification"
+/>
+
+the first thing i did before anything else was sign up for a testing date.
+i am someone that tends to procrastinate a lot if i dont have a deadline, so i set one.
+my official testing date **is august 12th, 2025**. (note: i am using "is" because
+at the time of writing this, i have not taken the test yet). \
+\
+the test fees were pretty intimidating, but i want to believe that it is
+worth it in the long run. the test costed approximately **$91**, and i 
+decided to take it in person (i heard that taking it online was...quite annoying). \
+\
+great! im signed up. now, i have to study.
+
+<br />
+
+## step 2: study plan
+so...im not really good at studying. that makes things hard... \
+\
+first off, i looked at the self-paced learning path.
+microsoft seemed to estimate that it would take 18 hours to complete.
+i have a month, and i am completely unemployed and free (aside from working on 
+the insure+e publication and polishing my website).
+so, i decided to contribute 2 hours a day to looking at this course. \
+\
+after searching for valuable resources online (doomscrolling on reddit),
+i found a few other places to study.
+
+<BlogList>
+<li><a href="https://www.coursera.org/professional-certificates/azure-data-scientist/paidmedia?utm_medium=sem&utm_source=gg&utm_campaign=b2c_namer_azure-data-scientist_microsoft_ftcof_professional-certificates_px_dr_bau_gg_sem_pr-bd_us-ca_en_m_hyb_23-11_x&campaignid=20744124176&adgroupid=158298290067&device=c&keyword=microsoft%20data%20science%20certification&matchtype=b&network=g&devicemodel=&creativeid=679614698819&assetgroupid=&targetid=kwd-429257814677&extensionid=&placement=&gad_source=1&gad_campaignid=20744124176&gclid=CjwKCAjw7MLDBhAuEiwAIeXGIYfQmRtxUsJ3WowQoM4C_ZbzTp7XECkB4Bi5peCJYZJur7Rg61mNhhoCLD8QAvD_BwE" target="_blank">coursera</a> - honestly, i wish i had found this earlier. they had a discount voucher
+if you completed the course. i could have paid half the price of the test ;-;</li>
+<li><a href="https://learn.microsoft.com/en-us/azure/machine-learning/concept-v2?view=azureml-api-2" target="_blank">sdk 2.0</a> - just...the sdk. it was strongly recommended by a lot of people
+to know it inside and out. i was already planning on using this beforehand!</li>
+<li>measureup/skillcertpro(?) - practice test sites. kinda controversial in terms 
+of effectiveness. still debating whether or not to use them.</li>
+<li><a href="https://github.com/aislanmano/mslearn-dp100/tree/main" target="_blank">github repository</a> - has lots of implementations of the exercises in the course.</li>
+</BlogList>
+
+i plan to document my entire study notebook in a blog series (finally using the tags for something useful hehe) \
+\
+ill keep hyperlinking the sections as i go alone, so you can check out blog by blog!
+
+<br />
+
+## step 3: the study series
+
+### day 1 (july 11th)
+started the "explore azure machine learning workspace resources and assets" module.
+
+<BlogImage
+src="/blogs/ms-dp100/module1.png"
+alt="module 1 submodules"
+caption="not too shabby - i should know most of this stuff already since ive worked with it before"
+source="https://learn.microsoft.com/en-us/training/paths/explore-azure-machine-learning-workspace/"
+/>
+
+the first two submodules detail what is in a machine learning service (the workspace) as well as how to create one.
+in order to make one, you need to:
+
+<BlogList>
+<li>get access to an azure account and subscription (as you do with most cloud services)</li>
+<li>create a resource group (aka a container to organize an azure "solution")</li>
+<li>create a machine learning workspace (the actual service - "workspace" and "service" seem to be used interchangeably)</li>
+</BlogList>
+
+there are multiple ways to do the last step as well, those methods being:
+
+<BlogList>
+<li>using the azure portal (yay, fancy ui)</li>
+<li>using the azure command line interface (cli)</li>
+<li>using the python sdk</li>
+</BlogList>
+
+i tried to create a workspace using the azure portal, and it was pretty straightforward.
+in the future, i would like to try using the sdk. clis are usually not my thing, and i prefer using either the 
+portal of the sdk for the time being. they provided some nice code snippets though!
+
+<BlogCode language="python" title="creating workspace (ripped from the material)" copy="false">
+{`
+from azure.ai.ml.entities import Workspace
+
+workspace_name = "mlw-example"
+
+ws_basic = Workspace(
+    name=workspace_name,
+    location="eastus",
+    display_name="Basic workspace-example",
+    description="This example shows how to create a basic workspace",
+)
+ml_client.workspaces.begin_create(ws_basic)
+`}
+</BlogCode>
+
+<BlogImage
+src="/blogs/ms-dp100/created-azure-portal.png"
+alt="created workspace in azure portal"
+caption="i created a workspace! yay!"
+/>
+
+
+
+## step 4: taking the test <span id="actual-test"/>
+i have not taken the test yet, as it is set for august 12th. i will update this section
+and keep writing beyond here once i take the test! :) \
+\
+also i really need to fix my website code. that will probably be my next blog
+(unless by some miracle i finish ragsec before my own website??)
+
+<BlogImage
+src="/blogs/ms-dp100/kc.png"
+alt="kc checking my source code"
+caption="thank you so much kc for checking up and improving my code ;-; i really need that"
+style={{border: "1px solid white"}}
+/>
+
