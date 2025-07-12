@@ -9,7 +9,7 @@ import { BlogCode } from "@/components/BlogCode";
 
 import NotFound from "@/app/[...not_found]/page";
 
-import {BlogComments} from "@/components/BlogComments";
+import { BlogComments } from "@/components/BlogComments";
 
 //import code highlighting css
 import "@/../public/styles/atom-one-dark.css";
@@ -18,7 +18,6 @@ export default async function BlogPost({ params }) {
   //get the files from posts/params.id
 
   const { content, data, notFound } = await getPostFromId(params.id);
-
 
   if (notFound) {
     return <NotFound />;
@@ -29,11 +28,7 @@ export default async function BlogPost({ params }) {
       <article className="min-w-0 max-w-4xl">
         - - -<h3>{data.title}</h3>
         <p>originally created on {data.date}</p>
-        {data.updated && (
-          <p>
-            updated on {data.updated}{" "}
-          </p>
-        )}
+        {data.updated && <p>updated on {data.updated} </p>}
         <p>
           tags: [
           {data.tags.sort().map((tag, i) => {
@@ -52,8 +47,6 @@ export default async function BlogPost({ params }) {
       </article>
 
       <BlogComments blogId={params.id} />
-
-
     </div>
   );
 }

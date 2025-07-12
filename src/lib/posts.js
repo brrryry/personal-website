@@ -18,7 +18,10 @@ export function getSortedPostsData(tag = "") {
     return fs.readdirSync(dir).flatMap((file) => {
       const fullPath = path.join(dir, file);
       if (fs.statSync(fullPath).isDirectory()) {
-        return [path.relative(postsDirectory, fullPath), ...getAllSubdirectories(fullPath)];
+        return [
+          path.relative(postsDirectory, fullPath),
+          ...getAllSubdirectories(fullPath),
+        ];
       }
       return [];
     });
@@ -29,10 +32,8 @@ export function getSortedPostsData(tag = "") {
     subdirectories.flatMap((subdir) => {
       if (subdir === "drafts") return []; // skip drafts subdirectory
       const subdirPath = path.join(postsDirectory, subdir);
-      return fs
-        .readdirSync(subdirPath)
-        .map((file) => path.join(subdir, file));
-    })
+      return fs.readdirSync(subdirPath).map((file) => path.join(subdir, file));
+    }),
   );
 
   const allPostsData = fileNames
@@ -40,7 +41,6 @@ export function getSortedPostsData(tag = "") {
     .map((fileName) => {
       // Remove ".md" from file name to get id and remove all prefixes like "drafts/"
       let id = fileName.replace(/\.mdx$/, "").replace(/^.*[\\/]/, "");
-
 
       // Read markdown file as string
 
@@ -85,7 +85,7 @@ export async function getPostFromId(id) {
   let fileContent = null;
 
   const fullPath = path.join(postsDirectory, post.fileName);
-  console.log(fullPath)
+  console.log(fullPath);
   try {
     fileContent = fs.readFileSync(fullPath, "utf8");
   } catch (e) {

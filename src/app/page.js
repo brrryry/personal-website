@@ -4,8 +4,11 @@ export default function Home() {
   return (
     <div className="space-y-5">
       <p>
-        latest news: {" "}
-        <a href="/blog/pdev-ep3-accounts">comment section</a> and working on <a href="https://github.com/brrryry/rag" target="_blank">rag security</a>
+        latest news: <a href="/blog/pdev-ep3-accounts">comment section</a> and
+        working on{" "}
+        <a href="https://github.com/brrryry/rag" target="_blank">
+          rag security
+        </a>
       </p>
 
       <br />
@@ -13,7 +16,9 @@ export default function Home() {
       <p>heres some stuff about me:</p>
       <ul className="list-disc mx-6 space-y-2">
         <li>
-          im a college student at stevens institute of technology (grad. 2026 with a m.s. in data science, grad. 2025 with a b.s. in computer science).
+          im a college student at stevens institute of technology (grad. 2026
+          with a m.s. in data science, grad. 2025 with a b.s. in computer
+          science).
         </li>
         <li>i like data science, but im down for anything cs related.</li>
         <li>i play tennis and badminton.</li>

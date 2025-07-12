@@ -13,8 +13,7 @@ export default async function BlogTags({ params }) {
       {/* Tags on top for small screens */}
       <div className="block md:hidden mb-4">
         <div className="text-left">
-          tags <br />
-          - - -
+          tags <br />- - -
           <div>
             <a href="/blog">back to all tags</a>
           </div>
@@ -35,10 +34,7 @@ export default async function BlogTags({ params }) {
                     tags: [
                     {post.data.tags.sort().map((tag, i) => {
                       return (
-                        <a
-                          href={`/blog/tag/${tag}`}
-                          key={post.id + tag}
-                        >
+                        <a href={`/blog/tag/${tag}`} key={post.id + tag}>
                           {i < post.data.tags.length - 1 ? tag + ", " : tag}
                         </a>
                       );
