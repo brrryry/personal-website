@@ -16,9 +16,5 @@ export default async function SessionLayout({ children }) {
     console.error("Session fetch failed:", e);
   }
 
-  return (
-    <SessionProvider session={account}>
-      {children}
-    </SessionProvider>
-  );
+  return <SessionProvider session={account}>{children}</SessionProvider>;
 }

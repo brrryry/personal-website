@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Link from "next/link";
 import { useState } from "react";
@@ -26,7 +26,9 @@ const Navbar = () => {
     <nav className="bg-transparent p-0 h-auto md:h-32 flex flex-col md:flex-row justify-between items-start md:items-center">
       <div className="flex justify-between items-center w-full py-4 md:py-0 md:w-auto">
         <Link href="/" className="flex items-center p-0 mx-0">
-          <p className="text-2xl text-purple-200 font-bold whitespace-nowrap mx-0">bryan chan.</p>
+          <p className="text-2xl text-purple-200 font-bold whitespace-nowrap mx-0">
+            bryan chan.
+          </p>
         </Link>
         <button
           onClick={toggleMobileMenu}
@@ -37,11 +39,17 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Menu */}
-      <div className={`flex-col space-y-1 mx-0 pb-5 items-start md:hidden ${mobileOpen ? "flex" : "hidden"}`}>
+      <div
+        className={`flex-col space-y-1 mx-0 pb-5 items-start md:hidden ${mobileOpen ? "flex" : "hidden"}`}
+      >
         <Link href="/" className="flex items-center mx-0">
           <p className="text-2xl text-purple-200 font-bold">-- home</p>
         </Link>
-        <Link href="/Chan_Bryan_Resume.pdf" target="_blank" className="flex items-center mx-0">
+        <Link
+          href="/Chan_Bryan_Resume.pdf"
+          target="_blank"
+          className="flex items-center mx-0"
+        >
           <p className="text-2xl text-purple-200 font-bold">-- resume</p>
         </Link>
         <Link href="/projects" className="flex items-center mx-0">
@@ -51,7 +59,11 @@ const Navbar = () => {
           <p className="text-2xl text-purple-200 font-bold">-- blog</p>
         </Link>
         {session?.sessionId && !loading && (
-          <Link href="/" onClick={handleLogout} className="flex items-center mx-0">
+          <Link
+            href="/"
+            onClick={handleLogout}
+            className="flex items-center mx-0"
+          >
             <p className="text-2xl text-purple-200 font-bold">-- logout</p>
           </Link>
         )}

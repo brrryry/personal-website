@@ -1,18 +1,23 @@
-import { MongoClient } from 'mongodb';
-import dotenv from 'dotenv';
+import { MongoClient } from "mongodb";
+import dotenv from "dotenv";
 
 dotenv.config();
 
 let _connection = undefined;
 let _db = undefined;
 
-const env = process.env.NODE_ENV || 'development';
-
+const env = process.env.NODE_ENV || "development";
 
 const mongoConfig = {
-  serverUrl: (env === "production") ? process.env.MONGO_SERVER_URL : process.env.MONGO_SERVER_URL_DEV,
-  database: (env === "production") ? process.env.MONGO_DB_NAME : process.env.MONGO_DB_NAME_DEV,
-}
+  serverUrl:
+    env === "production"
+      ? process.env.MONGO_SERVER_URL
+      : process.env.MONGO_SERVER_URL_DEV,
+  database:
+    env === "production"
+      ? process.env.MONGO_DB_NAME
+      : process.env.MONGO_DB_NAME_DEV,
+};
 
 const dbConnection = async () => {
   if (!_connection) {

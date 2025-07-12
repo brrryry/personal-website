@@ -1,26 +1,28 @@
 // components/SessionContext.js
-'use client';
+"use client";
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from "react";
 
 const SessionContext = createContext();
 
-export function SessionProvider({children}) {
+export function SessionProvider({ children }) {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-
     //get "sessionid" cookie
-    const sessionid = document.cookie.split('; ').find(row => row.startsWith('sessionid='))?.split('=')[1];
+    const sessionid = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("sessionid="))
+      ?.split("=")[1];
     setLoading(true);
     const fetchSession = async (sessionid) => {
       try {
         //post request to /api/account/session
-        const response = await fetch('/api/account/session', {
-          method: 'POST',
+        const response = await fetch("/api/account/session", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({ sessionId: sessionid }),
         });
@@ -28,9 +30,8 @@ export function SessionProvider({children}) {
 
         if (data.status === "failed") setSession(null);
         else setSession(data);
-
       } catch (error) {
-        console.error('error fetching session:', error);
+        console.error("error fetching session:", error);
       } finally {
         setLoading(false);
       }
@@ -42,10 +43,10 @@ export function SessionProvider({children}) {
   const login = async (username, password) => {
     try {
       setLoading(true);
-      const response = await fetch('/api/account/login', {
-        method: 'POST',
+      const response = await fetch("/api/account/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ username, password }),
       });
@@ -53,7 +54,7 @@ export function SessionProvider({children}) {
       const data = await response.json();
       setLoading(false);
 
-      if(data.status === "failed") throw data;
+      if (data.status === "failed") throw data;
 
       document.cookie = `sessionid=${data.sessionId}; path=/; max-age=604800;`; // 7 days
 
@@ -63,28 +64,28 @@ export function SessionProvider({children}) {
       setSession(null);
       throw error;
     }
-  }
+  };
 
   const logout = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/account/logout', {
-        method: 'POST',
+      const response = await fetch("/api/account/logout", {
+        method: "POST",
         body: JSON.stringify({ sessionId: session?.sessionId }),
       });
 
       setLoading(false);
 
       if (!response.ok) {
-        throw new Error('logout failed');
+        throw new Error("logout failed");
       }
 
       // Clear the session cookie
-      document.cookie = 'sessionid=; path=/; max-age=0;'; // Clear the cookie
+      document.cookie = "sessionid=; path=/; max-age=0;"; // Clear the cookie
 
       setSession(null);
     } catch (error) {
-      console.error('logout error:', error);
+      console.error("logout error:", error);
     }
   };
 
@@ -98,7 +99,7 @@ export function SessionProvider({children}) {
 export function useSession() {
   const context = useContext(SessionContext);
   if (!context) {
-    throw new Error('useSession must be used within a SessionProvider');
+    throw new Error("useSession must be used within a SessionProvider");
   }
   return context;
 }
