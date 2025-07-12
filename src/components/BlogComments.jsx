@@ -160,7 +160,7 @@ export function BlogComments({ blogId }) {
             - - - - -
             <h3>comments</h3>
 
-            {comments.length === 0 && <p>No comments yet. Be the first to comment!</p>}
+            {comments.length === 0 && <p>no comments yet. be the first to comment!</p>}
 
             {comments.length > 0 && (
                 <ul>
