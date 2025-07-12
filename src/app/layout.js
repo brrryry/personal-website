@@ -37,41 +37,41 @@ export default async function RootLayout({ children, hideFooter = false }) {
 
               <SpotifyEmbed />
 
-            {process.env.COMMIT_HASH && (
+              {process.env.COMMIT_HASH && (
+                <p>
+                  last commit hash:{" "}
+                  <a
+                    href={`https://github.com/brrryry/personal-website/commit/${process.env.FULL_COMMIT_HASH}`}
+                    target="_blank"
+                  >
+                    {process.env.COMMIT_HASH}
+                  </a>{" "}
+                  | web version: {process.env.APP_VERSION}
+                </p>
+              )}
               <p>
-                last commit hash:{" "}
+                <a href="https://nextjs.org/" target="_blank">
+                  next.js
+                </a>
+                {" | "}
+                <a href="https://tailwindcss.com/" target="_blank">
+                  tailwindcss
+                </a>
+                {" | "}
+                <a href="https://vercel.com/" target="_blank">
+                  vercel
+                </a>
+              </p>
+              <p>
+                source code available{" "}
                 <a
-                  href={`https://github.com/brrryry/personal-website/commit/${process.env.FULL_COMMIT_HASH}`}
+                  href="https://github.com/brrryry/personal-website"
                   target="_blank"
                 >
-                  {process.env.COMMIT_HASH}
-                </a>{" "}
-                | web version: {process.env.APP_VERSION}
+                  here
+                </a>
               </p>
-            )}
-            <p>
-              <a href="https://nextjs.org/" target="_blank">
-                next.js
-              </a>
-              {" | "}
-              <a href="https://tailwindcss.com/" target="_blank">
-                tailwindcss
-              </a>
-              {" | "}
-              <a href="https://vercel.com/" target="_blank">
-                vercel
-              </a>
-            </p>
-            <p>
-              source code available{" "}
-              <a
-                href="https://github.com/brrryry/personal-website"
-                target="_blank"
-              >
-                here
-              </a>
-            </p>
-          </footer>
+            </footer>
           )}
         </main>
       </body>
