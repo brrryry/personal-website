@@ -50,15 +50,11 @@ export default async function RootLayout({ children, hideFooter = false }) {
             )}
             <p>
               <a href="https://nextjs.org/" target="_blank">
-                next.js
+                nextjs
               </a>
               {" | "}
               <a href="https://tailwindcss.com/" target="_blank">
                 tailwindcss
-              </a>
-              {" | "}
-              <a href="https://vercel.com/" target="_blank">
-                vercel
               </a>
             </p>
             <p>
