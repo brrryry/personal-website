@@ -26,7 +26,7 @@ export const isNonEmptyObject = (obj, name = "Object input") => {
 export const isValidString = (
   input,
   name = "String input",
-  allow_empty = false
+  allow_empty = false,
 ) => {
   if (!input) throw new BadRequestError(`${name} is not provided.`);
   if (typeof input !== "string")

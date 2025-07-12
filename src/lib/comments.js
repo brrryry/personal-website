@@ -1,34 +1,37 @@
-import {comments} from './accounts/mongoCollections.js';
-import {ObjectId} from 'mongodb';
+import { comments } from "./accounts/mongoCollections.js";
+import { ObjectId } from "mongodb";
 
-import { getAccountById } from './accounts.js';
+import { getAccountById } from "./accounts.js";
 
-import * as typecheck from './typecheck.js';
-import { BadRequestError, RouteError, NotFoundError } from './errors.ts';
+import * as typecheck from "./typecheck.js";
+import { BadRequestError, RouteError, NotFoundError } from "./errors.ts";
 
 const createComment = async (accountId, blogId, content) => {
   const commentCollection = await comments();
 
-  console.log('Creating comment for blog:', blogId, 'by account:', accountId);
+  console.log("Creating comment for blog:", blogId, "by account:", accountId);
 
-  typecheck.isValidString(accountId, 'account ID');
-  typecheck.isValidString(blogId, 'blog ID');
-  typecheck.isValidString(content, 'content');
+  typecheck.isValidString(accountId, "account ID");
+  typecheck.isValidString(blogId, "blog ID");
+  typecheck.isValidString(content, "content");
 
   if (!ObjectId.isValid(accountId)) {
-    throw new BadRequestError('invalid account id format')
+    throw new BadRequestError("invalid account id format");
   }
 
   //make sure only one comment can be made by an account on a blog
-  const existingComment = await commentCollection.findOne({ accountId: new ObjectId(accountId), blogId: blogId });
+  const existingComment = await commentCollection.findOne({
+    accountId: new ObjectId(accountId),
+    blogId: blogId,
+  });
   if (existingComment) {
-    throw new BadRequestError('you have already commented on this blog');
+    throw new BadRequestError("you have already commented on this blog");
   }
 
   const account = await getAccountById(accountId);
 
   if (content.length > 500) {
-    throw new BadRequestError('content cannot exceed 500 characters');
+    throw new BadRequestError("content cannot exceed 500 characters");
   }
 
   const newComment = {
@@ -36,30 +39,30 @@ const createComment = async (accountId, blogId, content) => {
     username: account.username,
     blogId: blogId,
     content: content,
-    createdAt: new Date()
+    createdAt: new Date(),
   };
 
   const insertInfo = await commentCollection.insertOne(newComment);
-  
+
   if (insertInfo.insertedCount === 0) {
     throw new RouteError(`could not add comment`);
   }
 
   return {
     _id: insertInfo.insertedId.toString(),
-    ...newComment
+    ...newComment,
   };
-}
+};
 
 const getBlogComments = async (blogId) => {
   const commentCollection = await comments();
   let returnComments = [];
 
-  typecheck.isValidString(blogId, 'blog id');
+  typecheck.isValidString(blogId, "blog id");
 
-  const commentsList = await commentCollection.find({ blogId: blogId }).toArray();
-
-
+  const commentsList = await commentCollection
+    .find({ blogId: blogId })
+    .toArray();
 
   for (let comment of commentsList) {
     let acc = await getAccountById(comment.accountId.toString());
@@ -72,57 +75,62 @@ const getBlogComments = async (blogId) => {
       content: comment.content,
       createdAt: comment.createdAt,
       updatedAt: comment.updatedAt ? comment.updatedAt : null,
-      username: user
+      username: user,
     });
   }
 
   return returnComments;
-
-}
+};
 
 const editComment = async (commentId, newContent, accountId) => {
   const commentCollection = await comments();
 
-  typecheck.isValidString(commentId, 'comment id');
-  typecheck.isValidString(newContent, 'new content');
-  typecheck.isValidString(accountId, 'account id');
+  typecheck.isValidString(commentId, "comment id");
+  typecheck.isValidString(newContent, "new content");
+  typecheck.isValidString(accountId, "account id");
 
   if (!ObjectId.isValid(commentId)) {
-    throw new BadRequestError('invalid comment id format');
+    throw new BadRequestError("invalid comment id format");
   }
 
   if (newContent.length > 500) {
-    throw new BadRequestError('content cannot exceed 500 characters');
+    throw new BadRequestError("content cannot exceed 500 characters");
   }
 
-  const comment = await commentCollection.findOne({ _id: new ObjectId(commentId) });
-  if (!comment) throw new NotFoundError(`comment with id "${commentId}" not found`);
-  if (comment.accountId.toString() !== accountId) throw new BadRequestError('you can only edit your own comments');
+  const comment = await commentCollection.findOne({
+    _id: new ObjectId(commentId),
+  });
+  if (!comment)
+    throw new NotFoundError(`comment with id "${commentId}" not found`);
+  if (comment.accountId.toString() !== accountId)
+    throw new BadRequestError("you can only edit your own comments");
 
   const updateInfo = await commentCollection.updateOne(
     { _id: new ObjectId(commentId) },
-    { $set: { content: newContent,
-      updatedAt: new Date()
-     } }
+    { $set: { content: newContent, updatedAt: new Date() } },
   );
 
   if (updateInfo.modifiedCount === 0) {
-    throw new NotFoundError(`comment with id "${commentId}" not found or no changes made`);
+    throw new NotFoundError(
+      `comment with id "${commentId}" not found or no changes made`,
+    );
   }
 
   return await getCommentById(commentId);
-}
+};
 
 const getCommentById = async (commentId) => {
   const commentCollection = await comments();
 
-  typecheck.isValidString(commentId, 'comment id');
+  typecheck.isValidString(commentId, "comment id");
 
   if (!ObjectId.isValid(commentId)) {
-    throw new BadRequestError('invalid comment id format');
+    throw new BadRequestError("invalid comment id format");
   }
 
-  const comment = await commentCollection.findOne({ _id: new ObjectId(commentId) });
+  const comment = await commentCollection.findOne({
+    _id: new ObjectId(commentId),
+  });
 
   if (!comment) {
     throw new NotFoundError(`comment with id "${commentId}" not found`);
@@ -136,33 +144,37 @@ const getCommentById = async (commentId) => {
     createdAt: comment.createdAt,
     updatedAt: comment.updatedAt ? comment.updatedAt : null,
   };
-}
+};
 
 const deleteComment = async (commentId) => {
   const commentCollection = await comments();
 
-  typecheck.isValidString(commentId, 'comment id');
+  typecheck.isValidString(commentId, "comment id");
 
   if (!ObjectId.isValid(commentId)) {
-    throw new BadRequestError('invalid comment id format');
+    throw new BadRequestError("invalid comment id format");
   }
 
-  const deleteInfo = await commentCollection.deleteOne({ _id: new ObjectId(commentId) });
+  const deleteInfo = await commentCollection.deleteOne({
+    _id: new ObjectId(commentId),
+  });
 
   if (deleteInfo.deletedCount === 0) {
     throw new NotFoundError(`comment with id "${commentId}" not found`);
   }
 
   return { deleted: true };
-}
+};
 
 const getUserComments = async (username) => {
   const commentCollection = await comments();
   let returnComments = [];
 
-  typecheck.isValidString(username, 'username');
+  typecheck.isValidString(username, "username");
 
-  const commentsList = await commentCollection.find({ username: username }).toArray();
+  const commentsList = await commentCollection
+    .find({ username: username })
+    .toArray();
   for (let comment of commentsList) {
     let acc = await getAccountById(comment.accountId.toString());
     let user = acc.username;
@@ -174,12 +186,12 @@ const getUserComments = async (username) => {
       content: comment.content,
       createdAt: comment.createdAt,
       updatedAt: comment.updatedAt ? comment.updatedAt : null,
-      username: user
+      username: user,
     });
   }
 
   return returnComments;
-}
+};
 
 export {
   createComment,
@@ -188,4 +200,4 @@ export {
   getCommentById,
   deleteComment,
   getUserComments,
-}
+};

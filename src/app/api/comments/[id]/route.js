@@ -1,4 +1,9 @@
-import { getBlogComments, createComment, deleteComment, editComment } from "@/lib/comments";
+import {
+  getBlogComments,
+  createComment,
+  deleteComment,
+  editComment,
+} from "@/lib/comments";
 import { getAccountBySessionId } from "@/lib/accounts";
 import { NextResponse } from "next/server";
 import { handleError, RouteError } from "@/lib/errors";
@@ -9,9 +14,9 @@ export async function GET(req, { params }) {
 }
 
 export async function POST(req, { params }) {
-    const { content, sessionId } = await req.json();
+  const { content, sessionId } = await req.json();
 
-    try {
+  try {
     const account = await getAccountBySessionId(sessionId);
     const newComment = await createComment(account._id, params.id, content);
     return NextResponse.json(newComment);
@@ -29,8 +34,8 @@ export async function DELETE(req, { params }) {
     await deleteComment(commentId, account._id);
     return NextResponse.json({ message: "comment deleted successfully" });
   } catch (error) {
-      const err = RouteError.fromBaseError(error, "post /api/comments/[id]");
-      return handleError(err);
+    const err = RouteError.fromBaseError(error, "post /api/comments/[id]");
+    return handleError(err);
   }
 }
 
