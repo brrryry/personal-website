@@ -8,6 +8,7 @@ export function BlogComments({ blogId }) {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [error, setError] = useState(null);
+  const [commentLoading, setCommentLoading] = useState(false);
 
   // Edit state
   const [editingId, setEditingId] = useState(null);
@@ -45,6 +46,8 @@ export function BlogComments({ blogId }) {
     e.preventDefault();
     if (!newComment.trim()) return;
 
+    setCommentLoading(true);
+
     try {
       const response = await fetch(`/api/comments/${blogId}`, {
         method: "POST",
@@ -58,6 +61,8 @@ export function BlogComments({ blogId }) {
       });
 
       const commentData = await response.json();
+
+      setCommentLoading(false);
 
       if (commentData.status === "failed") {
         setError(commentData.reason || "failed to post comment");
@@ -74,6 +79,7 @@ export function BlogComments({ blogId }) {
 
   const handleDeleteComment = async (commentId) => {
     if (!confirm("Are you sure you want to delete this comment?")) return;
+    setCommentLoading(true);
     try {
       const response = await fetch(`/api/comments/${blogId}`, {
         method: "DELETE",
@@ -84,10 +90,13 @@ export function BlogComments({ blogId }) {
       });
 
       const res = await response.json();
+      setCommentLoading(false);
+
       if (res.status === "failed") {
         setError(res.reason || "failed to delete comment");
         throw new Error(res.reason || "failed to delete comment");
       }
+
 
       setComments(comments.filter((comment) => comment._id !== commentId));
       setError(null);
@@ -112,6 +121,7 @@ export function BlogComments({ blogId }) {
   const handleEditSave = async (commentId) => {
     if (!editContent.trim()) return;
     try {
+      setCommentLoading(true);
       const response = await fetch(`/api/comments/${blogId}`, {
         method: "PUT",
         headers: {
@@ -125,6 +135,7 @@ export function BlogComments({ blogId }) {
       });
 
       const updated = await response.json();
+      setCommentLoading(false);
 
       if (updated.status === "failed") {
         setError(updated.reason || "failed to edit comment");
@@ -188,11 +199,11 @@ export function BlogComments({ blogId }) {
                     <button
                       onClick={() => handleEditSave(comment._id)}
                       className="mr-2"
-                      disabled={loading}
+                      disabled={commentLoading}
                     >
                       save
                     </button>
-                    <button onClick={handleEditCancel}>cancel</button>
+                    <button onClick={handleEditCancel} disabled={commentLoading}>cancel</button>
                   </div>
                 </div>
               ) : (
@@ -271,10 +282,10 @@ export function BlogComments({ blogId }) {
           />
           <button
             type="submit"
-            disabled={loading || !session?.sessionId}
+            disabled={commentLoading || !session?.sessionId}
             className="h-full"
           >
-            post comment
+            {commentLoading ? "posting..." : "post Comment"}
           </button>
         </form>
       )}

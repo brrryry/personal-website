@@ -33,8 +33,7 @@ export function BlogCode({
 }) {
   const [code, setCode] = useState("");
 
-  // Convert children into raw HTML with preserved formatting
-  children = `<pre className="text-base lg: text-lg"><code className="language-${language}">${renderToString(children.split("\n").slice(1).join("\n"))}</code></pre>`; //the extensive children part is to remove a blank newline
+  children = `<pre className="text-base lg: text-lg"><code className="language-${language}">${renderToString(children.split(/\r?\n/).join("\n"))}</code></pre>`;
 
   useEffect(() => {
     (async () => {
