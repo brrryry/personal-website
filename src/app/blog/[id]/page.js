@@ -19,8 +19,22 @@ export default async function BlogPost({ params }) {
 
   const { content, data, notFound } = await getPostFromId(params.id);
 
+
   if (notFound) {
     return <NotFound />;
+  }
+
+  // set metadata for the page
+  if (typeof document !== "undefined") {
+    document.title = `${data.title} - Blog`;
+    document
+      .querySelector("meta[name='description']")
+      .setAttribute("content", data.description);
+  }
+
+  // set title for the page
+  if (typeof document !== "undefined") {
+    document.querySelector("h1").innerText = data.title;
   }
 
   return (

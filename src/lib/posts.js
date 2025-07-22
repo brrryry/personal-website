@@ -85,7 +85,6 @@ export async function getPostFromId(id) {
   let fileContent = null;
 
   const fullPath = path.join(postsDirectory, post.fileName);
-  console.log(fullPath);
   try {
     fileContent = fs.readFileSync(fullPath, "utf8");
   } catch (e) {
