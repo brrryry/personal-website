@@ -162,7 +162,6 @@ const authenticateAccount = async (username, password) => {
     throw new AuthenticationError(`incorrect username or password.`);
   }
 
-  
   const isPasswordValid = await bcrypt.compare(password, account.password);
   if (!isPasswordValid) {
     throw new AuthenticationError(`incorrect username or password.`);
