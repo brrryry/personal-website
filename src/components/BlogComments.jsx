@@ -97,7 +97,6 @@ export function BlogComments({ blogId }) {
         throw new Error(res.reason || "failed to delete comment");
       }
 
-
       setComments(comments.filter((comment) => comment._id !== commentId));
       setError(null);
     } catch (error) {
@@ -203,7 +202,12 @@ export function BlogComments({ blogId }) {
                     >
                       save
                     </button>
-                    <button onClick={handleEditCancel} disabled={commentLoading}>cancel</button>
+                    <button
+                      onClick={handleEditCancel}
+                      disabled={commentLoading}
+                    >
+                      cancel
+                    </button>
                   </div>
                 </div>
               ) : (
