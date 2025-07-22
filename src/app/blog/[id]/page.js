@@ -19,7 +19,6 @@ export default async function BlogPost({ params }) {
 
   const { content, data, notFound } = await getPostFromId(params.id);
 
-
   if (notFound) {
     return <NotFound />;
   }
