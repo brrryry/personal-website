@@ -1,17 +1,19 @@
 ---
-title: "ms-dp100 self-learning course: module 1.1"
+title: "ms-dp100 self-learning course: module 1"
 date: "2025-07-12"
-updated: "2025-07-12"
-description: "my knowledge base of the microsoft dp-100 self-learning course (module 1.1)"
+updated: "2025-07-27"
+description: "my knowledge base of the microsoft dp-100 self-learning course (module 1)"
 tags: ["ms-dp100-series", "series"]
 ---
 
+update (2025-07-27): i decided to make this post a bit more general - instead of just covering 1.1, it covers all of module 1. \
+\
 this is my overview/notes for the first module of the microsoft dp-100 self-learning course! 
 i hope you find this helpful :)
 
 
 <BlogImage
-src="/blogs/ms-dp100/slc/1-1/module1.png"
+src="/blogs/ms-dp100/slc/1/module1.png"
 alt="module 1 submodules"
 caption="not too shabby - i should know most of this stuff already since ive worked with it before"
 source="https://learn.microsoft.com/en-us/training/paths/explore-azure-machine-learning-workspace/"
@@ -58,7 +60,7 @@ ml_client.workspaces.begin_create(ws_basic)
 </BlogCode>
 
 <BlogImage
-src="/blogs/ms-dp100/slc/1-1/created-azure-portal.png"
+src="/blogs/ms-dp100/slc/1/created-azure-portal.png"
 alt="created workspace in azure portal"
 caption="i created a workspace! yay!"
 />
@@ -81,7 +83,7 @@ and azureml compute operator). however, there are a bunch of other roles that ca
 seen in the actual iam screen. custom roles can also be created.
 
 <BlogImage
-src="/blogs/ms-dp100/slc/1-1/roles.png"
+src="/blogs/ms-dp100/slc/1/roles.png"
 alt="roles in azure portal"
 caption="wow, theres a lot of options..."
 />
@@ -96,7 +98,7 @@ overwhelming. \
 essentially, roles are defined using a few general fields.
 
 <BlogImage
-src="/blogs/ms-dp100/slc/1-1/role-definition.png"
+src="/blogs/ms-dp100/slc/1/role-definition.png"
 alt="role definition properties"
 caption="a lot of role defintion properties..."
 source="https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions"
@@ -106,7 +108,7 @@ there are a few scopes that can be defined for a role as well.
 below is an image that shows this!
 
 <BlogImage
-src="/blogs/ms-dp100/slc/1-1/rbac-scope.png"
+src="/blogs/ms-dp100/slc/1/rbac-scope.png"
 alt="rbac scope levels"
 caption="the four scope levels"
 source="https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
@@ -130,7 +132,7 @@ is a web-based interface for managing machine learning resources.
 at a first glance, it looks somewhat self-explanatory.
 
 <BlogImage
-src="/blogs/ms-dp100/slc/1-1/mlstudio.png"
+src="/blogs/ms-dp100/slc/1/mlstudio.png"
 alt="azure machine learning studio"
 caption="azure machine learning studio"
 />
@@ -183,13 +185,13 @@ of course, you can create your own datastores. \
 i started looking around to see if i could find the datastores in the azure portal.
 
 <BlogImage
-src="/blogs/ms-dp100/slc/1-1/blobstore.png"
+src="/blogs/ms-dp100/slc/1/blobstore.png"
 alt="workspace blobstore in azure portal"
 caption="found the blobstore!"
 />
 
 <BlogImage
-src="/blogs/ms-dp100/slc/1-1/filestore.png"
+src="/blogs/ms-dp100/slc/1/filestore.png"
 alt="workspace filestore in azure portal"
 caption="found the filestore!"
 />
@@ -282,7 +284,7 @@ for now, i just created a cpu instance (i dont want to pay that much...).
 the process was pretty straightforward!
 
 <BlogImage
-src="/blogs/ms-dp100/slc/1-1/computeinstance.png"
+src="/blogs/ms-dp100/slc/1/computeinstance.png"
 alt="compute instance in azure portal"
 caption="creating a cpu compute instance"
 />
@@ -311,7 +313,7 @@ that are specified in the course:
 this submodule just gave a practical example of how to make a training job. 
 
 <BlogImage
-src="/blogs/ms-dp100/slc/1-1/authoring.png"
+src="/blogs/ms-dp100/slc/1/authoring.png"
 alt="authoring options"
 caption="authoring options - all options are present from submodule 5!"
 />
@@ -320,7 +322,7 @@ the tutorial asked me to go through the automated machine learning setup, so i d
 this is what the confirmation page for data looked like:
 
 <BlogImage
-src="/blogs/ms-dp100/slc/1-1/automl-confirmation.png"
+src="/blogs/ms-dp100/slc/1/automl-confirmation.png"
 alt="automl confirmation page"
 caption="automl data insertion confirmation."
 />
@@ -334,13 +336,13 @@ allowed me to decide the train-testing split (i did 90/10). \
 i set up my compute instance for the job, and then it took me to the review page.
 
 <BlogImage
-src="/blogs/ms-dp100/slc/1-1/automl-confirmation1.png"
+src="/blogs/ms-dp100/slc/1/automl-confirmation1.png"
 alt="automl confirmation page"
 caption="automl confirmation page for the job"
 />
 
 <BlogImage
-src="/blogs/ms-dp100/slc/1-1/automl-training.png"
+src="/blogs/ms-dp100/slc/1/automl-training.png"
 alt="automl training status"
 caption="the job is starting!!!"
 />
@@ -354,7 +356,7 @@ this included class balancing, missing feature handling, high cardinality featur
 and validation split handling.
 
 <BlogImage
-src="/blogs/ms-dp100/slc/1-1/guardrails.png"
+src="/blogs/ms-dp100/slc/1/guardrails.png"
 alt="automl guardrails"
 caption="automl guardrails"
 />
@@ -365,7 +367,7 @@ what's nice is that the "models + child jobs" section has all the
 models that were trained.
 
 <BlogImage
-src="/blogs/ms-dp100/slc/1-1/models.png"
+src="/blogs/ms-dp100/slc/1/models.png"
 alt="automl models"
 caption="automl output models"
 />
@@ -385,13 +387,96 @@ more custom-made environments. \
 all in all, feeling pretty confident about this course so far.
 
 <BlogImage
-src="/blogs/ms-dp100/slc/1-1/fin.png"
+src="/blogs/ms-dp100/slc/1/fin.png"
 alt="cat meme, feeling good"
 caption="feelin good"
 />
 
+update (2025-07-27): i am continuing the blog from this point, but i will be making it more general. otherwise,
+im just basically restating the entire module (which is kinda...useless). \
+\
+while the first submodule covers the more general overview of the stuff that the studio has to offer, the rest of the submodules
+cover more specific aspects of the workspace. 
 
+<br />
 
+## second module: developer tools
+the second submodule covers developer tools (i.e. the studio, cli, python sdk, etc.) and how to use them to interact with the workspace. 
+it is said that the python sdk is "an ideal tool for data scientists", as it can be used in any python environment. \
+\
+when i started using it, i was a bit worried about credentials. however, it was pretty straightforward (thankfully).
 
+<BlogCode language="python" title="authenticating with the workspace" copy="false">
+{`
+from azure.identity import DefaultAzureCredential
+from azure.ai.ml import MLClient
+credential = DefaultAzureCredential()
+ml_client = MLClient(
+    credential=credential,
+    subscription_id="your-subscription-id",
+    resource_group_name="your-resource-group-name",
+    workspace_name="your-workspace-name"
+)
+`}
+</BlogCode>
 
+<br />
 
+## third module: data management
+
+the third submodule goes into data management \
+to start, this included an overview of uniform resource identifiers (uris) and how they are used to access data.
+there are three types of uris that are used in the workspace:
+
+<BlogList>
+<li>http(s) uris - used to access data in the workspace - you may have seen these before!</li>
+<li>abfs(s) uris - used for azure data lake storage (2nd gen)</li>
+<li>azureml uris - used for datastores</li>
+</BlogList>
+
+creating a datastore is pretty straightforward in the sdk. the mlclient object has a function called `create_or_update()`, and it's used to create any
+azure ml resources (note: you can also use `begin_create_or_update()` to create resources asynchronously).
+
+<BlogCode language="python" title="creating a datastore" copy="false">
+{`
+blob_datastore = AzureBlobDatastore(
+    			name = "blob_example",
+    			description = "Datastore pointing to a blob container",
+    			account_name = "mytestblobstore",
+    			container_name = "data-container",
+    			credentials = AccountKeyConfiguration(
+        			account_key="XXXxxxXXXxXXXXxxXXX"
+    			),
+)
+ml_client.create_or_update(blob_datastore)
+`}
+</BlogCode>
+
+in these datastores, you can store data assets. these are just files or folders that are stored in the datastore.
+typically, each data asset represents a dataset, but the definition can be pretty abstract. \
+\
+in particular, the course talks about mltables, which are a way to organize and manage tabular data in Azure ML. \
+mltables provide a unified interface for working with data, making it easier to perform operations like filtering, joining, and aggregating data. \
+they also support versioning and lineage tracking, which can be helpful for reproducibility and auditing purposes.
+
+<BlogCode language="python" title="creating a data asset" copy="false">
+{`
+from azure.ai.ml.entities import Data
+from azure.ai.ml.constants import AssetTypes
+
+my_path = '<supported-path>'
+
+my_data = Data(
+    path=my_path,
+    type=AssetTypes.URI_FOLDER, #this can also be AssetTypes.MLTABLE, depending on what you're making
+    description="<description>",
+    name="<name>",
+    version='<version>'
+)
+
+ml_client.data.create_or_update(my_data)
+`}
+</BlogCode>
+
+## the last two modules
+the last two modules cover compute management and environment management, respecvtively.
