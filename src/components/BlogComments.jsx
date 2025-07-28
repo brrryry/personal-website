@@ -78,7 +78,7 @@ export function BlogComments({ blogId }) {
   };
 
   const handleDeleteComment = async (commentId) => {
-    if (!confirm("Are you sure you want to delete this comment?")) return;
+    if (!confirm("are you sure you want to delete this comment?")) return;
     setCommentLoading(true);
     try {
       const response = await fetch(`/api/comments/${blogId}`, {
@@ -160,7 +160,7 @@ export function BlogComments({ blogId }) {
   function timeAgo(dateString) {
     const now = new Date();
     const date = new Date(dateString);
-    const seconds = Math.floor((now - date) / 1000);
+    const seconds = Math.floor((now - date) / 1000) + 1;
 
     if (seconds < 60) return `${seconds}s ago`;
     const minutes = Math.floor(seconds / 60);

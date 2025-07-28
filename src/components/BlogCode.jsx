@@ -33,7 +33,7 @@ export function BlogCode({
 }) {
   const [code, setCode] = useState("");
 
-  children = `<pre className="text-base lg: text-lg"><code className="language-${language}">${renderToString(children.split(/\r?\n/).join("\n"))}</code></pre>`;
+  children = `<pre className="text-base lg: text-lg"><code className="language-${language}">${renderToString(children.split(/\r?\n/).slice(1).join("\n"))}</code></pre>`;
 
   useEffect(() => {
     (async () => {
