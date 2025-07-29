@@ -10,6 +10,7 @@ import { BlogCode } from "@/components/BlogCode";
 import NotFound from "@/app/[...not_found]/page";
 
 import { BlogComments } from "@/components/BlogComments";
+import { metadata } from "@/app/layout";
 
 //import code highlighting css
 import "@/../public/styles/atom-one-dark.css";
@@ -18,6 +19,7 @@ export default async function BlogPost({ params }) {
   //get the files from posts/params.id
 
   const { content, data, notFound } = await getPostFromId(params.id);
+
 
   if (notFound) {
     return <NotFound />;

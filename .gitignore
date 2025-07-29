@@ -45,3 +45,5 @@ package-lock.json
 
 # secret deployment things :)
 deploy/secret.sh
+
+archive/*
