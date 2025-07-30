@@ -47,3 +47,4 @@ package-lock.json
 deploy/secret.sh
 
 archive/*
+git-filter-repo
