@@ -184,11 +184,11 @@ const login = async (username, password) => {...}
 const logout = async () => {...};
 
 return (
+
 <SessionContext.Provider value={{ session, loading, login, logout }}>
-{children}
+  {children}
 </SessionContext.Provider>
-);
-}
+); }
 
 export function useSession() {
   const context = useContext(SessionContext);
