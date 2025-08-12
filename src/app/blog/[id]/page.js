@@ -10,27 +10,33 @@ import { BlogCode } from "@/components/BlogCode";
 import NotFound from "@/app/[...not_found]/page";
 
 import { BlogComments } from "@/components/BlogComments";
-import { metadata } from "@/app/layout";
 
 //import code highlighting css
 import "@/../public/styles/atom-one-dark.css";
+
+export async function generateMetadata({ params }) {
+  const { data } = await getPostFromId(params.id);
+
+  if (!data) {
+    return {
+      title: "blog post not found",
+      description: "the blog post you are looking for does not exist.",
+    };
+  }
+
+  return {
+    title: `bryan blog: ${data.title}`,
+    description: data.description,
+  };
+}
 
 export default async function BlogPost({ params }) {
   //get the files from posts/params.id
 
   const { content, data, notFound } = await getPostFromId(params.id);
 
-
   if (notFound) {
     return <NotFound />;
-  }
-
-  // set metadata for the page
-  if (typeof document !== "undefined") {
-    document.title = `${data.title} - Blog`;
-    document
-      .querySelector("meta[name='description']")
-      .setAttribute("content", data.description);
   }
 
   // set title for the page
