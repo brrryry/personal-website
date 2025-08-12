@@ -1,0 +1,89 @@
+---
+title: "ms-dp100 self-learning course: module 3"
+date: "2025-07-21"
+updated: "2025-07-27"
+description: "my knowledge base of the microsoft dp-100 self-learning course (module 3)"
+tags: ["ms-dp100-series", "series"]
+---
+
+this is my overview/notes for the third module of the microsoft dp-100 self-learning course. 
+
+<BlogImage
+src="/blogs/ms-dp100/slc/3/module3.png"
+alt="module 3 overview"
+caption="module 3!"
+source="https://learn.microsoft.com/en-us/training/paths/use-azure-machine-learning-pipelines-for-automation/"
+/>
+
+## module 1 - running a training script as a command jobs
+in this module, we get more into production workloads.
+we want to turn notebooks into scripts to make model training processes easily comparable and
+reproducible. this includes doing the following steps (cited directly from the course):
+
+<BlogList>
+<li>**removing non-essential code** - debug/redundant print statements, stuff like that</li>
+<li>**converting cells into functions** - this is a good practice in general!</li>
+<li>**script testing** - making sure that the script can work in a pipeline (this is why functions are important)</li>
+</BlogList>
+
+<BlogCode title="example of refactored code from the course" language="python" copy="false">
+{`
+def main(csv_file):
+    # read data
+    df = get_data(csv_file)
+
+    # split data
+    X_train, X_test, y_train, y_test = split_data(df)
+
+# function that reads the data
+def get_data(path):
+    df = pd.read_csv(path)
+    
+    return df
+
+# function that splits the data
+def split_data(df):
+    X, y = df[['Pregnancies','PlasmaGlucose','DiastolicBloodPressure','TricepsThickness',
+    'SerumInsulin','BMI','DiabetesPedigree','Age']].values, df['Diabetic'].values
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30, random_state=0)
+
+    return X_train, X_test, y_train, y_test
+`}
+</BlogCode>
+
+from here, once your code is refactored, you need to interact with the azure ml sdk to run the script as a command job.
+i kinda hard a hard time wrapping my head around this, so i had to review the difference between...
+
+<BlogList>
+<li>**command job** - a job that runs a script</li>
+<li>**experiment** - a collection of jobs</li>
+<li>**pipeline** - a collection of jobs that are connected together</li>
+<li>**run** - a single execution of a job</li>
+</BlogList>
+
+<BlogCode title="example of creating a command job" language="python" copy="false">
+{`
+from azure.ai.ml import command
+
+# configure job
+job = command(
+    code="./src",
+    command="python train.py --training_data training.csv",
+    environment="AzureML-sklearn-0.24-ubuntu18.04-py37-cpu@latest",
+    compute="aml-cluster",
+    display_name="train-model",
+    experiment_name="train-classification-model"
+    )
+`}
+</BlogCode>
+
+one important part is the ``command`` parameter. you are able to pass arguments using python's ``argparse`` library!
+this becomes really useful when you want to train a model only slightly differently. \
+\
+thats honestly about it for this module (or at least in terms of key takeaways). the amount of content in this module was small
+but vital in real applications.
+
+<br />
+
+## module 2: tracking model training with mlflow
