@@ -15,21 +15,23 @@ this will be a high-level guide on how to set up torrenting with qbittorrent and
 <br />
 
 ## but...why are you writing this?
-i heard about torrenting at first in a <a href="https://www.youtube.com/watch?v=RSK7H_hNxbM" target="_blank">comedy sketch by Ronny Chieng</a> around 
+
+i heard about torrenting at first in a <a href="https://www.youtube.com/watch?v=RSK7H_hNxbM" target="_blank">comedy sketch by Ronny Chieng</a> around
 3-4 years ago. at the time, i had no idea what torrenting was. however, i heard that it could be used to download movies and games for free. \
 \
 because of this, i looked into it a bit more. i found out that torrenting - fundamentally - was a way to download files from multiple sources at once.
-to me, this seemed really cool! 
+to me, this seemed really cool!
 
 <br />
 
 ## what is torrenting?
+
 torrenting is a way to download files from multiple sources at once. it's typically used for downloading larger files. \
 \
 torrenting uses a peer-to-peer (p2p) file sharing protocol. this means that it uses a decentralized network of computers to share files. \
 \
 the way it works is that you download a small file called a "torrent file". this file contains information about the file you want to download.
-when you open this file in a torrent client, the client will connect to multiple sources and download the file in parts from each source (known as "peers"). 
+when you open this file in a torrent client, the client will connect to multiple sources and download the file in parts from each source (known as "peers").
 this can make downloading these large files much faster. \
 \
 after you have downloaded the file, you can also become a "seeder". this means that you are now hosting the file for others to download.
@@ -37,16 +39,31 @@ this way, it makes it easier for other people to download the file! \
 \
 users typically upload their torrent files to a torrent index site. these sites are like search engines for torrents. \
 \
-pretty cool for a file sharing protocol, right? well, let's make sure to also know the possible risks and downsides. 
+pretty cool for a file sharing protocol, right? well, let's make sure to also know the possible risks and downsides.
 
 <BlogList>
-<li>when you are torrenting, other people will be able to see your ip address. this can be a security risk, as people can use this information to track you down.</li> 
-<br />
-<li>it is completely possible to torrent corrupted or malicious files. this is why it is important to use a trusted torrent index site. </li>
-<br />
-<li>your internet service provider (isp) can see that you are torrenting. this can lead to them throttling your internet speed if you use too much bandwidth.</li> 
-<br />
-<li>torrenting is not illegal in itself. however, it is often used for illegal purposes. this is why it is important to make sure that you are torrenting **legally**.</li>
+  <li>
+    when you are torrenting, other people will be able to see your ip address.
+    this can be a security risk, as people can use this information to track you
+    down.
+  </li>
+  <br />
+  <li>
+    it is completely possible to torrent corrupted or malicious files. this is
+    why it is important to use a trusted torrent index site.{" "}
+  </li>
+  <br />
+  <li>
+    your internet service provider (isp) can see that you are torrenting. this
+    can lead to them throttling your internet speed if you use too much
+    bandwidth.
+  </li>
+  <br />
+  <li>
+    torrenting is not illegal in itself. however, it is often used for illegal
+    purposes. this is why it is important to make sure that you are torrenting
+    **legally**.
+  </li>
 </BlogList>
 
 <br />
@@ -56,26 +73,51 @@ cool, now let's set this stuff up.
 <br />
 
 ## docker containers used in this guide
+
 i used these docker containers:
 
 <BlogList>
-<li><a href="https://hub.docker.com/r/binhex/arch-qbittorrentvpn/" target="_blank">qbittorrentvpn</a> - an open-source torrent client with vpn integration <br/> - 
-the vpn part is important so that you can allow yourself to be guarded from potentially malicious downloads.</li> 
-<li><a href="https://hub.docker.com/r/linuxserver/sonarr" target="_blank">sonarr</a> - a personal video recorder (pvr) for usenet and bittorrent users</li>
-<li><a href="https://hub.docker.com/r/linuxserver/prowlarr" target="_blank">prowlarr</a> - an indexer manager for usenet and bittorrent users</li>
+  <li>
+    <a
+      href="https://hub.docker.com/r/binhex/arch-qbittorrentvpn/"
+      target="_blank"
+    >
+      qbittorrentvpn
+    </a>{" "}
+    - an open-source torrent client with vpn integration <br /> - the vpn part
+    is important so that you can allow yourself to be guarded from potentially
+    malicious downloads.
+  </li>
+  <li>
+    <a href="https://hub.docker.com/r/linuxserver/sonarr" target="_blank">
+      sonarr
+    </a>{" "}
+    - a personal video recorder (pvr) for usenet and bittorrent users
+  </li>
+  <li>
+    <a href="https://hub.docker.com/r/linuxserver/prowlarr" target="_blank">
+      prowlarr
+    </a>{" "}
+    - an indexer manager for usenet and bittorrent users
+  </li>
 </BlogList>
 
-if you want a media server, you can also use <a href="https://hub.docker.com/r/linuxserver/jellyfin" target="_blank">jellyfin</a> or 
-<a href="https://hub.docker.com/r/linuxserver/emby" target="_blank">emby</a>. \
-the media server does not need to be explicitly connected to the other three containers - it just needs to know what directory to look in for media files.\
-i personally chose to use jellyfin.
+if you want a media server, you can also use <a href="https://hub.docker.com/r/linuxserver/jellyfin" target="_blank">jellyfin</a> or
+
+<a href="https://hub.docker.com/r/linuxserver/emby" target="_blank">
+  emby
+</a>
+. \ the media server does not need to be explicitly connected to the other three
+containers - it just needs to know what directory to look in for media files.\ i
+personally chose to use jellyfin.
 <br />
 
 ## setting up the containers
+
 the architecture of the containers' **persistant storage** volumes looks as follows:
 
 <BlogCode language="plaintext" title="architecture" copy="false">
-{`
+  {`
 /volume1 (root)
 - config (all config files)
   - qbittorrent (qbittorrent config files)
@@ -144,37 +186,24 @@ services:
       - 8989:8989
     restart: unless-stopped
 
+prowlarr:
+image: lscr.io/linuxserver/prowlarr:latest
+container_name: prowlarr
+environment: - PUID=1000 - PGID=1000 - TZ=Etc/UTC
+volumes: - /volume1/media/config/prowlarr:/config
+ports: - 9696:9696
+restart: unless-stopped
 
-  prowlarr:
-    image: lscr.io/linuxserver/prowlarr:latest
-    container_name: prowlarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
-    volumes:
-      - /volume1/media/config/prowlarr:/config
-    ports:
-      - 9696:9696
-    restart: unless-stopped
-    
-  jellyfin:
-    image: lscr.io/linuxserver/jellyfin:latest
-    container_name: jellyfin
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
-    volumes:
-      - /volume1/media/movies:/movies
-      - /volume1/media/tv:/tv
-      - /volume1/media/config/jellyfin:/config
-    ports:
-      - 8096:8096
-      - 8920:8920
-    restart: unless-stopped
+jellyfin:
+image: lscr.io/linuxserver/jellyfin:latest
+container_name: jellyfin
+environment: - PUID=1000 - PGID=1000 - TZ=Etc/UTC
+volumes: - /volume1/media/movies:/movies - /volume1/media/tv:/tv - /volume1/media/config/jellyfin:/config
+ports: - 8096:8096 - 8920:8920
+restart: unless-stopped
 
 `}
+
 </BlogCode>
 
 to give a brief overview of what this file does:
@@ -182,7 +211,8 @@ to give a brief overview of what this file does:
 <br />
 
 ### qbittorrentvpn
-this container is the torrent client. it is set up to use a vpn (nordvpn in this case) to protect the user from potentially malicious downloads. 
+
+this container is the torrent client. it is set up to use a vpn (nordvpn in this case) to protect the user from potentially malicious downloads.
 in order to use this container, you will need to have a nordvpn account. you can also use other vpn providers, but you will need to change the environment variables accordingly. \
 \
 the volumes are attached such that qbittorrent will download files to the `/data` directory. \
@@ -193,69 +223,86 @@ the container is set up to use the port 8081 for the webui. this is because i al
 <br />
 
 ### sonarr
-this container uses port 8989 for the webui. this container will communicate with the other two containers. 
+
+this container uses port 8989 for the webui. this container will communicate with the other two containers.
 it will look in the `/data` directory for downloads (which is also used in qbittorrent) and process them into the `/tv` directory.
 
 <br />
 
 ### prowlarr
+
 this container uses port 9696 for the webui. this container is an indexer manager. it will look in the `/config` directory for its config files.
 
 <br />
 
 ### jellyfin
+
 this container uses ports 8096 and 8920 for the webui. this container is a media server. it will look in the `/movies` and `/tv` directories for media files. \
 right now, the movies directory is not being used.
 
 <br />
 
-in general, three of these contaienrs have a `tz` environment variable. this is to set the timezone of the container. 
+in general, three of these contaienrs have a `tz` environment variable. this is to set the timezone of the container.
 it doesn't matter too much, but it can be useful for logging purposes. make sure to set it to your timezone.
 
 <br />
 
 ## the ideal process
+
 the ideal process for this setup is as follows:
 
 <BlogList>
-<li>the user goes onto the sonarr webui and add a series (**again, must be legally obtainable**) that you want to watch.</li>
-<li>sonarr asks prowlarr for the series' indicies to search through.</li>
-<li>sonarr displays results to the user.</li>
-<li>the user selects the series they want to download.</li>
-<li>sonarr sends the download request to qbittorrent, which then downloads the stuff.</li>
-<li>sonarr sees the download in the `/data` directory and processes it to the `/tv` directory.</li>
-<li>the media server (jellyfin) sees the new file in the `/tv` directory and adds it to the library.</li>
+  <li>
+    the user goes onto the sonarr webui and add a series (**again, must be
+    legally obtainable**) that you want to watch.
+  </li>
+  <li>sonarr asks prowlarr for the series' indicies to search through.</li>
+  <li>sonarr displays results to the user.</li>
+  <li>the user selects the series they want to download.</li>
+  <li>
+    sonarr sends the download request to qbittorrent, which then downloads the
+    stuff.
+  </li>
+  <li>
+    sonarr sees the download in the `/data` directory and processes it to the
+    `/tv` directory.
+  </li>
+  <li>
+    the media server (jellyfin) sees the new file in the `/tv` directory and
+    adds it to the library.
+  </li>
 </BlogList>
 
-this way, the user can have a seamless experience of downloading and watching stuff. 
+this way, the user can have a seamless experience of downloading and watching stuff.
 
 <br />
 
 ## qbittorrent configuration
-upon starting qbittorrent and visiting ``<LAN IP>:8081``, you will be greeted with a login screen. \
+
+upon starting qbittorrent and visiting `<LAN IP>:8081`, you will be greeted with a login screen. \
 the default username is `admin` and the default password will be randomly generated. it will be accessible through the file `/config/qbittorerent/supervisord.log`. \
 \
-the first thing you will want to do is change the password. you can do this by going to the settings page and changing the password. 
+the first thing you will want to do is change the password. you can do this by going to the settings page and changing the password.
 
 <BlogImage
-src="/blogs/how-2-torrent-servarr/qbt1.png"
-alt="qbittorrent settings page"
-caption="the settings page for qbittorrent"
+  src="/blogs/how-2-torrent-servarr/qbt1.png"
+  alt="qbittorrent settings page"
+  caption="the settings page for qbittorrent"
 />
 
-after this, you will want to change the download directory. in this case, we mapped it to `/data`. 
+after this, you will want to change the download directory. in this case, we mapped it to `/data`.
 
 <BlogImage
-src="/blogs/how-2-torrent-servarr/qbt2.png"
-alt="qbittorrent download directory"
-caption="the download directory for qbittorrent"
+  src="/blogs/how-2-torrent-servarr/qbt2.png"
+  alt="qbittorrent download directory"
+  caption="the download directory for qbittorrent"
 />
 
 before you start torrenting anything, you will want to make sure that the vpn is connected. \
-a simple way to do this is by running `curl ifconfig.io` in the qbittorrent container. 
+a simple way to do this is by running `curl ifconfig.io` in the qbittorrent container.
 
 <BlogCode language="bash" title="cmd">
-{`
+  {`
 docker exec -it qbittorrentvpn curl ifconfig.io
 `}
 </BlogCode>
@@ -265,43 +312,44 @@ if the ip address that is returned is not your own, then the vpn is working.
 <br />
 
 ## sonarr and prowlarr configuration
+
 we will configure prowlarr first in order to get the indicies for sonarr. \
 \
-visit `<LAN IP>:9696`, set up your account, and then you can start adding indicies using the "add indexer" button from the `indexers` tab. 
+visit `<LAN IP>:9696`, set up your account, and then you can start adding indicies using the "add indexer" button from the `indexers` tab.
 
 <BlogImage
-src="/blogs/how-2-torrent-servarr/prowlarr1.png"
-alt="prowlarr indexers"
-caption="the indexers tab in prowlarr"
+  src="/blogs/how-2-torrent-servarr/prowlarr1.png"
+  alt="prowlarr indexers"
+  caption="the indexers tab in prowlarr"
 />
 
-you can add as many indexers as you want. **just make sure to add ones that are legal and safe**. 
+you can add as many indexers as you want. **just make sure to add ones that are legal and safe**.
 
 <br />
 
 from here, we need to connect prowlarr to sonarr. navigate to the `settings > apps` tab and add a new application (sonarr).
 
-<BlogImage 
-src="/blogs/how-2-torrent-servarr/prowlarr2.png"
-alt="prowlarr apps"
-caption="the apps tab in prowlarr"
+<BlogImage
+  src="/blogs/how-2-torrent-servarr/prowlarr2.png"
+  alt="prowlarr apps"
+  caption="the apps tab in prowlarr"
 />
 
 upon clicking the `sonarr` button, you will be greeted with a page that asks for the both servers' urls and api key. \
 in this case, the urls will be `http://prowlar:9696` and \
 `http://sonarr:8989`. the api key can be found in the sonarr \
-`settings > general` page. 
+`settings > general` page.
 
 <BlogImage
-src="/blogs/how-2-torrent-servarr/sonarr1.png"
-alt="sonarr api key"
-caption="the api key in sonarr"
+  src="/blogs/how-2-torrent-servarr/sonarr1.png"
+  alt="sonarr api key"
+  caption="the api key in sonarr"
 />
 
 <BlogImage
-src="/blogs/how-2-torrent-servarr/prowlarr3.png"
-alt="prowlarr sonarr connection"
-caption="the sonarr connection page in prowlarr"
+  src="/blogs/how-2-torrent-servarr/prowlarr3.png"
+  alt="prowlarr sonarr connection"
+  caption="the sonarr connection page in prowlarr"
 />
 
 after this, we are done with prowlarr. now, we move to...
@@ -309,6 +357,7 @@ after this, we are done with prowlarr. now, we move to...
 <br />
 
 ## sonarr configuration (pt 2)
+
 upon starting sonarr and visiting `<LAN IP>:8989`, you will have to make an account. \
 \
 after this, you will be greeted with the sonarr dashboard. if everything went well with the prowlarr connection,
@@ -319,13 +368,13 @@ from here, we need to connect sonarr to qbittorrent. navigate to the \
 use the credentials that you set up in the qbittorrent settings page.
 
 <BlogImage
-src="/blogs/how-2-torrent-servarr/sonarr2.png"
-alt="sonarr and qbittorrent connection"
-caption="connecting sonarr to qbittorrent in sonarr"
+  src="/blogs/how-2-torrent-servarr/sonarr2.png"
+  alt="sonarr and qbittorrent connection"
+  caption="connecting sonarr to qbittorrent in sonarr"
 />
 
 once this is complete, go to the \
-`settings > media management` tab and add the `/tv` directory as the root folder. 
+`settings > media management` tab and add the `/tv` directory as the root folder.
 this will be the directory that sonarr will process the downloads to.\
 \
 that should be everything for sonarr! \
@@ -335,13 +384,15 @@ now, we move to the final step...
 <br />
 
 ## jellyfin configuration
+
 upon starting jellyfin and visiting `<LAN IP>:8096`, you will have to make an account. \
 \
-the configuration itself is pretty simple. just make a new library and point it to the `/tv` directory. 
+the configuration itself is pretty simple. just make a new library and point it to the `/tv` directory.
 
 <br />
 
 ## now what?
+
 well, that's it! you should now have a fully functioning partially-automated torrenting setup. \
 \
 you can now go to sonarr and add a series. view that series, and click the person-looking icon to view and download torrents.
@@ -350,6 +401,7 @@ when the torrents are downloaded, they will be viewable in jellyfin.
 <br />
 
 ## conclusion
+
 pretty cool! i hope this guide was helpful. \
 \
 there are also other things you can do with torrenting. however, i will not be covering them due to legal implications. \
@@ -360,9 +412,9 @@ if you have any questions (or concerns), feel free to reach out to me via <a hre
 \
 cheers!
 
-<BlogImage 
-src="/blogs/how-2-torrent-servarr/lol.png"
-alt="just a funny discord image"
-caption="another day another banger"
-style={{border: "0.5rem solid white"}}
+<BlogImage
+  src="/blogs/how-2-torrent-servarr/lol.png"
+  alt="just a funny discord image"
+  caption="another day another banger"
+  style={{ border: "0.5rem solid white" }}
 />
