@@ -4,7 +4,8 @@ export default function Home() {
   return (
     <div className="space-y-5">
       <p>
-        latest news: <a href="/blog/pdev-ep3-accounts">comment section</a>
+        latest news: <a href="/blog/pdev-ep3-accounts">comment section</a> and{" "}
+        <a href="/blog/ms-dp100">ms-dp100 certification</a>
       </p>
 
       <br />
