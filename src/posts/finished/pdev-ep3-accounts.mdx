@@ -7,16 +7,15 @@ tags: ["coding", "portfolio-dev"]
 
 not gonna lie, i had this one in the works for quite a bit of time. this blog was originally created on january 23, 2025. \
 \
-i thought it would be really funny to have friends and possible spectators see what other people think of my blogs, so...i made a public forum for comments.
+i thought it would be really funny to have friends and possible spectators see what other people think of my blogs, so...i made a public forum for comments. 
 all in all, this took about 2 partial days (i would say about 8-10 good hours) to complete. \
 \
 if you want to make an account, you can do so [here](/register).
 
 <br />
 
-## design
-
-first off, let's make a schema.
+## design 
+first off, let's make a schema. 
 
 <BlogCode language="plaintext" copy="false" title="schema for accounts and comments">
 {`
@@ -26,26 +25,24 @@ USERS
 - password: string non-null
 
 SESSIONS
-
 - sessionID: string non-null
 - userID: string non-null
 - dateCreated: date non-null
 
 COMMENTS
-
 - commentID: string non-null
 - userID: string non-null
 - blogID: string non-null
 - dateCreated: date non-null
 - content: string non-null
-  `}
-  </BlogCode>
+`}
+</BlogCode>
 
 ...good enough.
 
 <br />
 
-next, i had to find a database. after (not) a lot of thinking, i decided to use mongodb. it is a database that i am familiar with, and it isnt too difficult to set up.
+next, i had to find a database. after (not) a lot of thinking, i decided to use mongodb. it is a database that i am familiar with, and it isnt too difficult to set up. 
 using my knowledge from my web programming class, i started creating stuff.
 
 <BlogCode language="javascript" copy="false" title="mongoconnection.js">
@@ -55,37 +52,38 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-let \_connection = undefined;
-let \_db = undefined;
+let _connection = undefined;
+let _db = undefined;
 
 const env = process.env.NODE_ENV || 'development';
 
+
 const mongoConfig = {
-serverUrl: (env === "production") ? process.env.MONGO_SERVER_URL : process.env.MONGO_SERVER_URL_DEV,
-database: (env === "production") ? process.env.MONGO_DB_NAME : process.env.MONGO_DB_NAME_DEV,
+  serverUrl: (env === "production") ? process.env.MONGO_SERVER_URL : process.env.MONGO_SERVER_URL_DEV,
+  database: (env === "production") ? process.env.MONGO_DB_NAME : process.env.MONGO_DB_NAME_DEV,
 }
 
 const dbConnection = async () => {
-if (!\_connection) {
-\_connection = await MongoClient.connect(mongoConfig.serverUrl);
-\_db = \_connection.db(mongoConfig.database);
-}
+  if (!_connection) {
+    _connection = await MongoClient.connect(mongoConfig.serverUrl);
+    _db = _connection.db(mongoConfig.database);
+  }
 
-return \_db;
+  return _db;
 };
 
 const closeConnection = async () => {
-await \_connection.close();
+  await _connection.close();
 };
 
 export { dbConnection, closeConnection };
 `}
 </BlogCode>
 
-it should be noted that this is a general implementation of a mongodb connection. because of its
-template-like structure, it can be used in just about any node project that uses mongodb. there is
+it should be noted that this is a general implementation of a mongodb connection. because of its 
+template-like structure, it can be used in just about any node project that uses mongodb. there is 
 also a difference between the production and development database. i dont want to mix up my stuff!
-the development database is spun up locally on my computer, while the production database uses a mongo
+the development database is spun up locally on my computer, while the production database uses a mongo 
 atlas cluster. i dont want to pay for a server, and thankfully, i dont have to. thanks mongo!! \
 \
 now, we make our collections. there were three collections that i had in mind (as shown in the schema above).
@@ -95,17 +93,16 @@ now, we make our collections. there were three collections that i had in mind (a
 import { dbConnection } from './mongoConnection.js';
 
 const getCollectionFn = (collection) => {
-let \_col = undefined;
+  let _col = undefined;
 
-return async () => {
-if (!\_col) {
-const db = await dbConnection();
-\_col = await db.collection(collection);
-}
+  return async () => {
+    if (!_col) {
+      const db = await dbConnection();
+      _col = await db.collection(collection);
+    }
 
     return _col;
-
-};
+  };
 };
 
 export const accounts = getCollectionFn('accounts');
@@ -118,25 +115,21 @@ the cool thing (that is not used in this project) is that mongodb does not requi
 this can be useful - especially when you want to add new fields to a collection without having to worry about migrations. \
 \
 now, we have to make data functions. these functions will be used in the server side to interact with the database.
-im not going to show the code for all of them, as that is quite annoying to read. you can always check my
-
-<a href="https://github.com/brrryry/personal-website" target="_blank">
-  github
-</a> for the code. all in all, i made two files: `accounts.js` for account and
-session functions, and `comments.js` for comment functions.{" "}
+im not going to show the code for all of them, as that is quite annoying to read. you can always check my 
+<a href="https://github.com/brrryry/personal-website" target="_blank">github</a> for the code. all in all, i made 
+two files: `accounts.js` for account and session functions, and `comments.js` for comment functions. 
 
 <BlogList>
-  <li>create/delete accounts</li>
-  <li>login/logout/session check</li>
-  <li>create/delete comments</li>
-  <li>get comments for a blog</li>
-  <li>get comments for a user</li>
+<li>create/delete accounts</li>
+<li>login/logout/session check</li>
+<li>create/delete comments</li>
+<li>get comments for a blog</li>
+<li>get comments for a user</li>
 </BlogList>
 
 after i made these functions, i had to start actually throwing it all together in the client side.
 
 ## session management
-
 in order to manage sessions, i used cookies. these cookies - for security purposes - would have to be validated
 on the server side. in order to do this, i made a hook that would check if the user is logged in. it also had
 login and logout functions. this hook is used in every necessary client componnt.
@@ -146,7 +139,7 @@ login and logout functions. this hook is used in every necessary client componnt
 // components/SessionContext.js
 'use client';
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const SessionContext = createContext();
 
@@ -154,41 +147,40 @@ export function SessionProvider({children}) {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
 
-useEffect(() => {
-const sessionid = document.cookie.split('; ').find(row => row.startsWith('sessionid='))?.split('=')[1];
-const fetchSession = async (sessionid) => {
-try {
-//post request to /api/account/session
-const response = await fetch('/api/account/session', {
-method: 'POST',
-headers: {
-'Content-Type': 'application/json',
-},
-body: JSON.stringify({ sessionId: sessionid }),
-});
-const data = await response.json();
-setSession(data);
-} catch (error) {
-console.error('error fetching session:', error);
-} finally {
-setLoading(false);
-}
-};
+  useEffect(() => {
+    const sessionid = document.cookie.split('; ').find(row => row.startsWith('sessionid='))?.split('=')[1];
+    const fetchSession = async (sessionid) => {
+      try {
+        //post request to /api/account/session
+        const response = await fetch('/api/account/session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ sessionId: sessionid }),
+        });
+        const data = await response.json();
+        setSession(data);
+      } catch (error) {
+        console.error('error fetching session:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     fetchSession(sessionid);
+  }, []);
 
-}, []);
+  const login = async (username, password) => {...}
 
-const login = async (username, password) => {...}
+  const logout = async () => {...};
 
-const logout = async () => {...};
-
-return (
-
-<SessionContext.Provider value={{ session, loading, login, logout }}>
-  {children}
-</SessionContext.Provider>
-); }
+  return (
+    <SessionContext.Provider value={{ session, loading, login, logout }}>
+      {children}
+    </SessionContext.Provider>
+  );
+}
 
 export function useSession() {
   const context = useContext(SessionContext);
@@ -203,27 +195,23 @@ export function useSession() {
 some examples of where this would be used would be...
 
 <BlogList>
-  <li>the login page - if you are logged in, redirect out!!</li>
-  <li>the navbar component - show the login/logout button</li>
-  <li>the blog comments component - show the comment form if logged in</li>
+<li>the login page - if you are logged in, redirect out!!</li>
+<li>the navbar component - show the login/logout button</li>
+<li>the blog comments component - show the comment form if logged in</li>
 </BlogList>
 
 so...yeah, now we have an accurate way to tell on the client side if a user is logged in or not. awesome!
 
 ## the comments
-
 since the blog itself is a server side rendered page, it was easy to stick on a blog comment component in the client side.
 of course, in order to have the client interact with the server, i had to make a few api routes.
 
 <BlogList>
-  <li>get /api/comments/:blogid - get all comments for a blog</li>
-  <li>post /api/comments/:blogid - create a comment for a blog</li>
-  <li>delete /api/comments/:commentid - delete a comment</li>
-  <li>put /api/comments/:commentid - update a comment</li>
-  <li>
-    get /api/account/:userid - get all comments for a user (i bundled this with
-    profile because im lazy)
-  </li>
+<li>get /api/comments/:blogid - get all comments for a blog</li>
+<li>post /api/comments/:blogid - create a comment for a blog</li>
+<li>delete /api/comments/:commentid - delete a comment</li>
+<li>put /api/comments/:commentid - update a comment</li>
+<li>get /api/account/:userid - get all comments for a user (i bundled this with profile because im lazy)</li>
 </BlogList>
 
 alright, so now we have a way to comment and stuff. to recap... \
@@ -236,27 +224,26 @@ cool. \
 now, i hate frontend work (as you can tell by the style of this website). thus, i vibe-coded everything and just
 hoped it worked. because of this, you may see some "accidentally" capitalized words. whoops. \
 \
-it was also quite a bit of code, so again im not gonna paste it all here. you can check it out on my github. in
+it was also quite a bit of code, so again im not gonna paste it all here. you can check it out on my github. in 
 particular, making the edit button was a bit of a pain. holy moly. it also has a small span that shows
 the relative time of the comment and the most recent edit.
 
 <BlogImage
-  src="/blogs/pdev-ep3-accounts/sux.png"
-  alt="comment aesthetics"
-  caption="meh, looks aesthetic enough"
-  style={{ border: "1px solid white" }}
+src="/blogs/pdev-ep3-accounts/sux.png"
+alt="comment aesthetics"
+caption="meh, looks aesthetic enough"
+style={{border: "1px solid white"}}
 />
 
 ## the profile page
-
 oh yeah, i also made a profile page so that everyone can see their comment history.
 it looks like this!
 
 <BlogImage
-  src="/blogs/pdev-ep3-accounts/profile.png"
-  alt="profile page"
-  caption="look at the cool lines!!"
-  style={{ border: "1px solid white" }}
+src="/blogs/pdev-ep3-accounts/profile.png"
+alt="profile page"
+caption="look at the cool lines!!"
+style={{border: "1px solid white"}}
 />
 
 once i figured out how to get this stuff working in the comment component, it was really easy to just paste
@@ -292,10 +279,8 @@ return (
                                 </li>
                             ))}
                         </ul>
-
 ...
 `}
-
 </BlogCode>
 
 the important part is the `#comments-section` at the end of the link. this will scroll to the comments section of the blog page.
@@ -317,13 +302,10 @@ useEffect(() => {
             }, 100); // slight delay to ensure DOM is ready
         }
     }, [blogId]);
-
 `}
-
 </BlogCode>
 
 ## conclusion
-
 so now we have comments. that's cool. \
 \
 i could have definitely spent this time doing something else (like...job applications...or something), but i thought this would be fun. it wouldn't take too much time,
@@ -337,15 +319,6 @@ one more thing: i really want to start posting music. maybe a blog will be made 
 
 <br />
 
-<iframe
-  width="560"
-  height="315"
-  src="https://www.youtube.com/embed/cEpA7zDDPig?si=-mcnK1YoQn_7D87n"
-  title="YouTube video player"
-  frameBorder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerPolicy="strict-origin-when-cross-origin"
-  allowFullScreen={true}
-></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cEpA7zDDPig?si=-mcnK1YoQn_7D87n" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen={true}></iframe>
 
 <br />

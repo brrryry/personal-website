@@ -12,23 +12,23 @@ i love the idea of having my own everything. \
 \
 that's why...i decided to self host my website. \
 \
-that's right. i sacrificed my sleep schedule (and by proxy, a couple class attendances) to do something completely personal.
+that's right. i sacrificed my sleep schedule (and by proxy, a couple class attendances) to do something completely personal. 
 
 <br />
-## motivations at the time of this endeavor, i was using vercel. vercel is
-great, and it's free. however... \ \ i was in the middle of deploying my secret
-santa website (blog <a href="/blog/bbb-1-secretsanta">here</a>), and i realized
-something stupid: i was using a json database (like, literally just a json
-file), and vercel did not support that as a dynamic read/write file. \ \ this
-was a problem. i could have used a different database, but i decided to take
-this as an opportunity to do something that i wanted to do for a while - self
-host. \ \ this would also give me the opportunity to learn about how websites
-are hosted, how to use a reverse proxy, and how to use docker. \ what could go
-wrong?
+## motivations
+at the time of this endeavor, i was using vercel. vercel is great, and it's free. however... \
+\
+i was in the middle of deploying my secret santa website (blog <a href="/blog/bbb-1-secretsanta">here</a>), 
+and i realized something stupid: i was using a json database (like, literally just a json file), and vercel did not support that as a dynamic read/write file. \
+\
+this was a problem. i could have used a different database, but i decided to take this as an opportunity to do something
+that i wanted to do for a while - self host. \
+\
+this would also give me the opportunity to learn about how websites are hosted, how to use a reverse proxy, and how to use docker. \
+what could go wrong? 
 <br />
 
 ## game plan
-
 in order to host both of these websites, i needed to use a reverse proxy.
 i decided to use <a href="https://nginx.org/" target="_blank">nginx</a> for this. \
 \
@@ -40,9 +40,9 @@ and then forwards it to the right place. it's literally the reverse of a "proxy"
 with this in mind, i wanted to dockerize my websites. this way, i could easily deploy them and keep them portable.
 
 <BlogImage
-  src="/blogs/pdev-ep2-cicd/architecture.png"
-  alt="the basic architecture plan"
-  caption="the architecture plan for self hosting (+ a lot of unnecessary writing)"
+    src="/blogs/pdev-ep2-cicd/architecture.png"
+    alt="the basic architecture plan"
+    caption="the architecture plan for self hosting (+ a lot of unnecessary writing)"
 />
 
 at the moment, my server is a <a href="https://www.ugreen.com/pages/ugreen-nasync-series" target="_blank">ugreen nas</a>. they were released recently, so they're not half bad.
@@ -73,12 +73,12 @@ in order to fulfill this...drawing, i used docker. below is the architecture i u
     - ...
 - docker-compose.yml
 
-`}
 
+`}
 </BlogCode>
 
 i made a nginx docker container that would listen on port 80.
-i then made a configuration file that would forward requests to the right place.
+i then made a configuration file that would forward requests to the right place. 
 
 <BlogCode title="nginx/nginx.conf" language="nginx" copy="false">
 {`
@@ -104,16 +104,14 @@ server {
         proxy_set_header Host $host;
         proxy_cache_bypass $http_upgrade;
     }
-
 }
 `}
-
 </BlogCode>
 
 at the moment, i had two websites: my portfolio and the secret santa website for my friends (blog <a href="/blog/bbb-1-secretsanta">here</a> :3). \
 \
-each of these websites had their own docker container and their own port. they also had their own docker files.
-in order to make sure that the secret santa website was functional, i had to adjust the nextjs configuration for that app (specificall the base url).
+each of these websites had their own docker container and their own port. they also had their own docker files. 
+in order to make sure that the secret santa website was functional, i had to adjust the nextjs configuration for that app (specificall the base url). 
 
 <BlogCode title="portfolio/Dockerfile" language="dockerfile" copy="false">
 {`
@@ -135,7 +133,6 @@ EXPOSE 3000
 
 CMD ["npm", "start"]
 `}
-
 </BlogCode>
 
 after this, i made a docker compose file that would run all of these containers.
@@ -152,32 +149,37 @@ services:
     networks:
       - app-network
 
-secretsanta:
-image: secretsanta
-build:
-context: ./secretsanta
-ports: - "3001:3001"
-networks: - app-network
+  secretsanta:
+    image: secretsanta
+    build:
+      context: ./secretsanta
+    ports:
+      - "3001:3001"
+    networks:
+      - app-network
 
-nginx:
-build:
-context: ./nginx
-ports: - "80:80"
-depends_on: - portfolio - secretsanta
-networks: - app-network
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - portfolio
+      - secretsanta
+    networks:
+      - app-network
 
 networks:
-app-network:
-driver: bridge
+  app-network:
+    driver: bridge
 `}
-
 </BlogCode>
 
-all of these containers are run on the same network so that they can communicate with each other.
-simply running `docker compose up` would start all of these containers seamlessly. \
+all of these containers are run on the same network so that they can communicate with each other. 
+simply running ``docker compose up`` would start all of these containers seamlessly. \
 \
 so far, this was fine. i could run the containers on my local machine, and the websites would be reachable on localhost.
-but...i wanted to make this accessible to the world.
+but...i wanted to make this accessible to the world.  
 
 <br />
 
@@ -192,15 +194,15 @@ here's what i learned! \
 \
 dns is a system that translates domain names to ip addresses. this is done through a series of servers that are connected to each other.
 these servers are usually owned by companies and are located all around the world in data centers. when you type in a domain name, your computer
-uses its dns resolver to send a request to dns root name servers (configured on your computer). from there, the request reaches
+uses its dns resolver to send a request to dns root name servers (configured on your computer). from there, the request reaches 
 the authoritative name servers, which are the servers that are responsible for the domain. the authoritative name servers then return the ip address
-of the domain.
+of the domain. 
 
 <BlogImage
-  src="https://cf-assets.www.cloudflare.com/slt3lc6tev37/3NOmAzkfPG8FTA8zLc7Li8/8efda230b212c0de2d3bbcb408507b1e/dns_record_request_sequence_recursive_resolver.png"
-  alt="dns request sequence"
-  caption="example dns request sequence"
-  source="https://www.cloudflare.com/learning/dns/what-is-dns/"
+    src="https://cf-assets.www.cloudflare.com/slt3lc6tev37/3NOmAzkfPG8FTA8zLc7Li8/8efda230b212c0de2d3bbcb408507b1e/dns_record_request_sequence_recursive_resolver.png"
+    alt="dns request sequence"
+    caption="example dns request sequence"
+    source="https://www.cloudflare.com/learning/dns/what-is-dns/"
 />
 
 in order to set up a domain, i had to set up an a record. an a record is a thing that points a domain to an ip address.
@@ -208,22 +210,21 @@ i simply pointed my domain to my network's ip address. \
 \
 my network uses unifi (a router system), so i had to set up a port forwarding rule. this rule would forward all traffic on port 80 to my server's ip address. \
 \
-after this, it was just a matter of waiting for the dns records to propagate. now, my website is accessible to the world! that's pretty cool.
+after this, it was just a matter of waiting for the dns records to propagate. now, my website is accessible to the world! that's pretty cool. 
 
 <br />
 
 ## okay, but what about ci/cd?
-
 oh right, i almost forgot about that.
 
 i wanted to make sure that my website was always up to date. i wanted to make sure that i could deploy my website with a single command. \
 \
-this is where ci/cd comes in. ci/cd stands for continuous integration and continuous deployment. it refers to
+this is where ci/cd comes in. ci/cd stands for continuous integration and continuous deployment. it refers to 
 the practice of automating code integration and delivery. \
 \
 in other words, i wanted to be able to update my website automatically whenever i made changes to the code. \
 \
-at the moment, all of my source code is stored on github. it would be nice if i could just push to github and have my website update on my server.
+at the moment, all of my source code is stored on github. it would be nice if i could just push to github and have my website update on my server. 
 thankfully, github actions exists. \
 \
 github actions is a feature of github that allows you to automate workflows. i used this to automate the deployment of my website.
@@ -235,20 +236,18 @@ by extension, this also meant that i had to port forward a port on my server to 
 {`
 #!/bin/bash
 
-set -e # Exit immediately if a command exits with a non-zero status
+set -e  # Exit immediately if a command exits with a non-zero status
 
 DOCKER_IMAGE_NAME="portfolio:latest"
 DOCKER_IMAGE_TAR="image.tar"
 
 # Ensure required environment variables are set
-
 if [ -z "$SSH_PRIVATE_KEY" ]; then
-echo "Error: SSH_PRIVATE_KEY is not set"
-exit 1
+  echo "Error: SSH_PRIVATE_KEY is not set"
+  exit 1
 fi
 
 # Step 1: Integrate identity file
-
 echo "Integrating identity file..."
 echo "$SSH_PRIVATE_KEY" | tee $DEPLOY_KEY_PATH
 chmod -R 600 $DEPLOY_KEY_PATH
@@ -257,22 +256,21 @@ eval \`ssh-agent\`
 ssh-add -k $DEPLOY_KEY_PATH
 
 # Step 2: SSH into the server
-
 echo "Connecting to the server..."
 ssh -o StrictHostKeyChecking=no -tt -i $DEPLOY_KEY_PATH -p $REMOTE_PORT $REMOTE_USER@$REMOTE_HOST << EOF
-cd $REMOTE_PATH
-git pull
-docker compose up --build portfolio -d
-exit
+  cd $REMOTE_PATH
+  git pull
+  docker compose up --build portfolio -d
+  exit
 EOF
 
-# Clean up the key after use
 
+
+# Clean up the key after use
 rm -f $DEPLOY_KEY_PATH
 
 echo "Deployment completed successfully!"
 `}
-
 </BlogCode>
 
 i then made a github action that would run this script whenever i pushed to the main branch.
@@ -284,12 +282,13 @@ i made a seperate script so that i could test it locally before running it onlin
 name: Deploy Portfolio
 
 on:
-push:
-branches: - main # Adjust branch name as needed
+  push:
+    branches:
+      - main # Adjust branch name as needed
 
 jobs:
-deploy:
-runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-latest
 
     steps:
       # Checkout the repository
@@ -314,60 +313,46 @@ runs-on: ubuntu-latest
         run: |
           chmod +x ./deploy/build-and-deploy.sh
           ./deploy/build-and-deploy.sh
-
 `}
-
 </BlogCode>
 
 the secrets were stored in the github repository's secrets (settings > secrets and variables > actions). this way, i could keep the secrets out of the code. \
 \
-of course, if any changes were made to the more private parts of the website (like environment variables), i would have to
+of course, if any changes were made to the more private parts of the website (like environment variables), i would have to 
 update that manually. \
 \
 i was really excited when i saw my website update automatically for the first time. it was like magic.
 
 <BlogImage
-  src="/blogs/pdev-ep2-cicd/githubactions.png"
-  alt="github actions working"
-  caption="github actions works!!!"
-/>
+    src="/blogs/pdev-ep2-cicd/githubactions.png"
+    alt="github actions working"
+    caption="github actions works!!!" />
 
 with all of this set up, i was able to self host my website. i was able to update it with a single push to github.
-there was only one problem...
+there was only one problem... 
 
 <BlogImage
-  src="/blogs/pdev-ep2-cicd/sslnotworking.png"
-  alt="no ssl :("
-  caption="no ssl, not secure :("
-/>
+    src="/blogs/pdev-ep2-cicd/sslnotworking.png"
+    alt="no ssl :("
+    caption="no ssl, not secure :(" />
 
 <br />
 
 ## ssl certificates
-
-<a href="https://www.youtube.com/watch?v=pwTzHbIXSlI" target="_blank">
-  aaaaauuuuuuuggghhhhh
-</a>
-. i forgot about ssl certificates. \ \ to give a brief rundown, secure socket
-layer (ssl) certificates are certificates that encrypt the connection between
-the client and the server. it is also used to verify the identity of the server.
-without ssl, the connection between the client and the server is not secure and
-can be intercepted. for example, if you use a public wifi network and log into a
-website without ssl, your login information can be stolen. this is...really bad.
-\ \ in the context of my website, my secret santa website has a login system.
-without ssl, someone could intercept someone's login info. \ i really didn't
-want that. \ \ thankfully, there is a service called <a
-  href="https://letsencrypt.org/"
-  target="_blank"
->
-  letsencrypt
-</a> that provides free ssl certificates. i used a docker container called <a
-  href="https://hub.docker.com/r/certbot/certbot"
-  target="_blank"
->
-  certbot
-</a> to get these certificates. \ \ first, i added a new service to my docker
-compose file. this service would run the certbot container.
+<a href="https://www.youtube.com/watch?v=pwTzHbIXSlI" target="_blank">aaaaauuuuuuuggghhhhh</a>. i forgot about ssl certificates. \
+\
+to give a brief rundown, secure socket layer (ssl) certificates are certificates that encrypt the connection between the client and the server. 
+it is also used to verify the identity of the server. 
+without ssl, the connection between the client and the server is not secure and can be intercepted. for example, if you use 
+a public wifi network and log into a website without ssl, your login information can be stolen. this is...really bad. \
+\
+in the context of my website, my secret santa website has a login system. without ssl, someone could intercept someone's login info. \
+i really didn't want that. \
+\
+thankfully, there is a service called <a href="https://letsencrypt.org/" target="_blank">letsencrypt</a> that provides free ssl certificates.
+i used a docker container called <a href="https://hub.docker.com/r/certbot/certbot" target="_blank">certbot</a> to get these certificates. \
+\
+first, i added a new service to my docker compose file. this service would run the certbot container.
 
 <BlogCode title="new docker-compose.yml" language="yaml" copy="false">
 {`
@@ -381,37 +366,49 @@ services:
     networks:
       - app-network
 
-secretsanta:
-image: secretsanta
-build:
-context: ./secretsanta
-ports: - "3001:3001"
-networks: - app-network
+  secretsanta:
+    image: secretsanta
+    build:
+      context: ./secretsanta
+    ports:
+      - "3001:3001"
+    networks:
+      - app-network
 
-nginx:
-build:
-context: ./nginx
-ports: - "80:80" - "443:443"
-volumes: - ./certbot/www/:/var/www/certbot/:ro - ./certbot/conf/:/etc/letsencrypt/:ro
-depends_on: - portfolio - secretsanta
-networks: - app-network
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/letsencrypt/:ro
+    depends_on:
+      - portfolio
+      - secretsanta
+    networks:
+      - app-network
 
-certbot:
-image: certbot/certbot:latest
-volumes: - ./certbot/www/:/var/www/certbot/:rw - ./certbot/conf/:/etc/letsencrypt/:rw
-networks: - app-network
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+    networks:
+      - app-network
+
 
 networks:
-app-network:
-driver: bridge
+  app-network:
+    driver: bridge
 `}
-
 </BlogCode>
 
-the certbot container and the nginx container share a few volumes. this is so that the certbot container can write the
+the certbot container and the nginx container share a few volumes. this is so that the certbot container can write the 
 certificates for the nginx container to read and use. \
 \
-after this, i had to edit the nginx configuration file so that i could obtain the certificates.
+after this, i had to edit the nginx configuration file so that i could obtain the certificates. 
 
 <BlogCode title="temp nginx/nginx.conf" language="nginx" copy="false">
 {`
@@ -432,7 +429,6 @@ server {
 
 }
 `}
-
 </BlogCode>
 
 this configuration file completely removed the proxy pass to my portfolio (for now). \
@@ -441,12 +437,12 @@ after this, i had to restart my other containers and run a command on the certbo
 in order to get my certificates.
 
 <BlogCode title="obtaining certificates" language="sh">
-  {`
+{`
 docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ -d [domain]
 `}
 </BlogCode>
 
-in this case, `[domain]` would be bryanchan.org. this took a couple tries, since i didn't know that nginx had to be restarted and running.
+in this case, ``[domain]`` would be bryanchan.org. this took a couple tries, since i didn't know that nginx had to be restarted and running. 
 however, in the end, i was able to generate my first certificate. \
 \
 finally, i edited the nginx configuration file to use the certificates.
@@ -471,9 +467,9 @@ server {
 }
 
 server {
-listen 443 default_server ssl http2;
-listen [::]:443 ssl http2;
-server_name bryanchan.org www.bryanchan.org;
+    listen 443 default_server ssl http2;
+    listen [::]:443 ssl http2;
+    server_name bryanchan.org www.bryanchan.org;
 
     ssl_certificate /etc/letsencrypt/live/bryanchan.org/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/bryanchan.org/privkey.pem;
@@ -506,10 +502,8 @@ server_name bryanchan.org www.bryanchan.org;
         proxy_set_header Host $host;
         proxy_cache_bypass $http_upgrade;
     }
-
 }
 `}
-
 </BlogCode>
 
 after this, i restarted the nginx container and...it worked! i had ssl certificates on my website. \
@@ -517,27 +511,26 @@ after this, i restarted the nginx container and...it worked! i had ssl certifica
 look at that beautiful lock.
 
 <BlogImage
-  src="/blogs/pdev-ep2-cicd/sslworking.png"
-  alt="ssl working"
-  caption="ssl works!!! look at that lock!!!"
-  style={{ border: "0.5rem white solid" }}
-/>
+    src="/blogs/pdev-ep2-cicd/sslworking.png"
+    alt="ssl working"
+    caption="ssl works!!! look at that lock!!!" 
+    style={{ border: "0.5rem white solid" }} />
+
 
 and...that's where we are now!
 
 ## conclusion
-
 i am now self hosting my website.\
 i have a ci/cd pipeline set up. \
 i have my own ssl certificates. \
 i am now in control of my website. \
-to you - the user, nothing has changed. the website still looks the same. heck, the website might even take longer to load since
+to you - the user, nothing has changed. the website still looks the same. heck, the website might even take longer to load since 
 there's no cdn. however, i am happy. i am proud that i was able to do this. \
 \
 to the future!
 
 <BlogImage
-  src="/blogs/pdev-ep2-cicd/fin.png"
-  alt="me blabbering on discord"
-  caption="the end"
-/>
+    src="/blogs/pdev-ep2-cicd/fin.png"
+    alt="me blabbering on discord"
+    caption="the end" 
+ />
