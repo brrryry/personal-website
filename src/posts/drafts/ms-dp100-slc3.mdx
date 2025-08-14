@@ -87,3 +87,242 @@ but vital in real applications.
 <br />
 
 ## module 2: tracking model training with mlflow
+in the last module, we introduced the concept of command jobs and scripts. however, because of this, logging becomes slightly more difficult.
+to fix this, microsoft implemented **mlflow**. \
+\
+mlflow is an open-source platform that was originally made by <a href="https://databricks.com/" target="_blank">databricks</a> to manage the machine learning lifecycle, and 
+it provides a way to log metrics, parameters, and artifacts. \
+\
+mlflow provides both automatic (``mlflow.autolog()``) and manual (``mlflow.log_*()``) logging capabilities.
+setting up mlflow is fairly straightforward in the sdk. you need to install two packages:
+
+<BlogCode language="bash" title="installing mlflow (sdk)" copy="false">
+{`
+pip install mlflow
+pip install azureml-mlflow
+`}
+</BlogCode>
+
+autologging is supported by a variety of libraries. an image is provided below for reference!
+
+<BlogImage
+src="/blogs/ms-dp100/slc/3/suplib.png"
+alt="list of supported libraries"
+caption="that is - in fact - quite a few"
+source="https://learn.microsoft.com/en-us/training/modules/train-models-training-mlflow-jobs/2-track-metrics-mlflow"
+/>
+
+when you want to log manually, you have three basic options:
+
+<BlogList>
+<li>mlflow.log_param(key, value): log a key-value parameter value (usually input parameters)</li>
+<li>mlflow.log_metric(key, value): log a key-value metric value (must be a number!!!)</li>
+<li>mlflow.log_artifact(local_path, artifact_path): log a file</li>
+</BlogList>
+
+metrics that are logged can be viewed in the studio by going to ``studio > experiment run > details > metrics``.
+the view of these metrics (as well as charts and whatnot) can be edited in the ml studio.
+
+<BlogImage
+src="/blogs/ms-dp100/slc/3/metrics.png"
+alt="mlflow metrics"
+caption="this looks quite fancy! wowie!"
+source="https://learn.microsoft.com/en-us/azure/machine-learning/how-to-use-mlflow-cli-runs?view=azureml-api-2&tabs=interactive%2Ccli"
+/>
+
+metrics can also be retrieved in a notebook. first, you have to locate the experiment/run. there are
+several ways to do this - you can search the all mlflow experiments using ``mlflow.search_experiments()``
+or search by name using ``mlflow.get_experiment_by_name()`. once the experiment is retrieved, you can
+search for runs using ``mlflow.search_runs(experiment.experiment_id)``. \
+\
+for more information on how to use these functions, the documentation always comes in handy! 
+
+<br />
+
+## module 3: hyperparameter tuning with azure
+as with any machine learning project, hyperparameter tuning is a crucial step.
+the term "hyper" is used because these "parameters" cannot be adjusted - like weights and biases - during training. 
+instead, they are set before the training process begins and remain constant. some examples of hyperparameters would be...
+
+<BlogList>
+<li>learning rate</li>
+<li>batch size</li>
+<li>number of epochs</li>
+<li>optimizer function</li>
+</BlogList>
+
+in order to tune these hyperparameters, a validation set (as opposed to a **training** and **testing** set) is used.
+this validation set tests the performance of different hyperparameter combinations and helps to find the best one. \
+\
+azure provides a few ways of doing hyperparameter tuning, and they go over it in this module. \
+\
+some hyperparameters (such as the number of epochs) are discrete, while others (such as learning rate) are continuous. it is important to note the difference.
+the possible hyperparameters that can be selected is called the "search space".
+azure does this by creating classes for each type of hyperparameter. for example, the `Choice` class is used for discrete hyperparameters, while the `Uniform` class is used for continuous hyperparameters. \
+\
+(tangent: it is very cool that azure has quantile distributions for discrete variables.) 
+
+<BlogCode language="python" title="creating a search space for hyperparameter tuning" copy="false">
+{`
+from azure.ai.ml.sweep import Choice, Normal
+
+command_job_for_sweep = job(
+    batch_size=Choice(values=[16, 32, 64]),    
+    learning_rate=Normal(mu=10, sigma=3),
+)
+`}
+</BlogCode>
+
+when choosing these hyperparameter combinations, there are a few sampling methods that azure implements:
+
+<BlogList>
+<li>**random sampling**: samples hyperparameter combinations randomly from the search space</li>
+<li>**sobol sampling**: almost the same as random sampling, but uses a seed to make the results reproducible</li>
+<li>**grid sampling**: samples hyperparameter combinations from a predefined "grid" of discrete combinations</li>
+<li>**bayesian sampling**: uses past performance to sample better hyperparameter combinations</li>
+</BlogList>
+
+when calling a sweep job (the job used for hyperparameter tuning), one of the parameters is ``sampling_algorithm``. there, you can specify the sampling method to use. \
+\
+azure also supports early termination for tuning. 
+if a new tuning doesnt result in an improvement, the sweep job can be stopped. this saves computing power! \
+\
+the sweep job early termination feature has two main parameters:
+
+<BlogList>
+<li>**evaluation_interval**: the interval at which the early termination policy is checked</li>
+<li>**delay_evaluation**: the number of trials to wait before starting to evaluate the performance of the current best trial</li>
+</BlogList>
+
+for example, if you wanted the early termination to - at earliest - be at the fifth trial and wanted to check if early
+termination is possible on every other trial, you would set ``evaluation_interval=2`` and ``delay_evaluation=5``. \
+\
+as for the policies themselves, there are a few policies that azure implements:
+
+<BlogList>
+<li>**bandit policy** - uses a "slack factor / slack amount". any new model must perform within the slack range of the best current model.</li>
+<li>**median stopping policy** - any new model must perform better than the median performance of primary metrics</li>
+<li>**truncation policy** - any new model must perform better than the worst percentage (arbitrary) of models in the current batch</li>
+</BlogList>
+
+mlflow (from the last module) should be used to track the performance of hyperparameter tuning jobs,
+and a script should be made for tuning.
+
+i dont want to steal code directly from the website, so ill just cite the website section itself here.
+<a href="https://learn.microsoft.com/en-us/training/modules/perform-hyperparameter-tuning-azure-machine-learning-pipelines/5-use-sweep-job-hyperparameter-tuning" target="_blank">here</a>
+is an example of a hyperparameter tuning sweep job.
+
+<br />
+
+## module 4: pipelines
+pipelines. they are pretty important. 
+they can be used to automate/visualize the machine learning lifecycle.
+by making each step a separate job, you can easily swap out different components (e.g. data preprocessing, model training) without affecting the entire pipeline. \
+\
+thankfully, azure uses these. \
+\
+in order to make a component (a "module" of the pipeline), 
+you need to create a yaml file that defines the component's inputs, outputs, and behavior.
+
+<BlogCode language="yml" title="example component yml file" copy="false">
+{`
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+name: example
+display_name: Example Component!!
+version: 1
+type: command
+inputs:
+  input_data: 
+    type: uri_file
+outputs:
+  output_data:
+    type: uri_file
+code: ./src
+environment: azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu@latest
+command: >-
+  python example.py 
+  --input_data \${{inputs.input_data}}
+  --output_data \${{outputs.output_data}}
+`}
+</BlogCode>
+
+loading the component in the python sdk is fairly simple with the ``load_component`` function.
+
+<BlogCode language="python" title="loading component" copy="false">
+{`
+from azure.ai.ml import load_component
+parent_dir = ""
+
+loaded_component_example = load_component(source=parent_dir + "./example.yml")
+`}
+</BlogCode>
+
+this component can be registered on the azure ml workspace using the ``mlclient.components.create_or_update`` method. \
+\
+once we have components for the pipeline, we need to build the pipeline itself.
+for example (from the <a href="https://learn.microsoft.com/en-us/training/modules/run-pipelines-azure-machine-learning/3-create-pipeline" target="_blank">azure website</a>),
+lets say we have a prep data component and a train model component. \
+\
+to create a pipeline function, we use the pipeline class.
+
+<BlogCode language="python" title="creating a pipeline function">
+{`
+from azure.ai.ml.dsl import pipeline
+
+@pipeline()
+def pipeline_function_name(pipeline_job_input):
+    prep_data = loaded_component_prep(input_data=pipeline_job_input)
+    train_model = loaded_component_train(training_data=prep_data.outputs.output_data)
+
+    return {
+        "pipeline_job_transformed_data": prep_data.outputs.output_data,
+        "pipeline_job_trained_model": train_model.outputs.model_output,
+    }
+`}
+</BlogCode>
+
+this function can then be called and provided with the necessary inputs to the first component.
+
+<BlogCode language="python" title="calling pipeline function">
+{`
+from azure.ai.ml import Input
+from azure.ai.ml.constants import AssetTypes
+
+pipeline_job = pipeline_function_name(
+    Input(type=AssetTypes.URI_FILE, 
+    path="azureml:data:1"
+))
+`}
+</BlogCode>
+
+if you try printing this `pipeline_job`, you should see the details of the pipeline job in a yaml format. \
+\
+to run the pipeline job, you can use the ``mlclient.jobs.create_or_update`` function.
+it should be noted that the ``create_or_update`` notation is used commonly throughout azure ml. \
+\
+from here, you can monitor the experiment progress in the ml studio. \
+
+pipelines can also be scheduled using the ``jobschedule`` function.
+this is where pipelines becomes especially useful for automation, as you can retrain models
+on a recurring basis using a pipeline!
+
+## conclusion!
+overall, i think this third module was...a little "all over the place".
+given that the title was "optimize model training", i guess there are quite a few ways to do that, and
+the module did a good job at highlighting the various techniques that could be used. \
+\
+i really liked that they went heavy into automation and production-level practices.
+overall, this was probably my favorite module so far. maybe its because im scatter-brained and 
+like to take various different topics at a time, but this was fun! \
+\
+as a note for future reference, i only did the hyperparameter tuning lab and tinkered with
+basic scheduling on azure. i would like to revisit and do the other labs if possible! \
+\
+on a completely different note, i recently started playing ranked league of legends.
+i got promoted to iron 3!! (still dont know how to play the game...)
+
+<BlogImage
+src="/blogs/ms-dp100/slc/3/fin.png"
+alt="league of legends promotion"
+caption="i got an s+ too!! :DDD"
+/>

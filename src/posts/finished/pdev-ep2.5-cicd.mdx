@@ -12,29 +12,28 @@ tags: ["coding", "portfolio-dev"]
 <br />
 
 oh my god, i can't believe i have to come back to this. \
-\*sigh\*
+\*sigh\* 
 
 <br />
 
 ## what happened
-
-it was a beautiful day - december 24th. some may call it christmas eve.
+it was a beautiful day - december 24th. some may call it christmas eve. 
 i was just playing around with my docker containers, as i was trying to get a new project attached
 to my portfolio website (git-aura evaluator, blog about it soon maybe). this worked swimmingly.
 however, upon trying to login to my server using its web ui, i found an issue: the login page no longer
 worked. \
 \
-curious, i tried to see what was going on. it turns out that the original nginx process that handles
+curious, i tried to see what was going on. it turns out that the original nginx process that handles 
 the server's entire web ui was no longer running. i must have forgotten, but i accidentally stopped
-the nginx service on my server when running my nginx docker container for my portfolio. i didn't realize for
+the nginx service on my server when running my nginx docker container for my portfolio. i didn't realize for 
 so long because i had no need to access the web ui. \
 \
-upon realizing this, i stopped my portfolio container and tried to start the nginx service.
+upon realizing this, i stopped my portfolio container and tried to start the nginx service. 
 however, i forgot that i had done something else - while fooling around with the original nginx service,
-i deleted a file that was essential to the nginx service. this file was specific to the ugreen nas
-that i was running everything on - `/etc/nginx/ugreen_security.conf`. \
+i deleted a file that was essential to the nginx service. this file was specific to the ugreen nas 
+that i was running everything on - ``/etc/nginx/ugreen_security.conf``. \
 \
-thankfully, i had a backup of this file (because i am a very responsible server manager).
+thankfully, i had a backup of this file (because i am a very responsible server manager). 
 however, upon restoring the file, i ended up running into more issues. long story short,
 i tried to reboot my server to see if that would fix the issue. it did not. in fact, i had some bigger issues. \
 \
@@ -42,7 +41,7 @@ i tried to reboot my server to see if that would fix the issue. it did not. in f
 \
 i don't know what happened, but my home directory was completely wiped. i had no idea what to do.
 this was a huge issue, as all of my projects were stored in my home directory. \
-this also broke the web ui even further. upon trying to access it, i would get an error
+this also broke the web ui even further. upon trying to access it, i would get an error 
 saying that "necessary device inforamation was missing". even if i was able to reconstruct my home
 directory (which i wasn't), i would be apparently missing some device information stored in that directory. \
 \
@@ -51,7 +50,6 @@ so, what did i do?
 <br />
 
 ## the thought process
-
 first of all, i panicked. that's also why there aren't that many images in this blog - i didn't really think about documenting this process. \
 thankfully, i had a backup of my data within the nas (my server), so losing
 **all** of my data was not a concern. however, i was still worried about the state of the server. \
@@ -63,54 +61,49 @@ i found truenas scale to be pretty nice. it was user friendly (not as friendly a
 and it had a lot of features that i liked. i installed <a href="https://www.portainer.io/" target="_blank">
 portainer</a> on it and got my docker containers up and running. \
 \
-however, the next issue came to mind: ci/cd.
+however, the next issue came to mind: ci/cd. 
 
 <br />
 
 ## ci/cd refactoring
-
-since i was running the containers on portainer (as opposed to the command line), i had to refactor my ci/cd.
+since i was running the containers on portainer (as opposed to the command line), i had to refactor my ci/cd. 
 i didn't want to just ssh into my machine and then run the docker commands with my script. \
 \
 i decided to use <a href="https://hub.docker.com/" target="_blank">dockerhub</a> for my ci/cd.
 at first, i didn't want to use it because i didn't want my images to be publicly available.
-however, i found out that i could make a single private repository for free. by putting my images
+however, i found out that i could make a single private repository for free. by putting my images 
 under different tags, i could have up to 100 images in there. \
 \
-i remade my deployment script so that it would build the image and push it to dockerhub.
+i remade my deployment script so that it would build the image and push it to dockerhub. 
 
 <BlogCode language="sh" title="deploy/build-and-deploy.sh" copy="false">
 {`
 #!/bin/bash
 
 # Exit script on any error
-
 set -e
 
 # Build the Docker image
-
 echo "Building Docker image..."
 docker build -t $DOCKER_USERNAME/$DOCKER_REPO:$IMAGE_TAG .
 
 # Login to Docker Hub
-
 echo "Logging into Docker Hub..."
 echo "$DOCKER_TOKEN" | docker login --username $DOCKER_USERNAME --password-stdin
 
-# Push the image to Docker Hub
 
+# Push the image to Docker Hub
 echo "Pushing Docker image to Docker Hub..."
 docker push $DOCKER_USERNAME/$DOCKER_REPO:$IMAGE_TAG
 
 echo "done! :D"
 `}
-
 </BlogCode>
 
 this script was much shorter than my previous one! that was pretty cool. \
 \
 i also had to change my docker-compose file. in order to automatically pull the image from dockerhub,
-i added a container to my project: <a href="https://containrrr.dev/watchtower/" target="_blank">watchtower</a>.
+i added a container to my project: <a href="https://containrrr.dev/watchtower/" target="_blank">watchtower</a>. 
 
 <BlogCode language="yaml" title="new docker-compose.yml" copy="false">
 {`
@@ -122,59 +115,68 @@ services:
     networks:
       - app-network
 
-nginx:
-image: brrryry/personal:nginx
-ports: - "8080:80" - "4430:443"
-volumes: - ./certbot/www/:/var/www/certbot/:ro - ./certbot/conf/:/etc/letsencrypt/:ro
-depends_on: - portfolio
-networks: - app-network
+  nginx:
+    image: brrryry/personal:nginx
+    ports:
+      - "8080:80"
+      - "4430:443"
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/letsencrypt/:ro
+    depends_on:
+      - portfolio
+    networks:
+      - app-network
 
-certbot:
-image: certbot/certbot:latest
-volumes: - ./certbot/www/:/var/www/certbot/:rw - ./certbot/conf/:/etc/letsencrypt/:rw
-networks: - app-network
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+    networks:
+      - app-network
 
-watchtower:
-image: containrrr/watchtower
-volumes: - /var/run/docker.sock:/var/run/docker.sock - /home/bryan/.docker/config.json:/config.json
-restart: always
-command: --interval 30
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/bryan/.docker/config.json:/config.json
+    restart: always
+    command: --interval 30
+
 
 networks:
-app-network:
-driver: bridge
+  app-network:
+    driver: bridge
 `}
-
 </BlogCode>
 
 in the watchtower container,
 
 i configured it so that it would check all the containers in the project every 30 seconds.
-if it found that a container was out of date, it would pull the latest image from dockerhub and restart the container.
-this was pretty nice!
+if it found that a container was out of date, it would pull the latest image from dockerhub and restart the container. 
+this was pretty nice! 
 
 <br />
 
 ## almost done...or are we?
-
-i just had one thing left to do after setting all of this: the freaking ssl certificate.
+i just had one thing left to do after setting all of this: the freaking ssl certificate. 
 my website worked fine on the new operating system, but it was not secure.
 i wanted to use certbot as i did before, but i ran into an issue. \
 \
-it turns out, truenas scale has a default ssl certificate that is self-signed.
-this is great for the web ui, but not for my website.
+it turns out, truenas scale has a default ssl certificate that is self-signed. 
+this is great for the web ui, but not for my website. 
 whenever i tried to run certbot, it would fail because trying to access anything on the nas
 with https would fail due to the self-signed certificate. \
 \
 i tried to find a way to disable the self-signed certificate, but i couldn't.
 i tried to find a way to use certbot with the self-signed certificate, but i couldn't. \
 \
-i was stuck, until...
+i was stuck, until... 
 
 <br />
 
 ## reinstalling the og os
-
 i found out that by sending a request to the nas creators, i could get the iso image for the os. \
 the reason why it wasn't publicly available was because each iso was unique to the nas's serial number. \
 \
@@ -183,20 +185,19 @@ soooooo, i sent a request and got the iso. i reinstalled the os and everything..
 this time, i did not want to use the terminal. i was kind of scared that i would mess up again.
 besides, the ugreen os has a docker app that i can just use without the terminal. \
 \
-i set up my containers, and everything...was back to normal!
+i set up my containers, and everything...was back to normal! 
 
 <br />
 
 ## moral of the story
-
 be more careful, and don't...delete essential files, especially if you don't know what they do. \
 \
-i still have to remake my git-aura evaluator project, but that's a story for another day.
+i still have to remake my git-aura evaluator project, but that's a story for another day. 
 until then, i hope you enjoyed this short blog. it wasn't really as detailed or polished as my other ones, but i hope you enjoyed it nonetheless.
 
-<BlogImage
-  src="/blogs/pdev-ep2.5-cicd/broke.png"
-  alt="me on discord after breaking my server"
-  caption="me on discord after breaking my server"
-  style={{ border: "0.5rem white solid" }}
+<BlogImage 
+src="/blogs/pdev-ep2.5-cicd/broke.png"
+alt="me on discord after breaking my server"
+caption="me on discord after breaking my server"
+style={{ border: "0.5rem white solid" }} 
 />
