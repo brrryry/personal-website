@@ -22,11 +22,16 @@ const Navbar = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  const hoverClasses =
+    "transition-colors duration-200 ease-in-out hover:text-white cursor-pointer";
+
   return (
     <nav className="bg-transparent p-0 h-auto md:h-32 flex flex-col md:flex-row justify-between items-start md:items-center">
       <div className="flex justify-between items-center w-full py-4 md:py-0 md:w-auto">
         <Link href="/" className="flex items-center p-0 mx-0">
-          <p className="text-2xl text-purple-200 font-bold whitespace-nowrap mx-0">
+          <p
+            className={`text-2xl text-purple-200 font-bold whitespace-nowrap mx-0 ${hoverClasses}`}
+          >
             bryan chan.
           </p>
         </Link>
@@ -43,20 +48,28 @@ const Navbar = () => {
         className={`flex-col space-y-1 mx-0 pb-5 items-start md:hidden ${mobileOpen ? "flex" : "hidden"}`}
       >
         <Link href="/" className="flex items-center mx-0">
-          <p className="text-2xl text-purple-200 font-bold">-- home</p>
+          <p className={`text-2xl text-purple-200 font-bold ${hoverClasses}`}>
+            -- home
+          </p>
         </Link>
         <Link
           href="/Chan_Bryan_Resume.pdf"
           target="_blank"
           className="flex items-center mx-0"
         >
-          <p className="text-2xl text-purple-200 font-bold">-- resume</p>
+          <p className={`text-2xl text-purple-200 font-bold ${hoverClasses}`}>
+            -- resume
+          </p>
         </Link>
         <Link href="/projects" className="flex items-center mx-0">
-          <p className="text-2xl text-purple-200 font-bold">-- projects</p>
+          <p className={`text-2xl text-purple-200 font-bold ${hoverClasses}`}>
+            -- projects
+          </p>
         </Link>
         <Link href="/blog" className="flex items-center mx-0">
-          <p className="text-2xl text-purple-200 font-bold">-- blog</p>
+          <p className={`text-2xl text-purple-200 font-bold ${hoverClasses}`}>
+            -- blog
+          </p>
         </Link>
         {session?.sessionId && !loading && (
           <Link
@@ -64,12 +77,16 @@ const Navbar = () => {
             onClick={handleLogout}
             className="flex items-center mx-0"
           >
-            <p className="text-2xl text-purple-200 font-bold">-- logout</p>
+            <p className={`text-2xl text-purple-200 font-bold ${hoverClasses}`}>
+              -- logout
+            </p>
           </Link>
         )}
         {!session?.sessionId && !loading && (
           <Link href="/login" className="flex items-center mx-0">
-            <p className="text-2xl text-purple-200 font-bold">-- login</p>
+            <p className={`text-2xl text-purple-200 font-bold ${hoverClasses}`}>
+              -- login
+            </p>
           </Link>
         )}
       </div>
@@ -78,35 +95,51 @@ const Navbar = () => {
       <ul className="hidden md:flex space-x-6 px-4">
         <li>
           <Link href="/">
-            <p className="text-2xl text-purple-200 font-bold">home</p>
+            <p className={`text-2xl text-purple-200 font-bold ${hoverClasses}`}>
+              home
+            </p>
           </Link>
         </li>
         <li>
           <Link href="/Chan_Bryan_Resume.pdf" target="_blank">
-            <p className="text-2xl text-purple-200 font-bold">resume</p>
+            <p className={`text-2xl text-purple-200 font-bold ${hoverClasses}`}>
+              resume
+            </p>
           </Link>
         </li>
         <li>
           <Link href="/projects">
-            <p className="text-2xl text-purple-200 font-bold">projects</p>
+            <p className={`text-2xl text-purple-200 font-bold ${hoverClasses}`}>
+              projects
+            </p>
           </Link>
         </li>
         <li>
           <Link href="/blog">
-            <p className="text-2xl text-purple-200 font-bold">blog</p>
+            <p className={`text-2xl text-purple-200 font-bold ${hoverClasses}`}>
+              blog
+            </p>
           </Link>
         </li>
         {session?.sessionId && !loading && (
           <li>
             <Link href="/" onClick={handleLogout}>
-              <p className="text-2xl text-purple-200 font-bold">logout</p>
+              <p
+                className={`text-2xl text-purple-200 font-bold ${hoverClasses}`}
+              >
+                logout
+              </p>
             </Link>
           </li>
         )}
         {!session?.sessionId && !loading && (
           <li>
             <Link href="/login">
-              <p className="text-2xl text-purple-200 font-bold">login</p>
+              <p
+                className={`text-2xl text-purple-200 font-bold ${hoverClasses}`}
+              >
+                login
+              </p>
             </Link>
           </li>
         )}
