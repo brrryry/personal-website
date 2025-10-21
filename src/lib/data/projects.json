@@ -1,0 +1,61 @@
+[
+  {
+    "id": "cat-or-car",
+    "title": "cat or car?",
+    "url": "/projects/cat-or-car",
+    "external": false,
+    "description": "this personal project was meant to apply my small bit of knowledge in machine learning in preperation for my [cs559 course](https://web.stevens.edu/catalog/archive/2023-2024/en/catalog/academic-catalog/courses/cs-computer-science/500/cs-559.html). it uses a tensorflow.js model to predict whether an image is a cat or a car.",
+    "blog": "/blog/cat-or-car",
+    "status": "complete"
+  },
+  {
+    "id": "rov-plus-plus-survey",
+    "title": "a survey of rov++: we may need another napkin",
+    "url": "https://www.caecommunity.org/cop-cyber-research/cae-r-research-symposium/2024-cae-r-cop-research-symposium",
+    "external": true,
+    "description": "did a little research with the [insure+e program](https://www.caecommunity.org/initiatives/initiative-insure) to create a poster/paper on the security of border gateway protocol, rov++ and rpki infrastructure.",
+    "blog": "/blog/insure-2024",
+    "status": "complete"
+  },
+  {
+    "id": "portfolio-website",
+    "title": "portfolio website",
+    "url": "https://github.com/brrryry/personal-website",
+    "external": true,
+    "description": "youre literally looking at it...but...i made this website with nextjs in order to hone my web development skills and to have a place to put all my projects. i also have some blogs about it!",
+    "blog": "/blog?tag=portfolio-dev",
+    "status": "maintained"
+  },
+  {
+    "id": "osu-beatmap-generator",
+    "title": "osu-beatmap-generator",
+    "url": "https://github.com/brrryry/osu-beatmap-generator",
+    "external": true,
+    "description": "this personal project is a collaboration with [Dhruv Prasanna](https://github.com/21dhruvp) as we go through a machine learning project related to a video game we both enjoy. the goal is to take any song and generate an osu beatmap with manually inputted difficulty stats.",
+    "status": "building"
+  },
+  {
+    "id": "brew-review",
+    "title": "brew review",
+    "url": "https://github.com/Dedicated-RAM/brewreview",
+    "external": true,
+    "description": "this was a cs554 final project. we used redis, firebase/fireauth and nextjs to make a basic website to review coffee shops.",
+    "status": "complete"
+  },
+  {
+    "id": "goodminton",
+    "title": "goodminton",
+    "url": "https://github.com/JasonQiu21/goodminton",
+    "external": true,
+    "description": "this was a cs546 final project. we used handlebars and an expressjs backend to create a static reservation and tournament site for our collegiate badminton club.",
+    "status": "complete"
+  },
+  {
+    "id": "discord-bot",
+    "title": "discord bot",
+    "url": "https://github.com/brrryry/discord-bot",
+    "external": true,
+    "description": "this was a project made with discord.js. it was made for a twitch server that i ran at one point, but it is currently deprecated. it has a moderation system and a levelling system. it also communicates with the twitch and brawlhalla api. maybe ill keep developing it one day...",
+    "status": "deprecated"
+  }
+]

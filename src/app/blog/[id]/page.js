@@ -54,7 +54,7 @@ export default async function BlogPost({ params }) {
           tags: [
           {data.tags.sort().map((tag, i) => {
             return (
-              <a href={`/blog/tag/${tag}`} key={tag}>
+              <a href={`/blog?tag=${tag}`} key={tag}>
                 {i < data.tags.length - 1 ? tag + ", " : tag}
               </a>
             );

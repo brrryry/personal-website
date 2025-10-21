@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function BlogSearch({ posts = [] }) {
   const [query, setQuery] = useState("");
@@ -22,7 +22,30 @@ export default function BlogSearch({ posts = [] }) {
       }),
     ),
   ).sort();
-  tags = tags.filter((t) => t !== "series");
+
+  tags = tags.filter((tag) => !tag.includes("series"));
+
+  // read "tag" from the URL query and set activeTag if applicable
+  useEffect(() => {
+    const syncTagFromUrl = () => {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const urlTag = params.get("tag") ?? "";
+        if (!urlTag) {
+          setActiveTag("");
+          return;
+        }
+        // only set if the tag exists in the computed tags list
+        setActiveTag(urlTag);
+      } catch (e) {
+        // ignore any URL parsing errors
+      }
+    };
+
+    syncTagFromUrl();
+    window.addEventListener("popstate", syncTagFromUrl);
+    return () => window.removeEventListener("popstate", syncTagFromUrl);
+  }, []);
 
   useEffect(() => {
     if (!activeTag) {
@@ -58,6 +81,22 @@ export default function BlogSearch({ posts = [] }) {
           style={{ fontWeight: activeTag === "" ? "700" : "400" }}
         >
           all
+        </a>{" "}
+        |{" "}
+        <a
+          href="/blog?tag=series"
+          onClick={(e) => {
+            e.preventDefault();
+            setActiveTag("series");
+          }}
+          aria-current={activeTag === "series" ? "page" : undefined}
+          style={{
+            marginLeft: 8,
+            marginRight: 8,
+            fontWeight: activeTag === "series" ? "700" : "400",
+          }}
+        >
+          series
         </a>
         {tags.map((tag) => (
           <span key={tag}>
@@ -83,10 +122,14 @@ export default function BlogSearch({ posts = [] }) {
 
       <ul>
         {results.length === 0 ? (
-          <li>No posts found.</li>
+          <li>
+            no posts found for tag {'"'}
+            {activeTag}
+            {'"'}.
+          </li>
         ) : (
           <div className="space-y-5 md:w-4/5">
-            <ul>
+            <ul className="space-y-6 my-6">
               {results.map((post) => {
                 if (!post) return null;
                 const raw = post.data?.tags ?? post.tags ?? [];
@@ -98,32 +141,67 @@ export default function BlogSearch({ posts = [] }) {
                         .map((s) => s.trim())
                         .filter(Boolean)
                     : [];
-                if (postTags.includes("series")) return null;
+
+                const seriesTag = post.data.seriestag || "";
+                if (seriesTag && !postTags.includes(seriesTag)) {
+                  postTags.push(seriesTag);
+                }
 
                 return (
-                  <li key={post.id} className="py-2">
+                  <li
+                    key={post.id}
+                    className="p-4 rounded-lg bg-purple-900/20 border border-purple-500/20 transition-transform duration-200 ease-out hover:scale-[1.02]"
+                  >
                     <p>
                       <a href={`/blog/${post.id}`}>{post.data?.title}</a> (
                       {post.data?.date})
                       <br />
                       tags: [
                       {postTags.sort().map((tag, i) => (
-                        <a
-                          href={`/blog/tag/${tag}`}
-                          key={post.id + tag}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setActiveTag(tag);
-                          }}
-                          aria-current={activeTag === tag ? "page" : undefined}
-                          style={{
-                            fontWeight: activeTag === tag ? "700" : "400",
-                          }}
-                        >
-                          {i < postTags.length - 1 ? tag + ", " : tag}
-                        </a>
+                        <span key={post.id + tag}>
+                          <a
+                            href={`/blog/tag/${tag}`}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setActiveTag(tag);
+                            }}
+                            aria-current={
+                              activeTag === tag ? "page" : undefined
+                            }
+                            style={{
+                              fontWeight: activeTag === tag ? "700" : "400",
+                            }}
+                          >
+                            {tag}
+                          </a>
+                          {i < postTags.length - 1 && (
+                            <span style={{ color: "white" }}>, </span>
+                          )}
+                        </span>
                       ))}
                       ]<br />
+                      {seriesTag && (
+                        <>
+                          series tag:{" "}
+                          <a
+                            href={`/blog?tag=${seriesTag}`}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setActiveTag(seriesTag);
+                            }}
+                            aria-current={
+                              activeTag === seriesTag ? "page" : undefined
+                            }
+                            style={{
+                              fontWeight:
+                                activeTag === seriesTag ? "700" : "400",
+                            }}
+                          >
+                            {seriesTag}
+                          </a>
+                          <br />
+                        </>
+                      )}
                       {post.data?.description}
                     </p>
                   </li>
