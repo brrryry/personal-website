@@ -245,11 +245,33 @@ export default function BlogSearch({ posts = [] }) {
             className="space-y-5 md:w-4/5"
             style={{
               transition:
-                "max-height 2000ms ease, width 300ms ease, height 2000ms ease",
+                "max-height 300ms ease, width 300ms ease, height 300ms ease",
               willChange: "max-height, width, height",
               overflow: "hidden",
               // estimate required max height: at least 240px or ~120px per item
-              maxHeight: `${Math.max(240, displayed.length * 250)}px`,
+              maxHeight: (() => {
+                if (typeof window === "undefined") return "640px";
+                const vw = window.innerWidth;
+                const vh = window.innerHeight;
+                const rem =
+                  parseFloat(
+                    getComputedStyle(document.documentElement).fontSize,
+                  ) || 16;
+
+                // estimate per-item height in rem and scale by viewport
+                const baseItemRem = 10; // base item height in rem
+                const widthScale = Math.max(0.7, Math.min(1.3, vw / 1200));
+                const heightScale = Math.max(0.8, Math.min(1.2, vh / 800));
+                const itemPx = baseItemRem * rem * widthScale * heightScale;
+
+                const estimated = Math.round((displayed?.length || 0) * itemPx);
+                // clamp between a sensible minimum and a multiple of viewport height
+                const clamped = Math.min(
+                  Math.max(estimated, 240),
+                  Math.round(vh * 3),
+                );
+                return `${clamped}px`;
+              })(),
             }}
           >
             <ul className="space-y-6 my-6">
