@@ -22,7 +22,7 @@ export default async function RootLayout({ children, hideFooter = false }) {
 
   return (
     <html lang="en">
-      <body className={`${inter.className} mx-20`}>
+      <body className={`${inter.className} lg:mx-20`}>
         <main className="min-h-screen">
           <SessionProvider>
             <Navbar loggedIn={isLoggedIn} />
