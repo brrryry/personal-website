@@ -22,8 +22,8 @@ export default async function RootLayout({ children, hideFooter = false }) {
 
   return (
     <html lang="en">
-      <body className={`${inter.className} overflow-x-hidden`}>
-        <main className="w-screen">
+      <body className={`${inter.className} mx-20`}>
+        <main className="min-h-screen">
           <SessionProvider>
             <Navbar loggedIn={isLoggedIn} />
             {children}
