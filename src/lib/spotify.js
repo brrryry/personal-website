@@ -21,41 +21,69 @@ async function getAccessToken() {
   return response.json();
 }
 
+let _spotifyCache = {
+  timestamp: 0,
+  text: null,
+  status: null,
+  headers: {},
+};
+
 export const currentlyPlayingSong = async () => {
+  const now = Date.now();
+
+  // Return cached response if it's younger than 10 seconds
+  if (_spotifyCache.text !== null && now - _spotifyCache.timestamp < 10_000) {
+    //console.log("Using cached Spotify response");
+    return new Response(_spotifyCache.text, {
+      status: _spotifyCache.status ?? 200,
+      headers: _spotifyCache.headers,
+    });
+  }
+
   let response = await fetch(
     "https://api.spotify.com/v1/me/player/currently-playing",
     {
       headers: {
         Authorization: `Bearer ${access_token}`,
       },
-      next: {
-        revalidate: 5,
-      },
+      next: { revalidate: 10 },
     },
   );
 
-  if (response.status == 200) return response;
+  // If we didn't get a successful 200, try to refresh the access token and retry
+  if (response.status !== 200) {
+    const token = await getAccessToken();
+    access_token = token.access_token;
 
-  const token = await getAccessToken();
-  access_token = token.access_token;
+    response = await fetch(
+      "https://api.spotify.com/v1/me/player/currently-playing",
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+        next: { revalidate: 10 },
+      },
+    );
+  }
 
-  return fetch("https://api.spotify.com/v1/me/player/currently-playing", {
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-    },
+  if (response.status === 204) {
+    return { status: 204 };
+  }
+
+  // Clone and read response body to populate cache
+  const cloned = response.clone();
+  const text = await cloned.text();
+  const headersObj = {};
+  cloned.headers.forEach((value, key) => {
+    headersObj[key] = value;
   });
+
+  _spotifyCache = {
+    timestamp: Date.now(),
+    text,
+    status: response.status,
+    headers: headersObj,
+  };
+
+  return response;
 };
-
-export function pollCurrentlyPlayingSong(intervalSeconds, callback) {
-  let intervalId = setInterval(async () => {
-    try {
-      const response = await currentlyPlayingSong();
-      const data = await response.json();
-      callback(data);
-    } catch (error) {
-      console.error("Error polling currently playing song:", error);
-    }
-  }, intervalSeconds * 1000);
-
-  return () => clearInterval(intervalId);
-}

@@ -20,42 +20,37 @@
   {
     "id": "portfolio-website",
     "title": "portfolio website",
-    "url": "https://github.com/brrryry/personal-website",
-    "external": true,
     "description": "youre literally looking at it...but...i made this website with nextjs in order to hone my web development skills and to have a place to put all my projects. i also have some blogs about it!",
+    "github": "https://github.com/brrryry/personal-website",
     "blog": "/blog?tag=portfolio-dev",
     "status": "maintained"
   },
   {
     "id": "osu-beatmap-generator",
     "title": "osu-beatmap-generator",
-    "url": "https://github.com/brrryry/osu-beatmap-generator",
-    "external": true,
     "description": "this personal project is a collaboration with [Dhruv Prasanna](https://github.com/21dhruvp) as we go through a machine learning project related to a video game we both enjoy. the goal is to take any song and generate an osu beatmap with manually inputted difficulty stats.",
+    "github": "https://github.com/brrryry/osu-beatmap-generator",
     "status": "building"
   },
   {
     "id": "brew-review",
     "title": "brew review",
-    "url": "https://github.com/Dedicated-RAM/brewreview",
-    "external": true,
     "description": "this was a cs554 final project. we used redis, firebase/fireauth and nextjs to make a basic website to review coffee shops.",
+    "github": "https://github.com/Dedicated-RAM/brewreview",
     "status": "complete"
   },
   {
     "id": "goodminton",
     "title": "goodminton",
-    "url": "https://github.com/JasonQiu21/goodminton",
-    "external": true,
+    "github": "https://github.com/JasonQiu21/goodminton",
     "description": "this was a cs546 final project. we used handlebars and an expressjs backend to create a static reservation and tournament site for our collegiate badminton club.",
     "status": "complete"
   },
   {
     "id": "discord-bot",
     "title": "discord bot",
-    "url": "https://github.com/brrryry/discord-bot",
-    "external": true,
-    "description": "this was a project made with discord.js. it was made for a twitch server that i ran at one point, but it is currently deprecated. it has a moderation system and a levelling system. it also communicates with the twitch and brawlhalla api. maybe ill keep developing it one day...",
+    "github": "https://github.com/brrryry/discord-bot",
+    "description": "this was a project made with discord.js. it was made for a twitch server that i ran! it has a moderation system, a levelling system, and some rank commands using the brawlhalla api.",
     "status": "deprecated"
   }
 ]

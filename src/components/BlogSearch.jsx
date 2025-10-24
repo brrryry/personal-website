@@ -139,7 +139,6 @@ export default function BlogSearch({ posts = [] }) {
     syncTagFromUrl();
     window.addEventListener("popstate", syncTagFromUrl);
     return () => window.removeEventListener("popstate", syncTagFromUrl);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // run once on mount
 
   // render helpers for styles
