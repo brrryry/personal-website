@@ -46,7 +46,7 @@ nav {
 }
 
 nav a {
-  color: #9370db;
+  color: #9c7bde;
   /* Medium Purple Links */
   text-decoration: none;
   margin: 0 15px;
@@ -56,6 +56,11 @@ nav a {
 nav a:hover {
   color: #d8bfd8;
   /* Light Purple Hover Effect */
+}
+
+.primary {
+  color: #d8bfd8;
+  /* Light Purple for Emphasis */
 }
 
 /* Main Section Styles */
@@ -128,7 +133,7 @@ section {
 }
 
 a {
-  color: #9370db;
+  color: #9c7bde;
   /* Medium Purple for Links */
   text-decoration: none;
   font-family: "Open Sans", sans-serif;
@@ -153,4 +158,11 @@ img {
 
 code {
   background: #282c34;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* Add dots under the hoverable text */
+  cursor: pointer;
 }

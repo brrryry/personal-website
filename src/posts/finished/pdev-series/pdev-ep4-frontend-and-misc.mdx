@@ -1,0 +1,266 @@
+---
+title: "portfolio dev ep4: frontend changes + qol improvements"
+date: "2025-10-24"
+tags: ["coding", "portfolio-dev-series"]
+description: "i made a bunch of small updates to my portfolio site!"
+---
+
+so...its been a hot minute. thanks for sticking around. \
+\
+you might have noticed that there have been some graphical changes to the site. 
+i will go over what is - essentially - all the updates on this portfolio from july 2025 to now. \
+\
+before i start, i would like to credit a few people for inspiring some of these changes! personally, i suck at frontend (if you couldnt already tell lol), and some people really helped me out when it came to design.
+
+<BlogList>
+<li>Kevin Cheng - for constantly identifying bugs and giving blog feedback</li>
+<li>Jing Ngo - credit for blog page hub changes</li>
+<li>Amane Chibana - credit for icon creation</li>
+<li>Barnatt Wu - sending me design inspiration</li>
+</BlogList>
+
+man...now that i think about it, i have a lot of pretty smart people around me. i should be grateful.
+
+<BlogImage
+src="/blogs/pdev/4/theogs.png"
+alt="the people i thanked in my first blog post"
+caption="the og thank you list from my first blog post"
+style={{ border: "1px solid white" }}
+/>
+
+okay, onto the updates!
+
+<br />
+
+## blog page hub changes
+originally, the blog page hub was a static page that listed all my blog posts. the tags were on the right side of the screen, but if the viewport was too small,
+they would be on the top (before the blog list). \
+\
+however, this did not look aesthetically pleasing, and the static nature of the page forced users to refresh whenever they selected a tag.
+to mitigate this, i made two changes: 
+
+<BlogList>
+<li>**make the page dynamic** - do not refresh the page when selecting a tag.</li>
+<li>**move the tags to the top, but print them horizontally**</li>
+</BlogList>
+
+the first change was harder than the second one...for sure. \
+\
+in order to make the page dynamic, i made a new component and just stuck it on the server-rendered blog page.
+
+<BlogCode title="src/blog/page.js" language="js">
+{`
+export default async function Blog() {
+  const allPostsData = await getSortedPostsData();
+
+  const plainPosts = allPostsData.map((post) => toPlainObject({ ...post }));
+
+  return (
+    <div className="flex flex-col space-y-5">
+      <BlogSearch posts={plainPosts} />
+    </div>
+  );
+}
+`}
+</BlogCode>
+
+the `BlogSearch` component is a client component that handles all the filtering and rendering of the blog posts. 
+lets break it down. \
+\
+we have a few states here:
+
+<BlogCode title="src/components/BlogSearch.js" language="js">
+{`
+  const [query, setQuery] = useState("");
+  const [activeTag, setActiveTag] = useState(""); //current tag
+  const [displayed, setDisplayed] = useState(posts); //displayed items
+  const [visibleIds, setVisibleIds] = useState(new Set()); //visible items
+  const [isFadingOut, setIsFadingOut] = useState(false); //whether we are fading out
+  const [showNoResults, setShowNoResults] = useState(false);
+`}
+</BlogCode>
+
+on load, we will set the tag if there is one in the url. \
+\
+then, we have a useeffect that runs whenever the tag changes.
+it will filter the displayed posts based on the tag.
+the fading logic is just for aesthetics.
+
+<BlogCode title="src/components/BlogSearch.js - load useeffect" language="js">
+{`
+  useEffect(() => {
+    const syncTagFromUrl = () => {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const urlTag = params.get("tag") ?? "";
+        selectTag(urlTag);
+      } catch (e) {
+        // ignore
+      }
+    };
+
+    syncTagFromUrl();
+    window.addEventListener("popstate", syncTagFromUrl);
+    return () => window.removeEventListener("popstate", syncTagFromUrl);
+  }, []); // run once on mount
+`}
+</BlogCode>
+
+there are many helper functions, and i will not go over all of them.
+they are used to handle tag filtering and transition effects. \
+\
+in the end, we have a blog that looks like this:
+
+<BlogImage
+src="/blogs/pdev/4/blogpage.png"
+alt="the updated blog hub page"
+caption="the updated blog hub page"
+style={{ border: "1px solid white" }}
+/>
+
+when a tag is clicked, the posts are filtered without a page refresh!
+only the blogsearch component is re-rendered. \
+\
+overall, i think it feels more sleek and "modern" now.
+
+<br />
+
+## icon updates
+one of the big changes i made was updating icons on the site.
+i mainly did this in two areas:
+
+<BlogList>
+<li>the projects page</li>
+<li>the footer</li>
+</BlogList>
+
+my home page used to have generic links for my socials. however,
+i wanted something that looked less like a wall of text on the landing page. \
+\
+because of this, i removed these links and made them icons. they are now in the footer,
+so my socials can be easily accessed from any page. \
+\
+in the projects page, i also wanted a less "wall of text" feel.
+in order to do this, i made the descriptions a bit shorter and added icons
+for external links. \
+\
+previously, the projects page had links attached to the titles, and you
+couldnt tell where they led. now, there are icons that clearly indicate
+what links are available to each project.
+
+<BlogImage
+src="/blogs/pdev/4/projects.png"
+alt="the updated projects page with icons"
+caption="the updated projects page with icons!"
+style={{ border: "1px solid white" }}
+/>
+
+the site looks less cluttered!
+
+<br />
+
+## boxing stuff
+i added boxes around certain sections of the website. in particular,
+i put a box on the home page around my description, and i put boxes
+around projects and blog posts. this made them pop out a bit more,
+and it made the site look a bit more organized.
+
+<br />
+## highlighting improvements
+you can now tell what page you are on in the navbar! the current
+page will be highlighted, making it slightly easier to navigate. \
+\
+this highlighting is also done in the blog tags. the active tag 
+will be highlighted, so you can tell what tag you are filtering by.
+
+<br />
+## spotify status caching
+you cant really see the difference here, but i changed how my spotify status is fetched. \
+\
+previously, it would call the spotify api every time the page loaded. however, this caused a few issues:
+
+<BlogList>
+<li>possibly hitting rate limits?</li>
+<li>not updating "live"</li>
+</BlogList>
+
+to fix this, i made the spotify component fetch the status every 10 seconds.
+
+<BlogCode title="src/components/SpotifyEmbed.jsx - useEffect" language="js">
+{`
+    useEffect(() => {
+    let mounted = true;
+
+    const fetchCurrent = async () => {
+      //fetch current song
+    };
+
+    fetchCurrent(); // initial fetch
+    const intervalId = setInterval(fetchCurrent, 10000); // poll every 10s
+
+    return () => {
+      mounted = false;
+      clearInterval(intervalId);
+    };
+  }, []);
+`}
+</BlogCode>
+
+however - as mentioned earlier - this comes with a ton of api calls to my backend.
+to mitigate hitting rate limits, i simply added a json object as a cache in the backend. 
+
+<BlogCode title="src/lib/spotify.js - caching logic" language="js">
+{`
+export const currentlyPlayingSong = async () => {
+  const now = Date.now();
+
+  // Return cached response if it's younger than 10 seconds
+  if (_spotifyCache.text !== null && now - _spotifyCache.timestamp < 10_000) {
+    //console.log("Using cached Spotify response");
+    return new Response(_spotifyCache.text, {
+      status: _spotifyCache.status ?? 200,
+      headers: _spotifyCache.headers,
+    });
+  }
+
+  //get response
+
+  // Clone and read response body to populate cache
+  const cloned = response.clone();
+  const text = await cloned.text();
+  const headersObj = {};
+  cloned.headers.forEach((value, key) => {
+    headersObj[key] = value;
+  });
+
+  _spotifyCache = {
+    timestamp: Date.now(),
+    text,
+    status: response.status,
+    headers: headersObj,
+  };
+
+  return response;
+};
+`}
+</BlogCode>
+
+this way, if the cache is younger than 10 seconds, we just return what we cached before.
+the fastest we will ever hit the spotify api is once every 10 seconds, regardless
+of how many users/requests there are on our frontend.
+
+<br />
+
+## conclusion
+again, thank you to everyone who has given me feedback!
+i really appreciate it. this is a small update, but it is somewhat important! \
+\
+going forward, my current goals are:
+
+<BlogList>
+<li>improving blog writing quality (its still pretty bad)</li>
+<li>setting up my own mail server with sitecontrol</li>
+<li>adding more projects (and blogs)</li>
+</BlogList>
+
+thanks for reading this snippet! see you soon. {"<3"}

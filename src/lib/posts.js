@@ -4,6 +4,11 @@ import matter from "gray-matter";
 
 const postsDirectory = path.join(process.cwd(), "src/posts");
 
+export function getNumberOfPosts(tag = "") {
+  const allPosts = getSortedPostsData(tag);
+  return allPosts.length;
+}
+
 export function getSortedPostsData(tag = "") {
   // Get file names under /posts
   let fileNames = fs.readdirSync(postsDirectory);
