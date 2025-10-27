@@ -44,7 +44,7 @@ const Navbar = () => {
           </Link>
           <button
             onClick={toggleMobileMenu}
-            className="md:hidden text-purple-200 text-xl focus:outline-none"
+            className="md:hidden text-purple-200 text-xl focus:outline-none bg-purple-500/50"
           >
             ☰
           </button>

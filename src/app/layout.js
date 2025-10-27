@@ -32,9 +32,7 @@ export default async function RootLayout({ children, hideFooter = false }) {
 
           {!hideFooter && (
             <footer className="bg-transparent text-purple-200 p-4 flex flex-col items-center justify-center">
-              <p>
-                ...................................................................
-              </p>
+              <hr className="w-full md:w-1/2 border-t border-white/3 my-4" />
 
               <SpotifyEmbed />
 
