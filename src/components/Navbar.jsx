@@ -67,11 +67,13 @@ const Navbar = () => {
   return (
     <>
       <nav className="bg-transparent p-0 h-auto md:h-32 flex flex-col md:flex-row justify-between items-start md:items-center">
-        <div className="flex justify-between items-center w-full py-4 md:py-0 md:w-auto space-x-4">
-          <Link href="/" className="flex items-center p-0 mx-0">
-            <p className={getLinkClasses("/")}>bryan chan.</p>
-          </Link>
-          <ThemeSwitcher />
+        <div className="flex justify-between items-center w-full py-4 md:py-0 md:w-auto md:space-x-4">
+          <div className="flex space-x-4">
+            <Link href="/" className="flex items-center p-0 mx-0">
+              <p className={getLinkClasses("/")}>bryan chan.</p>
+            </Link>
+            <ThemeSwitcher />
+          </div>
           <button onClick={toggleMobileMenu} className={mobileButtonClasses}>
             ☰
           </button>
