@@ -4,63 +4,92 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400&display=swap");
 
-html {
+/* Theme variables for next-themes (applied to the html[data-theme="..."] element) */
+
+/* Dark theme (current styles) */
+html[data-theme="dark"] {
+  --bg: #1e1e1e;
+  --text: #f8f8ff;
+  --surface: #333333;
+  --muted: #d8bfd8; /* light purple for headers/emphasis */
+  --link: #9c7bde; /* medium purple links */
+  --primary: #6a0dad; /* primary purple */
+  --primary-hover: #9370db;
+  --border: #6a0dad;
+  --code-bg: #282c34;
+  --on-primary: #ffffff;
+  --scrollbar-thumb: #6a0dad;
+  --scrollbar-track: #333333;
   overflow: auto;
-  scrollbar-color: #6a0dad #333333;
-  /* Purple Scrollbar */
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  scrollbar-width: thin;
+}
+
+/* Light theme */
+html[data-theme="light"] {
+  --bg: #f8f8ff; /* off-white background */
+  --text: #1e1e1e; /* dark text */
+  --surface: #ffffff; /* header/nav/footer surface */
+  --muted: #6a0dad; /* use primary purple for emphasis */
+  --link: #6a0dad; /* purple links */
+  --primary: #6a0dad; /* primary purple */
+  --primary-hover: #7b4fc1;
+  --border: #6a0dad;
+  --code-bg: #f0f0f2;
+  --on-primary: #ffffff;
+  --scrollbar-thumb: #6a0dad;
+  --scrollbar-track: #e6e6e6;
+  overflow: auto;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
   scrollbar-width: thin;
 }
 
 /* General Styles */
+html {
+  /* keep overflow behaviors consistent; theme-specific vars above control scrollbar color */
+  overflow: auto;
+}
+
 body {
   font-family: "Open Sans", sans-serif;
   font-size: 1.4em;
-  background-color: #1e1e1e;
-  /* Dark Background */
-  color: #f8f8ff;
-  /* Off-White Text */
+  background-color: var(--bg);
+  color: var(--text);
   margin: 0;
   padding: 0;
 }
 
 /* Header Styles */
 header {
-  background-color: #333333;
-  /* Dark Grey Background */
-  color: #d8bfd8;
-  /* Light Purple for Text */
+  background-color: var(--surface);
+  color: var(--muted);
   padding: 20px;
   text-align: center;
   font-size: 2em;
   font-family: "Montserrat", sans-serif;
-  border-bottom: 2px solid #6a0dad;
-  /* Primary Purple Border */
+  border-bottom: 2px solid var(--border);
 }
 
 /* Navigation Bar Styles */
 nav {
-  background-color: #333333;
-  /* Dark Grey Background */
+  background-color: var(--surface);
   padding: 10px;
   text-align: center;
 }
 
 nav a {
-  color: #9c7bde;
-  /* Medium Purple Links */
+  color: var(--link);
   text-decoration: none;
   margin: 0 15px;
   font-size: 1.2em;
 }
 
 nav a:hover {
-  color: #d8bfd8;
-  /* Light Purple Hover Effect */
+  color: var(--muted);
 }
 
 .primary {
-  color: #d8bfd8;
-  /* Light Purple for Emphasis */
+  color: var(--muted);
 }
 
 /* Main Section Styles */
@@ -71,8 +100,7 @@ main {
 h1,
 h2,
 h3 {
-  color: #d8bfd8;
-  /* Light Purple for Headers */
+  color: var(--muted);
   font-family: "Montserrat", sans-serif;
 }
 
@@ -89,10 +117,8 @@ h3 {
 }
 
 button {
-  background-color: #6a0dad;
-  /* Primary Purple Buttons */
-  color: #ffffff;
-  /* White Text */
+  background-color: var(--primary);
+  color: var(--on-primary);
   border: none;
   padding: 10px 20px;
   margin: 10px 0;
@@ -103,20 +129,16 @@ button {
 }
 
 button:hover {
-  background-color: #9370db;
-  /* Medium Purple on Hover */
+  background-color: var(--primary-hover);
 }
 
 /* Footer Styles */
 footer {
-  background-color: #333333;
-  /* Dark Grey Background */
-  color: #d8bfd8;
-  /* Light Purple Text */
+  background-color: var(--surface);
+  color: var(--muted);
   text-align: center;
   padding: 20px;
   width: 100%;
-  /*bottom: 2em;*/
   left: 0;
   font-family: "Open Sans", sans-serif;
 }
@@ -133,15 +155,13 @@ section {
 }
 
 a {
-  color: #9c7bde;
-  /* Medium Purple for Links */
+  color: var(--link);
   text-decoration: none;
   font-family: "Open Sans", sans-serif;
 }
 
 a:hover {
-  color: #d8bfd8;
-  /* Light Purple on Hover */
+  color: var(--muted);
 }
 
 figure {
@@ -157,12 +177,73 @@ img {
 }
 
 code {
-  background: #282c34;
+  background: var(--code-bg);
+  padding: 0.15em 0.3em;
+  border-radius: 3px;
 }
 
 .tooltip {
   position: relative;
   display: inline-block;
-  border-bottom: 1px dotted black; /* Add dots under the hoverable text */
+  border-bottom: 1px dotted currentColor;
   cursor: pointer;
+}
+
+/* Optional: custom scrollbar styling for WebKit browsers */
+html[data-theme="dark"]::-webkit-scrollbar,
+html[data-theme="light"]::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html[data-theme="dark"]::-webkit-scrollbar-thumb,
+html[data-theme="light"]::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 10px;
+}
+
+html[data-theme="dark"]::-webkit-scrollbar-track,
+html[data-theme="light"]::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+/* Smooth theme transitions (uses CSS variables so elements transition when data-theme changes) */
+:root,
+body,
+header,
+nav,
+main,
+footer,
+.container,
+section,
+button,
+a,
+code,
+figure,
+img {
+  transition:
+    background-color 600ms ease,
+    color 600ms ease,
+    border-color 600ms ease,
+    box-shadow 600ms ease,
+    opacity 600ms ease;
+}
+
+/* Respect user's reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  :root,
+  body,
+  header,
+  nav,
+  main,
+  footer,
+  .container,
+  section,
+  button,
+  a,
+  code,
+  figure,
+  img {
+    transition: none !important;
+  }
 }

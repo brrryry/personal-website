@@ -3,9 +3,16 @@
 export const revalidate = 60;
 
 import { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
 
 export function SpotifyEmbed() {
   const [song, setSong] = useState({});
+  const [mounted, setMounted] = useState(false);
+  const { theme, resolvedTheme } = useTheme();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -35,10 +42,21 @@ export function SpotifyEmbed() {
     };
   }, []);
 
+  const currentTheme = mounted
+    ? theme === "system"
+      ? resolvedTheme
+      : theme
+    : "light";
+
+  const activeColor =
+    currentTheme === "dark" ? "text-[#f8f8ff]" : "text-[#1e1e1e]";
+  const inactiveColor =
+    currentTheme === "dark" ? "text-purple-200" : "text-purple-700";
+
   if (song.isPlaying) {
     return (
       <>
-        <p>
+        <p className={activeColor}>
           Listening to:{" "}
           <a href={song.songUrl} target="_blank" rel="noreferrer">
             {song.title.toLowerCase()} ({song.artist.toLowerCase()})
@@ -51,7 +69,7 @@ export function SpotifyEmbed() {
 
   return (
     <>
-      <p>Not listening to music right now...</p>
+      <p className={activeColor}>not listening to spotify rn</p>
     </>
   );
 }
