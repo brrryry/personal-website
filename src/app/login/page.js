@@ -41,26 +41,26 @@ const Login = () => {
 
   return (
     <div className="space-y-5 justify-center items-center flex flex-col">
-      <h2>login</h2>
+      <h2>Login</h2>
       <form className="flex flex-col space-y-3" onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="username"
+          placeholder="Username"
           className="bg-gray-300 border p-2 rounded text-black"
         />
         <input
           type="password"
-          placeholder="password"
+          placeholder="Password"
           className="bg-gray-300 border p-2 rounded text-black"
         />
         <button type="submit" className="bg-[#6a0dad] text-white p-2 rounded">
-          {loading ? "loading..." : "login"}
+          {loading ? "Loading..." : "Login"}
         </button>
       </form>
       <p>
-        need an account? <Link href="/register">register</Link>
+        Need an account? <Link href="/register">Register</Link>
       </p>
-      <p className="text-red-300 hidden">this is error</p>
+      <p className="text-red-300 hidden">This is an error message</p>
     </div>
   );
 };

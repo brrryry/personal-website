@@ -37,7 +37,7 @@ export default async function Home() {
         , but ngl it is super cluttered so...
       </p>
       <p>heres some cool projects:</p>
-      <ul className="list-none m-0 p-0 grid gap-8 md:grid-cols-2">
+      <ul className="list-none m-0 p-0 grid gap-8">
         {projects.map((p) => (
           <li
             key={p.title}

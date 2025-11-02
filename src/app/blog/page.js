@@ -27,8 +27,8 @@ export default async function Blog() {
   return (
     <div className="flex flex-col space-y-5">
       <p>
-        note: the {'"'}series{'"'} tag is special! posts under this section have
-        a {'"'}series{'"'} tag that have all the blog posts in the series. they
+        Note: The {'"'}series{'"'} tag is special! Posts under this section have
+        a {'"'}series{'"'} tag that have all the blog posts in the series. They
         are usually hidden to reduce cluttering.
       </p>
       <BlogSearch posts={plainPosts} />

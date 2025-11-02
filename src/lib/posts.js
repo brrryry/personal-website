@@ -9,11 +9,11 @@ export function getNumberOfPosts(tag = "") {
   return allPosts.length;
 }
 
-export function getSortedPostsData(tag = "") {
+export function getSortedPostsData(tag = "", drafts = true) {
   // Get file names under /posts
   let fileNames = fs.readdirSync(postsDirectory);
 
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV === "development" && drafts) {
     const morePosts = fs.readdirSync(postsDirectory + "/drafts");
     fileNames = fileNames.concat(morePosts.map((post) => "drafts/" + post));
   }

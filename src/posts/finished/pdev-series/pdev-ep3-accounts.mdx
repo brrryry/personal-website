@@ -1,23 +1,23 @@
 ---
-title: "portfolio dev ep3: accounts and comments"
+title: "Portfolio Dev EP3: Accounts and Comments"
 date: "2025-07-09"
-description: "i want feedback on my blogs. therefore..."
+description: "I want feedback on my blogs. Therefore..."
 tags: ["coding", "portfolio-dev-series"]
 ---
 
-not gonna lie, i had this one in the works for quite a bit of time. this blog was originally created on january 23, 2025. \
+Not gonna lie, I had this one in the works for quite a bit of time. This blog was originally created on January 23, 2025. \
 \
-i thought it would be really funny to have friends and possible spectators see what other people think of my blogs, so...i made a public forum for comments. 
-all in all, this took about 2 partial days (i would say about 8-10 good hours) to complete. \
+I thought it would be really funny to have friends and possible spectators see what other people think of my blogs, so...I made a public forum for comments. 
+All in all, this took about 2 partial days (I would say about 8-10 good hours) to complete. \
 \
-if you want to make an account, you can do so [here](/register).
+If you want to make an account, you can do so [here](/register).
 
 <br />
 
-## design 
-first off, let's make a schema. 
+## Design 
+First off, let's make a schema. 
 
-<BlogCode language="plaintext" copy="false" title="schema for accounts and comments">
+<BlogCode language="plaintext" copy="false" title="Schema for accounts and comments">
 {`
 USERS
 - userID: string non-null
@@ -38,14 +38,14 @@ COMMENTS
 `}
 </BlogCode>
 
-...good enough.
+...Good enough.
 
 <br />
 
-next, i had to find a database. after (not) a lot of thinking, i decided to use mongodb. it is a database that i am familiar with, and it isnt too difficult to set up. 
-using my knowledge from my web programming class, i started creating stuff.
+Next, I had to find a database. After (not) a lot of thinking, I decided to use MongoDB. It is a database that I am familiar with, and it isn't too difficult to set up. 
+Using my knowledge from my web programming class, I started creating stuff.
 
-<BlogCode language="javascript" copy="false" title="mongoconnection.js">
+<BlogCode language="javascript" copy="false" title="mongoConnection.js">
 {`
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
@@ -80,15 +80,15 @@ export { dbConnection, closeConnection };
 `}
 </BlogCode>
 
-it should be noted that this is a general implementation of a mongodb connection. because of its 
-template-like structure, it can be used in just about any node project that uses mongodb. there is 
-also a difference between the production and development database. i dont want to mix up my stuff!
-the development database is spun up locally on my computer, while the production database uses a mongo 
-atlas cluster. i dont want to pay for a server, and thankfully, i dont have to. thanks mongo!! \
+It should be noted that this is a general implementation of a MongoDB connection. Because of its 
+template-like structure, it can be used in just about any Node project that uses MongoDB. There is 
+also a difference between the production and development database. I don't want to mix up my stuff!
+The development database is spun up locally on my computer, while the production database uses a Mongo 
+Atlas cluster. I don't want to pay for a server, and thankfully, I don't have to. Thanks Mongo!! \
 \
-now, we make our collections. there were three collections that i had in mind (as shown in the schema above).
+Now, we make our collections. There were three collections that I had in mind (as shown in the schema above).
 
-<BlogCode language="javascript" copy="false" title="mongocollections.js">
+<BlogCode language="javascript" copy="false" title="mongoCollections.js">
 {`
 import { dbConnection } from './mongoConnection.js';
 
@@ -111,30 +111,30 @@ export const sessions = getCollectionFn('sessions');
 `}
 </BlogCode>
 
-the cool thing (that is not used in this project) is that mongodb does not require strictly defined schemas.
-this can be useful - especially when you want to add new fields to a collection without having to worry about migrations. \
+The cool thing (that is not used in this project) is that MongoDB does not require strictly defined schemas.
+This can be useful - especially when you want to add new fields to a collection without having to worry about migrations. \
 \
-now, we have to make data functions. these functions will be used in the server side to interact with the database.
-im not going to show the code for all of them, as that is quite annoying to read. you can always check my 
-<a href="https://github.com/brrryry/personal-website" target="_blank">github</a> for the code. all in all, i made 
+Now, we have to make data functions. These functions will be used in the server side to interact with the database.
+I'm not going to show the code for all of them, as that is quite annoying to read. You can always check my 
+<a href="https://github.com/brrryry/personal-website" target="_blank">GitHub</a> for the code. All in all, I made 
 two files: `accounts.js` for account and session functions, and `comments.js` for comment functions. 
 
 <BlogList>
-<li>create/delete accounts</li>
-<li>login/logout/session check</li>
-<li>create/delete comments</li>
-<li>get comments for a blog</li>
-<li>get comments for a user</li>
+<li>Create/delete accounts</li>
+<li>Login/logout/session check</li>
+<li>Create/delete comments</li>
+<li>Get comments for a blog</li>
+<li>Get comments for a user</li>
 </BlogList>
 
-after i made these functions, i had to start actually throwing it all together in the client side.
+After I made these functions, I had to start actually throwing it all together in the client side.
 
-## session management
-in order to manage sessions, i used cookies. these cookies - for security purposes - would have to be validated
-on the server side. in order to do this, i made a hook that would check if the user is logged in. it also had
-login and logout functions. this hook is used in every necessary client componnt.
+## Session Management
+In order to manage sessions, I used cookies. These cookies - for security purposes - would have to be validated
+on the server side. In order to do this, I made a hook that would check if the user is logged in. It also had
+login and logout functions. This hook is used in every necessary client component.
 
-<BlogCode language="javascript" copy="false" title="sessioncontext.js">
+<BlogCode language="javascript" copy="false" title="SessionContext.js">
 {`
 // components/SessionContext.js
 'use client';
@@ -192,67 +192,67 @@ export function useSession() {
 `}
 </BlogCode>
 
-some examples of where this would be used would be...
+Some examples of where this would be used would be...
 
 <BlogList>
-<li>the login page - if you are logged in, redirect out!!</li>
-<li>the navbar component - show the login/logout button</li>
-<li>the blog comments component - show the comment form if logged in</li>
+<li>The login page - if you are logged in, redirect out!!</li>
+<li>The navbar component - show the login/logout button</li>
+<li>The blog comments component - show the comment form if logged in</li>
 </BlogList>
 
-so...yeah, now we have an accurate way to tell on the client side if a user is logged in or not. awesome!
+So...yeah, now we have an accurate way to tell on the client side if a user is logged in or not. Awesome!
 
-## the comments
-since the blog itself is a server side rendered page, it was easy to stick on a blog comment component in the client side.
-of course, in order to have the client interact with the server, i had to make a few api routes.
+## The Comments
+Since the blog itself is a server side rendered page, it was easy to stick on a blog comment component in the client side.
+Of course, in order to have the client interact with the server, I had to make a few API routes.
 
 <BlogList>
-<li>get /api/comments/:blogid - get all comments for a blog</li>
-<li>post /api/comments/:blogid - create a comment for a blog</li>
-<li>delete /api/comments/:commentid - delete a comment</li>
-<li>put /api/comments/:commentid - update a comment</li>
-<li>get /api/account/:userid - get all comments for a user (i bundled this with profile because im lazy)</li>
+<li>GET /api/comments/:blogid - get all comments for a blog</li>
+<li>POST /api/comments/:blogid - create a comment for a blog</li>
+<li>DELETE /api/comments/:commentid - delete a comment</li>
+<li>PUT /api/comments/:commentid - update a comment</li>
+<li>GET /api/account/:userid - get all comments for a user (I bundled this with profile because I'm lazy)</li>
 </BlogList>
 
-alright, so now we have a way to comment and stuff. to recap... \
+Alright, so now we have a way to comment and stuff. To recap... \
 \
-user logs in -> session is created, user is logged in \
-user comments -> makes post request -> api calls create comment function -> comment is added to database \
+User logs in -> session is created, user is logged in \
+User comments -> makes POST request -> API calls create comment function -> comment is added to database \
 \
-cool. \
+Cool. \
 \
-now, i hate frontend work (as you can tell by the style of this website). thus, i vibe-coded everything and just
-hoped it worked. because of this, you may see some "accidentally" capitalized words. whoops. \
+Now, I hate frontend work (as you can tell by the style of this website). Thus, I vibe-coded everything and just
+hoped it worked. Because of this, you may see some "accidentally" capitalized words. Whoops. \
 \
-it was also quite a bit of code, so again im not gonna paste it all here. you can check it out on my github. in 
-particular, making the edit button was a bit of a pain. holy moly. it also has a small span that shows
+It was also quite a bit of code, so again I'm not gonna paste it all here. You can check it out on my GitHub. In 
+particular, making the edit button was a bit of a pain. Holy moly. It also has a small span that shows
 the relative time of the comment and the most recent edit.
 
 <BlogImage
 src="/blogs/pdev-ep3-accounts/sux.png"
-alt="comment aesthetics"
-caption="meh, looks aesthetic enough"
+alt="Comment aesthetics"
+caption="Meh, looks aesthetic enough"
 style={{border: "1px solid white"}}
 />
 
-## the profile page
-oh yeah, i also made a profile page so that everyone can see their comment history.
-it looks like this!
+## The Profile Page
+Oh yeah, I also made a profile page so that everyone can see their comment history.
+It looks like this!
 
 <BlogImage
 src="/blogs/pdev-ep3-accounts/profile.png"
-alt="profile page"
-caption="look at the cool lines!!"
+alt="Profile page"
+caption="Look at the cool lines!!"
 style={{border: "1px solid white"}}
 />
 
-once i figured out how to get this stuff working in the comment component, it was really easy to just paste
-it into the profile page. looks pretty cool. \
+Once I figured out how to get this stuff working in the comment component, it was really easy to just paste
+it into the profile page. Looks pretty cool. \
 \
-also, when you click on a comment, it will take you to blog page that the comment is on. it will also
-scroll to the comments section! how did i do this? \
+Also, when you click on a comment, it will take you to blog page that the comment is on. It will also
+scroll to the comments section! How did I do this? \
 \
-simple. add a hash.
+Simple. Add a hash.
 
 <BlogCode language="javascript" copy="false" title="/profile/[id]/page.js">
 {`
@@ -283,10 +283,10 @@ return (
 `}
 </BlogCode>
 
-the important part is the `#comments-section` at the end of the link. this will scroll to the comments section of the blog page.
-this works because i stuck some useeffect code in the blog comments page. hehehe >:3
+The important part is the `#comments-section` at the end of the link. This will scroll to the comments section of the blog page.
+This works because I stuck some useEffect code in the blog comments page. Hehehe >:3
 
-<BlogCode language="javascript" copy="false" title="blogcomments.jsx">
+<BlogCode language="javascript" copy="false" title="blogComments.jsx">
 {`
 useEffect(() => {
         ... //other code
@@ -305,17 +305,17 @@ useEffect(() => {
 `}
 </BlogCode>
 
-## conclusion
-so now we have comments. that's cool. \
+## Conclusion
+So now we have comments. That's cool. \
 \
-i could have definitely spent this time doing something else (like...job applications...or something), but i thought this would be fun. it wouldn't take too much time,
-and i think the investment might be worth it (for fun, of course). thanks for reading, and i look forward to hearing back from you guys. \
+I could have definitely spent this time doing something else (like...job applications...or something), but I thought this would be fun. It wouldn't take too much time,
+and I think the investment might be worth it (for fun, of course). Thanks for reading, and I look forward to hearing back from you guys. \
 \
-for now, i will probably keep working on rag (see my other [blog](/blog/insure-2025)). please feel free to let me know if there is anything super buggy in the frontend...i havent fully tested it yet ahahaaaaa \
+For now, I will probably keep working on RAG (see my other [blog](/blog/insure-2025)). Please feel free to let me know if there is anything super buggy in the frontend...I haven't fully tested it yet ahahaaaaa \
 \
-oh also i have admin perms obviously, so i can delete comments from the db itself lol \
+Oh also I have admin perms obviously, so I can delete comments from the DB itself lol \
 \
-one more thing: i really want to start posting music. maybe a blog will be made on that soon.
+One more thing: I really want to start posting music. Maybe a blog will be made on that soon.
 
 <br />
 

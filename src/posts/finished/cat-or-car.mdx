@@ -1,112 +1,112 @@
 ---
-title: "cat or car?"
+title: "Cat or Car?"
 date: "2024-08-06"
-description: "demo for a little project that i made using a convolutional neural network!"
+description: "Demo for a little project that I made using a convolutional neural network!"
 tags: ["coding", "ml"]
 ---
 
-## credit where it is due
+## Credit Where It Is Due
 
 <a
   href="https://machinelearningmastery.com/how-to-develop-a-convolutional-neural-network-to-classify-photos-of-dogs-and-cats/"
   target="_blank"
->cat vs dog machine learning project
+>Cat vs Dog Machine Learning Project
 </a> - basically my go-to tutorial
 
 <br />
-## link to the project: <a href="/projects/cat-or-car">here</a>
-demo pics at the end :)
+## Link to the project: <a href="/projects/cat-or-car">here</a>
+Demo pics at the end :)
 <br />
 
-**warning: this is not a tutorial.** i am sorry for the lack of explanation, but i will make real
+**Warning: this is not a tutorial.** I am sorry for the lack of explanation, but I will make real
 tutorials with good explanations at another time. \
 \
-so...im gonna be taking a machine learning class soon (<a href="https://online.stevens.edu/course/cs-559-machine-learning-fundamentals-and-applications/" target="_blank">cs559</a>).
+So...I'm gonna be taking a machine learning class soon (<a href="https://online.stevens.edu/course/cs-559-machine-learning-fundamentals-and-applications/" target="_blank">CS559</a>).
 
 <br />
 
-i wanted to make something machine learning-related so that im prepared to take on the course material.
-usually, i tend to do this in order to get ahead (since im very bad at learning things in real time).\
-therefore, i proudly present...
+I wanted to make something machine learning-related so that I'm prepared to take on the course material.
+Usually, I tend to do this in order to get ahead (since I'm very bad at learning things in real time).\
+Therefore, I proudly present...
 
 <br />
 
-## "cat or car?"
+## "Cat or Car?"
 
-the idea came from...memes on the internet (imma keep it real). however, i was able to put my
-machine learning concepts to the test. this blog will consist of a concept breakdown, a coding speedrun
+The idea came from...memes on the internet (I'mma keep it real). However, I was able to put my
+machine learning concepts to the test. This blog will consist of a concept breakdown, a coding speedrun
 and...some other things.
 
 <br />
 
-## concept breakdown
+## Concept Breakdown
 
-let's start from the beginning. what is machine learning? \
+Let's start from the beginning. What is machine learning? \
 \
-machine learning is a subsection of artificial intelligence that focuses on using random numbers
-and mathematical functions to generate some kind "bigger function". for example, let's say that we
-want to input an image and have our program tell us if it is a cat or a car. in order to do so, this image
-is inputted into this "bigger function" - a black box that is unknown to the user. this black box - realistically -
-is just a bunch of random numbers and mathematical functions. that's all that most of these "machine learning models"
+Machine learning is a subsection of artificial intelligence that focuses on using random numbers
+and mathematical functions to generate some kind "bigger function". For example, let's say that we
+want to input an image and have our program tell us if it is a cat or a car. In order to do so, this image
+is inputted into this "bigger function" - a black box that is unknown to the user. This black box - realistically -
+is just a bunch of random numbers and mathematical functions. That's all that most of these "machine learning models"
 are. \
 \
-this project uses what's called a **neural network** - a subcategory of machine learning models. neural networks specifically
-use interconnected "nodes" to produce an output. an image is provided below.
+This project uses what's called a **neural network** - a subcategory of machine learning models. Neural networks specifically
+use interconnected "nodes" to produce an output. An image is provided below.
 
 <BlogImage
   src="https://www.mathworks.com/content/dam/mathworks/mathworks-dot-com/images/responsive/supporting/discovery/new-machine-learning-models-disc-page-neural-network.jpg"
-  alt="image of a neural network concept diagram"
-  caption="a neural network concept diagram"
+  alt="Image of a neural network concept diagram"
+  caption="A neural network concept diagram"
   source="https://www.mathworks.com/discovery/machine-learning-models.html"
 />
 
-you can imagine that each circle is a node that contains a number and a weight. a column of circles is known as a **layer**, and outputs are
-calculated layer by layer. each layer's nodes have connections to nodes of the next layer (in this diagram, those would be the lines). the layer-by-layer
+You can imagine that each circle is a node that contains a number and a weight. A column of circles is known as a **layer**, and outputs are
+calculated layer by layer. Each layer's nodes have connections to nodes of the next layer (in this diagram, those would be the lines). The layer-by-layer
 propagation is what's known as **forward propagation**.
-however, the brilliance of the neural network is the effect that the output has **on the network**. once an output is created on the last layer,
-there is some math that is done to "optimize" the random numbers in all of the layers. this is known as **backward propagation**. as more information is put through the neural network,
-the nodes will optimize themselves to become better at their job. cool, right?\
+However, the brilliance of the neural network is the effect that the output has **on the network**. Once an output is created on the last layer,
+there is some math that is done to "optimize" the random numbers in all of the layers. This is known as **backward propagation**. As more information is put through the neural network,
+the nodes will optimize themselves to become better at their job. Cool, right?\
 \
-now, lets get a bit more specific. in this project, i used a **supervised learning model**. this basically tells you the way that the backwards propagation works in the model.
-"supervised" means that the neural network's backward propagation is based on predetermined outputs. in this example, i gave the neural network some pictures of cats and cars, it
-tried to predict what it was, and then **i gave it the actual answer**. from there, the neural network can take the difference between my answer and its answer and optimize itself accordingly.
-there are many different types of learning models, but they get more complicated...you can do your own research on that. \
+Now, let's get a bit more specific. In this project, I used a **supervised learning model**. This basically tells you the way that the backwards propagation works in the model.
+"Supervised" means that the neural network's backward propagation is based on predetermined outputs. In this example, I gave the neural network some pictures of cats and cars, it
+tried to predict what it was, and then **I gave it the actual answer**. From there, the neural network can take the difference between my answer and its answer and optimize itself accordingly.
+There are many different types of learning models, but they get more complicated...you can do your own research on that. \
 \
-okay, here's one last specification - this project uses a **convolutional neural network**. this just means that the
-neural network focuses on computer vision (2d/3d images or videos). \
-in summary, this project uses a **supervised learning model** on a **convolutional neural network**. lots of fancy words,
+Okay, here's one last specification - this project uses a **convolutional neural network**. This just means that the
+neural network focuses on computer vision (2D/3D images or videos). \
+In summary, this project uses a **supervised learning model** on a **convolutional neural network**. Lots of fancy words,
 but the meaning is not too complicated. \
 \
-in this project's convolutional neural network, there are only two interesting types of layers that we need to know about: convolutional layers and max pooling layers.
-in order to explain these layers, i will assume that you have some knowledge in how images are stored in a computer (rgb colors, pixel values, etc.).
-in a convolutional layer, there exists a **"kernel"** - a small matrix of numbers. this kernel is then multiplied repeatedly over the image as if it is
-"slid" across. an image is provided below for an example. there are more complex types of convolution, but...that's too much to cover here.
+In this project's convolutional neural network, there are only two interesting types of layers that we need to know about: convolutional layers and max pooling layers.
+In order to explain these layers, I will assume that you have some knowledge in how images are stored in a computer (RGB colors, pixel values, etc.).
+In a convolutional layer, there exists a **"kernel"** - a small matrix of numbers. This kernel is then multiplied repeatedly over the image as if it is
+"slid" across. An image is provided below for an example. There are more complex types of convolution, but...that's too much to cover here.
 
 <BlogImage
   src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*32zCSTBi3giSApz1oQV-zA.gif"
-  alt="gif of convolutional layer calculations"
-  caption="a convolutional layer"
+  alt="GIF of convolutional layer calculations"
+  caption="A convolutional layer"
   source="https://towardsdatascience.com/gentle-dive-into-math-behind-convolutional-neural-networks-79a07dd44cf9"
 />
 
-a max pooling layer essentially repeatedly takes a chunk of pixels in an image and finds the "maximum value". this is then saved in a new feature map.
-an image is provided below for an example.
+A max pooling layer essentially repeatedly takes a chunk of pixels in an image and finds the "maximum value". This is then saved in a new feature map.
+An image is provided below for an example.
 
 <BlogImage
   src="https://media.geeksforgeeks.org/wp-content/uploads/20190721025744/Screenshot-2019-07-21-at-2.57.13-AM.png"
-  alt="picture of max pooling layer"
-  caption="fig 2 - a max pooling layer layer"
+  alt="Picture of max pooling layer"
+  caption="Fig 2 - A max pooling layer layer"
   source="https://www.geeksforgeeks.org/cnn-introduction-to-pooling-layer/#"
 />
 
-both of these layers specialize in **feature extraction** - essentially taking what might be important for the network while
-dropping most of the non-important details. both of these layers spit out a smaller image than the one that came in. \
+Both of these layers specialize in **feature extraction** - essentially taking what might be important for the network while
+dropping most of the non-important details. Both of these layers spit out a smaller image than the one that came in. \
 \
-the other layer is the standard layer - the one with the nodes and weights. each node in layer (n + 1) will compute the result:
+The other layer is the standard layer - the one with the nodes and weights. Each node in layer (n + 1) will compute the result:
 
 <LatexWrapper content="z={v}\cdot{w}+b" />
 
-variables:
+Variables:
 
 <BlogList>
   <li>**z** is the resulting vector</li>
@@ -120,58 +120,58 @@ variables:
 
 <br />
 
-so far, all of the calculations in the dense layer have been linear. in order to make this a "neural network"
-(and not a linear regression model), we need a non-linear function to pass the process through. this is known as
-an **activation function**. in my code, i use two activation functions - the rectified linear unit (relu) function
+So far, all of the calculations in the dense layer have been linear. In order to make this a "neural network"
+(and not a linear regression model), we need a non-linear function to pass the process through. This is known as
+an **activation function**. In my code, I use two activation functions - the rectified linear unit (ReLU) function
 and the sigmoid function.
 
 <br />
-relu:
+ReLU:
 <LatexWrapper content="f(x) = max(0, x)" />
 
-sigmoid:
+Sigmoid:
 
 <LatexWrapper content="f(x) = \frac{1}{1+e^{-x}}" width="200px" />
 
-this all culminates into one number: our output value. in my code, i have suggested that "0" is a cat
-and "1" is a car. of course, you can have a neural network with multiple outputs - you just have to know
+This all culminates into one number: our output value. In my code, I have suggested that "0" is a cat
+and "1" is a car. Of course, you can have a neural network with multiple outputs - you just have to know
 how to use them appropriately. \
 \
-now...remember when i said that neural network can optimize itself through **backward propagation**?
-yeah...that math is a little trickier. \
+Now...remember when I said that neural network can optimize itself through **backward propagation**?
+Yeah...that math is a little trickier. \
 \
-lets start with the dense layer - the basic layer. first, we used a **loss function** - a function
-that gives an absolute measure of difference between the expected answer and the neural network's answer. one
+Let's start with the dense layer - the basic layer. First, we used a **loss function** - a function
+that gives an absolute measure of difference between the expected answer and the neural network's answer. One
 of the examples of a loss function would be mean squared error, as shown in the equation below.
 y is the neural network's answer, and yhat is the expected answer.
 
 <LatexWrapper content="MSE_i=(y_i-\hat{y_i})^2" />
 
-we then take the average of all of these losses for our training set (**n** items). let's call that **C**.
+We then take the average of all of these losses for our training set (**n** items). Let's call that **C**.
 
 <LatexWrapper
   width="300px"
   content="C=\frac{1}{n}\sum_{i=1}^{n}{(y_i-\hat{y_i})^2}"
 />
 
-**note: this is not the loss function that i used. this will be briefly touched upon in the coding section.**
+**Note: this is not the loss function that I used. This will be briefly touched upon in the coding section.**
 
-using this average loss, we can use **gradients** to find the amount by which we should change our values.
-the basic objective of the gradient in this topic is to find the **minimum value of C - our loss function**.
-to do this, we will express the change in **C** with respect to each weight using the chain rule.
+Using this average loss, we can use **gradients** to find the amount by which we should change our values.
+The basic objective of the gradient in this topic is to find the **minimum value of C - our loss function**.
+To do this, we will express the change in **C** with respect to each weight using the chain rule.
 
 <LatexWrapper
   width="400px"
   content="\frac{\delta{C}}{\delta{w_i}}=\frac{\delta{C}}{\delta{w_i}}*\frac{\delta{\hat{y}}}{\delta{z}}*\frac{\delta{z}}{\delta{w_i}}"
 />
 
-using multivariable calculus, you can solve the three gradients respectively (i am not going through it, but here is a <a href="https://towardsdatascience.com/introduction-to-math-behind-neural-networks-e8b60dbbdeba" target="_blank">cool guide on medium</a> - it basically explains all of what i should be explaining).
-after getting these three gradients, you simply change the weights and biases by their respective gradients multiplied to a learning rate α.
-the reason we multiply the gradient by a learning rate is to make sure that we dont overstep the minimum that we want to find. \
+Using multivariable calculus, you can solve the three gradients respectively (I am not going through it, but here is a <a href="https://towardsdatascience.com/introduction-to-math-behind-neural-networks-e8b60dbbdeba" target="_blank">cool guide on Medium</a> - it basically explains all of what I should be explaining).
+After getting these three gradients, you simply change the weights and biases by their respective gradients multiplied to a learning rate α.
+The reason we multiply the gradient by a learning rate is to make sure that we don't overstep the minimum that we want to find. \
 \
-now...for the convolutional and pooling layers, there is a back propagation function for each of these layers as well.
-however, i am not going to go through them as they require a vast amount of linear algebra knowledge (and ngl...im currently
-too lazy to type it all out with latex). if you are interested,
+Now...for the convolutional and pooling layers, there is a back propagation function for each of these layers as well.
+However, I am not going to go through them as they require a vast amount of linear algebra knowledge (and ngl...I'm currently
+too lazy to type it all out with LaTeX). If you are interested,
 
 <a
   href="https://towardsdatascience.com/gentle-dive-into-math-behind-convolutional-neural-networks-79a07dd44cf9"
@@ -180,9 +180,9 @@ too lazy to type it all out with latex). if you are interested,
   here
 </a>
 is an amazing article in which all of the desired material is covered. \ \
-now...let's get into the coding!
+Now...let's get into the coding!
 <br />
-## the coding i used python (specifically keras) to build this model. the
+## The Coding I used Python (specifically Keras) to build this model. The
 datasets were taken from the following sources:
 
 <br />
@@ -193,7 +193,7 @@ datasets were taken from the following sources:
       href="https://images.cv/dataset/cat-image-classification-dataset"
       target="_blank"
     >
-      cat image dataset
+      Cat image dataset
     </a>
   </li>
   <li>
@@ -201,18 +201,18 @@ datasets were taken from the following sources:
       href="https://images.cv/dataset/car-image-classification-dataset"
       target="_blank"
     >
-      car image dataset
+      Car image dataset
     </a>
   </li>
 </BlogList>
 
 <br />
 
-i started by cleaning up these files. while there were many folders containing different breeds of cats and cars
-(for other purposes, perhaps), i only took the folders that said "cat" and "car" as i had no need to seperate different
-types of each class. i put all the images into two folders: "data/cats" and "data/cars".\
+I started by cleaning up these files. While there were many folders containing different breeds of cats and cars
+(for other purposes, perhaps), I only took the folders that said "cat" and "car" as I had no need to separate different
+types of each class. I put all the images into two folders: "data/cats" and "data/cars".\
 \
-since the files were randomly named with a bunch of uppercase letters, i wanted to format them. i ran this block of code
+Since the files were randomly named with a bunch of uppercase letters, I wanted to format them. I ran this block of code
 to change the file names to "cat_1", "cat_2", "cat_3", etc, etc...
 
 <BlogCode language="python">
@@ -226,30 +226,30 @@ cat_files = os.listdir('data/cats')
 
 # loop through all files and use progress bar
 
-cat*counter = 0
+cat_counter = 0
 for file in tqdm(cat_files):
 if file[:3] == "cat": continue # get the extension of the file
 extension = file.split('.')[-1] # rename the file
-os.rename(f'data/cats/{file}', f'data/cats/cat*{cat_counter+1}.{extension}')
+os.rename(f'data/cats/{file}', f'data/cats/cat_{cat_counter+1}.{extension}')
 cat_counter += 1
 
 car_files = os.listdir('data/cars')
 
-car*counter = 0
+car_counter = 0
 for file in tqdm(car_files):
 if file[:3] == "car": continue
 extension = file.split('.')[-1]
-os.rename(f'data/cars/{file}', f'data/cars/car*{car_counter+1}.{extension}')
+os.rename(f'data/cars/{file}', f'data/cars/car_{car_counter+1}.{extension}')
 car_counter += 1
 `}
 
 </BlogCode>
 
-the tqdm library is not essential, but it gives you a cool loading bar, so...yeah. \
+The tqdm library is not essential, but it gives you a cool loading bar, so...yeah. \
 \
-next, i wanted to split my dataset into training and testing data. the training data will do all the fancy
+Next, I wanted to split my dataset into training and testing data. The training data will do all the fancy
 math that was mentioned earlier, while the testing data will measure how accurate the neural network is after
-training. the metrics of the model's test results will be plotted (as seen later).
+training. The metrics of the model's test results will be plotted (as seen later).
 
 <BlogCode language="python">
 {`
@@ -261,10 +261,10 @@ splitfolders.ratio('data', output='aggregated_data', seed=1337, ratio=(.85, .15)
 
 </BlogCode>
 
-the splitfolders library made things pretty easy for me. \
+The splitfolders library made things pretty easy for me. \
 \
-after this, i realized that some of the images were not openable (maybe they were corrupted, idk). in
-order to fix this so as to not mess up the model, i wrote a block that validated all the images in the new folder,
+After this, I realized that some of the images were not openable (maybe they were corrupted, idk). In
+order to fix this so as to not mess up the model, I wrote a block that validated all the images in the new folder,
 "aggregated_data".
 
 <BlogCode language="python">
@@ -285,7 +285,7 @@ marker_mapping = {
 }
 
 class JPEG:
-def **init**(self, image_file):
+def __init__(self, image_file):
 with open(image_file, 'rb') as f:
 self.img_data = f.read()
 
@@ -320,7 +320,7 @@ os.remove(f'{folder}/{file}')
 
 </BlogCode>
 
-now, we get to the more fun part: the model itself!
+Now, we get to the more fun part: the model itself!
 
 <BlogCode language="python">
 {`
@@ -353,14 +353,14 @@ return model
 
 </BlogCode>
 
-the model contains convolutional 2d layers (since we are dealing with 2d images) and max pooling layers. the flattening
-layer is simply a layer that flattens layer data (in this case, our feature extracted image) into a 1d array.
-interpreting this code requires a little bit of knowledge in keras, but it should mostly make sense. the "kernel_initializer"
-determines the kernel - the sliding matrix that multiplies along the image. the loss function was the rescaling layer rescales
-the image to a 32x32 image. more on that later. \
+The model contains convolutional 2D layers (since we are dealing with 2D images) and max pooling layers. The flattening
+layer is simply a layer that flattens layer data (in this case, our feature extracted image) into a 1D array.
+Interpreting this code requires a little bit of knowledge in Keras, but it should mostly make sense. The "kernel_initializer"
+determines the kernel - the sliding matrix that multiplies along the image. The loss function was the rescaling layer rescales
+the image to a 32x32 image. More on that later. \
 \
-the loss function that i used - as mentioned earlier - was not mean squared error since my neural network's output was binary (within 0 or 1).
-because of this, i used the binary crossentropy loss function. this loss function is a bit more complicated, but
+The loss function that I used - as mentioned earlier - was not mean squared error since my neural network's output was binary (within 0 or 1).
+Because of this, I used the binary crossentropy loss function. This loss function is a bit more complicated, but
 
 <a
   href="https://towardsdatascience.com/understanding-binary-cross-entropy-log-loss-a-visual-explanation-a3ac6025181a"
@@ -368,9 +368,9 @@ because of this, i used the binary crossentropy loss function. this loss functio
 >
   here
 </a>
-is a beautiful mathematical analysis! this model architecture uses what's known
-as one vgg block (3x3 convolutional + 2x2 max pooling). 
-<a href="https://d2l.ai/chapter_convolutional-modern/vgg.html" target="_blank">here is an article </a> with more information on that. \ \ finally, i made the function that would
+is a beautiful mathematical analysis! This model architecture uses what's known
+as one VGG block (3x3 convolutional + 2x2 max pooling). 
+<a href="https://d2l.ai/chapter_convolutional-modern/vgg.html" target="_blank">Here is an article </a> with more information on that. \ \ Finally, I made the function that would
 train and test this model.
 
 <BlogCode language="python">
@@ -398,105 +398,105 @@ def run_test_harness():
 
 </BlogCode>
 
-in a nutshell, i took the image datasets that i had produced earlier and created a keras dataset. from there,
-i ran the "fit" function - it just automatically does the calculations for you. after it finished, i evaluated the
-model using the evaluate() function. these results are plotted, and the results are saved. the json version
+In a nutshell, I took the image datasets that I had produced earlier and created a Keras dataset. From there,
+I ran the "fit" function - it just automatically does the calculations for you. After it finished, I evaluated the
+model using the evaluate() function. These results are plotted, and the results are saved. The JSON version
 of this model is the one that is currently deployed on my website. \
 \
-that's it! i ran the model and got some results. now, let's talk about the results... \
+That's it! I ran the model and got some results. Now, let's talk about the results... \
 \
-originally, i tried to rescale the images to 200px by 200px. however, upon running the model, the accuracy
+Originally, I tried to rescale the images to 200px by 200px. However, upon running the model, the accuracy
 was not looking too hot...
 
 <BlogImage
   src="/blogs/cat-or-car/plot1.png"
-  caption="cross-entropy loss and accuracy of 200px by 200px model"
-  alt="cross-entropy loss and accuracy of 200px by 200px model"
+  caption="Cross-entropy loss and accuracy of 200px by 200px model"
+  alt="Cross-entropy loss and accuracy of 200px by 200px model"
 />
 
-(the blue line is training, and the orange line is testing)
+(The blue line is training, and the orange line is testing)
 
-after a lot of deliberation, i figured that it was because the image convolution layers were not working efficiently.
-thus, i changed the size of the images to 64px by 64px, and low and behold...
+After a lot of deliberation, I figured that it was because the image convolution layers were not working efficiently.
+Thus, I changed the size of the images to 64px by 64px, and lo and behold...
 
 <BlogImage
   src="/blogs/cat-or-car/plot2.png"
-  caption="(64px by 64px) lookin a bit better!"
-  alt="cross-entropy loss and accuracy of 64px by 64px model"
+  caption="(64px by 64px) Lookin a bit better!"
+  alt="Cross-entropy loss and accuracy of 64px by 64px model"
 />
 
-you can actually see the cross entropy loss! (im not sure what happened with the first graph) \
+You can actually see the cross entropy loss! (I'm not sure what happened with the first graph) \
 \
-finally, i decided to go even smaller - 32px by 32px - just to see what would happen. the results were interesting...
+Finally, I decided to go even smaller - 32px by 32px - just to see what would happen. The results were interesting...
 
 <BlogImage
   src="/blogs/cat-or-car/plot3.png"
-  caption="(32px by 32px) why the graph more erratic doh"
-  alt="cross-entropy loss and accuracy of 32px by 32px model"
+  caption="(32px by 32px) Why the graph more erratic doh"
+  alt="Cross-entropy loss and accuracy of 32px by 32px model"
 />
 
-interestingly, the testing loss and accuracy seem to fluctuate more near the beginning (implying a more volatile state),
-but the results are better than that of the 64px by 64px model. this version of the model is the one that is currently deployed.
+Interestingly, the testing loss and accuracy seem to fluctuate more near the beginning (implying a more volatile state),
+but the results are better than that of the 64px by 64px model. This version of the model is the one that is currently deployed.
 
 <br />
 
-## technical difficulties
+## Technical Difficulties
 
-man, it was extremely annoying to get keras working on my computer. well, to be more specific...**getting
-tensorflow to detect my gpu was hard.** however, this was mainly because...i dont know how to read. i did not realize
-that `tensorflow>=2.10` is not natively supported on windows. \
+Man, it was extremely annoying to get Keras working on my computer. Well, to be more specific...**getting
+TensorFlow to detect my GPU was hard.** However, this was mainly because...I don't know how to read. I did not realize
+that `tensorflow>=2.10` is not natively supported on Windows. \
 \
-on top of this, tensorflowjs_converter - the library that i used to convert my model from .h5 to .json - does not
-work on windows. i dont remember how i figured this out, but it definitely took at least half an hour to troubleshoot.
+On top of this, tensorflowjs_converter - the library that I used to convert my model from .h5 to .json - does not
+work on Windows. I don't remember how I figured this out, but it definitely took at least half an hour to troubleshoot.
 
 <br />
 
-## conclusions?
+## Conclusions?
 
-overall, this project took approximately 3 days to make. aside from the mnist database project, this was the first
-completed project that ive done with machine learning, so i had a lot of fun applying my knowledge! \
+Overall, this project took approximately 3 days to make. Aside from the MNIST database project, this was the first
+completed project that I've done with machine learning, so I had a lot of fun applying my knowledge! \
 \
-right now, this model only chooses between cat or car, so if you put something that isnt either of those...itll take
+Right now, this model only chooses between cat or car, so if you put something that isn't either of those...it'll take
 its best guess... \
 \
-once the code is a little more enriching and...not plagerized(?)...i might push it to github. \
+Once the code is a little more enriching and...not plagiarized(?)...I might push it to GitHub. \
 \
-im sorry if this blog is lacking some pieces here and there - i plan to do more technical blogs in the future,
-and i plan to make them a bit more tutorial-oriented. i was too lazy to explain most of the math and coding that
-i did. however, future technical blogs should be much more detailed and complete. \
+I'm sorry if this blog is lacking some pieces here and there - I plan to do more technical blogs in the future,
+and I plan to make them a bit more tutorial-oriented. I was too lazy to explain most of the math and coding that
+I did. However, future technical blogs should be much more detailed and complete. \
 \
-speaking of technical blogs...
+Speaking of technical blogs...
 
 <br />
 
-### you have no idea how long it took me to write this blog.
+### You have no idea how long it took me to write this blog.
 
-in one of my next few blogs, i will go over the nightmare of trying to implement latex and code markdown
-in my portfolio (and all the new additions). until then, ill catch you guys in the next one o7 (please subscribe) \
+In one of my next few blogs, I will go over the nightmare of trying to implement LaTeX and code markdown
+in my portfolio (and all the new additions). Until then, I'll catch you guys in the next one o7 (please subscribe) \
 \
-oh yeah, one more time: <a href="/projects/cat-or-car">here's the link to the project!</a>
+Oh yeah, one more time: <a href="/projects/cat-or-car">here's the link to the project!</a>
 
 <br />
 
-## project pics
+## Project Pics
 
 <BlogImage
   src="/blogs/cat-or-car/car.png"
-  alt="model parsing a car image"
-  caption="car parsed successfully!"
+  alt="Model parsing a car image"
+  caption="Car parsed successfully!"
   style={{ border: "0.5rem solid" }}
 />
 
 <BlogImage
   src="/blogs/cat-or-car/cat.png"
-  alt="model parsing a cat image"
-  caption="cat parsed successfully! (fun fact: thats my cat)"
+  alt="Model parsing a cat image"
+  caption="Cat parsed successfully! (fun fact: that's my cat)"
   style={{ border: "0.5rem solid" }}
 />
 
 <BlogImage
   src="/blogs/cat-or-car/maybe-a-cat.png"
-  alt="model parsing a image that is not a car or a cat"
-  caption="cat...parsed successfully?"
+  alt="Model parsing a image that is not a car or a cat"
+  caption="Cat...parsed successfully?"
   style={{ border: "0.5rem solid" }}
 />

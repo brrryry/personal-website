@@ -23,7 +23,7 @@ export default async function RootLayout({ children, hideFooter = false }) {
 
   return (
     <html lang="en">
-      <body className={`${inter.className} lg:mx-20`}>
+      <body className={`${inter.className} max-w-6xl items-center mx-auto`}>
         <main className="min-h-screen">
           <SessionProvider>
             <Navbar loggedIn={isLoggedIn} />
@@ -32,7 +32,7 @@ export default async function RootLayout({ children, hideFooter = false }) {
 
           {!hideFooter && (
             <footer className="bg-transparent text-purple-200 p-4 flex flex-col items-center justify-center">
-              <hr className="w-full md:w-1/2 border-t border-white/3 my-4" />
+              <hr className="w-full md:w-3/4 border-t border-white/3 my-4" />
 
               <SpotifyEmbed />
 

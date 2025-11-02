@@ -1,16 +1,16 @@
 ---
-title: "portfolio dev ep4: frontend changes + qol improvements"
+title: "Portfolio Dev EP4: Frontend Changes + QOL Improvements"
 date: "2025-10-24"
 tags: ["coding", "portfolio-dev-series"]
-description: "i made a bunch of small updates to my portfolio site!"
+description: "I made a bunch of small updates to my portfolio site!"
 ---
 
-so...its been a hot minute. thanks for sticking around. \
+So...it's been a hot minute. Thanks for sticking around. \
 \
-you might have noticed that there have been some graphical changes to the site. 
-i will go over what is - essentially - all the updates on this portfolio from july 2025 to now. \
+You might have noticed that there have been some graphical changes to the site. 
+I will go over what is - essentially - all the updates on this portfolio from July 2025 to now. \
 \
-before i start, i would like to credit a few people for inspiring some of these changes! personally, i suck at frontend (if you couldnt already tell lol), and some people really helped me out when it came to design.
+Before I start, I would like to credit a few people for inspiring some of these changes! Personally, I suck at frontend (if you couldn't already tell lol), and some people really helped me out when it came to design.
 
 <BlogList>
 <li>Kevin Cheng - for constantly identifying bugs and giving blog feedback</li>
@@ -19,34 +19,34 @@ before i start, i would like to credit a few people for inspiring some of these 
 <li>Barnatt Wu - sending me design inspiration</li>
 </BlogList>
 
-man...now that i think about it, i have a lot of pretty smart people around me. i should be grateful.
+Man...now that I think about it, I have a lot of pretty smart people around me. I should be grateful.
 
 <BlogImage
 src="/blogs/pdev/4/theogs.png"
-alt="the people i thanked in my first blog post"
-caption="the og thank you list from my first blog post"
+alt="The people I thanked in my first blog post"
+caption="The OG thank you list from my first blog post"
 style={{ border: "1px solid white" }}
 />
 
-okay, onto the updates!
+Okay, onto the updates!
 
 <br />
 
-## blog page hub changes
-originally, the blog page hub was a static page that listed all my blog posts. the tags were on the right side of the screen, but if the viewport was too small,
+## Blog Page Hub Changes
+Originally, the blog page hub was a static page that listed all my blog posts. The tags were on the right side of the screen, but if the viewport was too small,
 they would be on the top (before the blog list). \
 \
-however, this did not look aesthetically pleasing, and the static nature of the page forced users to refresh whenever they selected a tag.
-to mitigate this, i made two changes: 
+However, this did not look aesthetically pleasing, and the static nature of the page forced users to refresh whenever they selected a tag.
+To mitigate this, I made two changes: 
 
 <BlogList>
-<li>**make the page dynamic** - do not refresh the page when selecting a tag.</li>
-<li>**move the tags to the top, but print them horizontally**</li>
+<li>**Make the page dynamic** - do not refresh the page when selecting a tag.</li>
+<li>**Move the tags to the top, but print them horizontally**</li>
 </BlogList>
 
-the first change was harder than the second one...for sure. \
+The first change was harder than the second one...for sure. \
 \
-in order to make the page dynamic, i made a new component and just stuck it on the server-rendered blog page.
+In order to make the page dynamic, I made a new component and just stuck it on the server-rendered blog page.
 
 <BlogCode title="src/blog/page.js" language="js">
 {`
@@ -64,10 +64,10 @@ export default async function Blog() {
 `}
 </BlogCode>
 
-the `BlogSearch` component is a client component that handles all the filtering and rendering of the blog posts. 
-lets break it down. \
+The `BlogSearch` component is a client component that handles all the filtering and rendering of the blog posts. 
+Let's break it down. \
 \
-we have a few states here:
+We have a few states here:
 
 <BlogCode title="src/components/BlogSearch.js" language="js">
 {`
@@ -80,13 +80,13 @@ we have a few states here:
 `}
 </BlogCode>
 
-on load, we will set the tag if there is one in the url. \
+On load, we will set the tag if there is one in the URL. \
 \
-then, we have a useeffect that runs whenever the tag changes.
-it will filter the displayed posts based on the tag.
-the fading logic is just for aesthetics.
+Then, we have a useEffect that runs whenever the tag changes.
+It will filter the displayed posts based on the tag.
+The fading logic is just for aesthetics.
 
-<BlogCode title="src/components/BlogSearch.js - load useeffect" language="js">
+<BlogCode title="src/components/BlogSearch.js - load useEffect" language="js">
 {`
   useEffect(() => {
     const syncTagFromUrl = () => {
@@ -106,85 +106,85 @@ the fading logic is just for aesthetics.
 `}
 </BlogCode>
 
-there are many helper functions, and i will not go over all of them.
-they are used to handle tag filtering and transition effects. \
+There are many helper functions, and I will not go over all of them.
+They are used to handle tag filtering and transition effects. \
 \
-in the end, we have a blog that looks like this:
+In the end, we have a blog that looks like this:
 
 <BlogImage
 src="/blogs/pdev/4/blogpage.png"
-alt="the updated blog hub page"
-caption="the updated blog hub page"
+alt="The updated blog hub page"
+caption="The updated blog hub page"
 style={{ border: "1px solid white" }}
 />
 
-when a tag is clicked, the posts are filtered without a page refresh!
-only the blogsearch component is re-rendered. \
+When a tag is clicked, the posts are filtered without a page refresh!
+Only the BlogSearch component is re-rendered. \
 \
-overall, i think it feels more sleek and "modern" now.
+Overall, I think it feels more sleek and "modern" now.
 
 <br />
 
-## icon updates
-one of the big changes i made was updating icons on the site.
-i mainly did this in two areas:
+## Icon Updates
+One of the big changes I made was updating icons on the site.
+I mainly did this in two areas:
 
 <BlogList>
-<li>the projects page</li>
-<li>the footer</li>
+<li>The projects page</li>
+<li>The footer</li>
 </BlogList>
 
-my home page used to have generic links for my socials. however,
-i wanted something that looked less like a wall of text on the landing page. \
+My home page used to have generic links for my socials. However,
+I wanted something that looked less like a wall of text on the landing page. \
 \
-because of this, i removed these links and made them icons. they are now in the footer,
+Because of this, I removed these links and made them icons. They are now in the footer,
 so my socials can be easily accessed from any page. \
 \
-in the projects page, i also wanted a less "wall of text" feel.
-in order to do this, i made the descriptions a bit shorter and added icons
+In the projects page, I also wanted a less "wall of text" feel.
+In order to do this, I made the descriptions a bit shorter and added icons
 for external links. \
 \
-previously, the projects page had links attached to the titles, and you
-couldnt tell where they led. now, there are icons that clearly indicate
+Previously, the projects page had links attached to the titles, and you
+couldn't tell where they led. Now, there are icons that clearly indicate
 what links are available to each project.
 
 <BlogImage
 src="/blogs/pdev/4/projects.png"
-alt="the updated projects page with icons"
-caption="the updated projects page with icons!"
+alt="The updated projects page with icons"
+caption="The updated projects page with icons!"
 style={{ border: "1px solid white" }}
 />
 
-the site looks less cluttered!
+The site looks less cluttered!
 
 <br />
 
-## boxing stuff
-i added boxes around certain sections of the website. in particular,
-i put a box on the home page around my description, and i put boxes
-around projects and blog posts. this made them pop out a bit more,
+## Boxing Stuff
+I added boxes around certain sections of the website. In particular,
+I put a box on the home page around my description, and I put boxes
+around projects and blog posts. This made them pop out a bit more,
 and it made the site look a bit more organized.
 
 <br />
-## highlighting improvements
-you can now tell what page you are on in the navbar! the current
+## Highlighting Improvements
+You can now tell what page you are on in the navbar! The current
 page will be highlighted, making it slightly easier to navigate. \
 \
-this highlighting is also done in the blog tags. the active tag 
+This highlighting is also done in the blog tags. The active tag 
 will be highlighted, so you can tell what tag you are filtering by.
 
 <br />
-## spotify status caching
-you cant really see the difference here, but i changed how my spotify status is fetched. \
+## Spotify Status Caching
+You can't really see the difference here, but I changed how my Spotify status is fetched. \
 \
-previously, it would call the spotify api every time the page loaded. however, this caused a few issues:
+Previously, it would call the Spotify API every time the page loaded. However, this caused a few issues:
 
 <BlogList>
-<li>possibly hitting rate limits?</li>
-<li>not updating "live"</li>
+<li>Possibly hitting rate limits?</li>
+<li>Not updating "live"</li>
 </BlogList>
 
-to fix this, i made the spotify component fetch the status every 10 seconds.
+To fix this, I made the Spotify component fetch the status every 10 seconds.
 
 <BlogCode title="src/components/SpotifyEmbed.jsx - useEffect" language="js">
 {`
@@ -206,8 +206,8 @@ to fix this, i made the spotify component fetch the status every 10 seconds.
 `}
 </BlogCode>
 
-however - as mentioned earlier - this comes with a ton of api calls to my backend.
-to mitigate hitting rate limits, i simply added a json object as a cache in the backend. 
+However - as mentioned earlier - this comes with a ton of API calls to my backend.
+To mitigate hitting rate limits, I simply added a JSON object as a cache in the backend. 
 
 <BlogCode title="src/lib/spotify.js - caching logic" language="js">
 {`
@@ -245,22 +245,22 @@ export const currentlyPlayingSong = async () => {
 `}
 </BlogCode>
 
-this way, if the cache is younger than 10 seconds, we just return what we cached before.
-the fastest we will ever hit the spotify api is once every 10 seconds, regardless
+This way, if the cache is younger than 10 seconds, we just return what we cached before.
+The fastest we will ever hit the Spotify API is once every 10 seconds, regardless
 of how many users/requests there are on our frontend.
 
 <br />
 
-## conclusion
-again, thank you to everyone who has given me feedback!
-i really appreciate it. this is a small update, but it is somewhat important! \
+## Conclusion
+Again, thank you to everyone who has given me feedback!
+I really appreciate it. This is a small update, but it is somewhat important! \
 \
-going forward, my current goals are:
+Going forward, my current goals are:
 
 <BlogList>
-<li>improving blog writing quality (its still pretty bad)</li>
-<li>setting up my own mail server with sitecontrol</li>
-<li>adding more projects (and blogs)</li>
+<li>Improving blog writing quality (it's still pretty bad)</li>
+<li>Setting up my own mail server with sitecontrol</li>
+<li>Adding more projects (and blogs)</li>
 </BlogList>
 
-thanks for reading this snippet! see you soon. {"<3"}
+Thanks for reading this snippet! See you soon. {"<3"}

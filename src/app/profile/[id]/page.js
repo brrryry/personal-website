@@ -36,11 +36,11 @@ const Profile = ({ params }) => {
       <div className="rounded shadow-md p-4 max-w-4xl">
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <div className="mb-4">
-          <h3 className="block mb-2">username: {username}</h3>
+          <h3 className="block mb-2">Username: {username}</h3>
         </div>
 
         <div className="mb-4 max-w-4xl">
-          <h3 className="block mb-2">comments</h3>
+          <h3 className="block mb-2">Comments</h3>
           {comments.length > 0 ? (
             <ul>
               {comments.map((comment) => (
@@ -67,7 +67,7 @@ const Profile = ({ params }) => {
               ))}
             </ul>
           ) : (
-            <p>No comments found</p>
+            <p>No comments found.</p>
           )}
         </div>
       </div>

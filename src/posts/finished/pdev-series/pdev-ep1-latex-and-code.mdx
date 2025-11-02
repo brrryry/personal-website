@@ -1,39 +1,39 @@
 ---
-title: "portfolio dev (part 1): latex and code"
+title: "Portfolio Dev (Part 1): LaTeX and Code"
 date: "2024-08-08"
-description: "first detailed code analysis: my own portfolio! take a look at my funky setup :D"
+description: "First detailed code analysis: my own portfolio! Take a look at my funky setup :D"
 tags: ["portfolio-dev-series", "coding"]
 ---
 
-as the school year comes in (im writing this in early august), im expecting to slow down my blog frequency
-(even though this is not guaranteed to be the case). with this in mind, i would like to start documenting my
+As the school year comes in (I'm writing this in early August), I'm expecting to slow down my blog frequency
+(even though this is not guaranteed to be the case). With this in mind, I would like to start documenting my
 development process so that:
 
 <BlogList>
   <li>
-    i dont lose track of what im doing and dont end myself over deprecated
+    I don't lose track of what I'm doing and don't end myself over deprecated
     packages in a year or so
   </li>
   <li>
-    i can help other people understand how my blog works (and maybe even help
+    I can help other people understand how my blog works (and maybe even help
     them make their own one day)
   </li>
 </BlogList>
 
-this will be my first attempt at a more "formal" post - im hoping that this blog will have no glaring errors by the time i publish it.
-after all, my last few blogs represented more of a tangent than an actual blog... \
+This will be my first attempt at a more "formal" post - I'm hoping that this blog will have no glaring errors by the time I publish it.
+After all, my last few blogs represented more of a tangent than an actual blog... \
 \
-i would like to express my gratitude to <a href="https://kevinthuhstink.com" target="_blank">this guy named kevin</a> for reading my blogs, checking my errors and (cough cough) breaking my models. \
+I would like to express my gratitude to <a href="https://kevinthuhstink.com" target="_blank">this guy named Kevin</a> for reading my blogs, checking my errors and (cough cough) breaking my models. \
 \
-with this in mind, let's start diving into the code.
+With this in mind, let's start diving into the code.
 
 <br />
 
-## setting up nextjs
+## Setting Up NextJS
 
-**as of right now, i am using nextjs 14.2.5.** \
+**As of right now, I am using NextJS 14.2.5.** \
 \
-i set up my nextjs project the way the <a href="https://nextjs.org/docs/getting-started/installation" target="_blank">tutorial on their website</a> described.
+I set up my NextJS project the way the <a href="https://nextjs.org/docs/getting-started/installation" target="_blank">tutorial on their website</a> described.
 
 <BlogCode language="bash">
   {`
@@ -41,7 +41,7 @@ npx create-next-app@latest
 `}
 </BlogCode>
 
-here were the settings that i used:
+Here were the settings that I used:
 
 <BlogCode language="plaintext">
   {`
@@ -56,58 +56,58 @@ What import alias would you like configured? @/*
 `}
 </BlogCode>
 
-this will create a next app in a folder with your project's name on it. \
-i installed these packages for my blog, but not all of them are necessary (obviously).
+This will create a Next app in a folder with your project's name on it. \
+I installed these packages for my blog, but not all of them are necessary (obviously).
 
 <BlogList>
   <li>
-    ``next-mdx-remote`` - parsing remote .mdx files (honestly not necessary). i
-    only use it for the mdxremote component.
+    ``next-mdx-remote`` - parsing remote .mdx files (honestly not necessary). I
+    only use it for the MDXRemote component.
   </li>
   <li>``gray-matter`` - parses frontmatter and content of .mdx files</li>
   <li>
-    ``dompurify`` - protects against xss attacks (specifically because i use
-    html injection for code blocks)
+    ``dompurify`` - protects against XSS attacks (specifically because I use
+    HTML injection for code blocks)
   </li>
   <li>
     ``husky`` - pre-commit and pre-push linting/formatting (make your code look
     good and readable)
   </li>
-  <li>``rehype`` - adds classes to code tags to enable fancy code css</li>
+  <li>``rehype`` - adds classes to code tags to enable fancy code CSS</li>
 </BlogList>
 
-you should familiarize yourself with the directories and what they are meant for. \
+You should familiarize yourself with the directories and what they are meant for. \
 \
-if you enter the directory of your project and run the command `npm run dev`, you should be able to view your website if you go to `localhost:3000` in your browser (i believe this is the default port - if it is not
+If you enter the directory of your project and run the command `npm run dev`, you should be able to view your website if you go to `localhost:3000` in your browser (I believe this is the default port - if it is not
 3000, the terminal will tell you which port to
 go to).
 
 <BlogImage
   src="/blogs/pdev-ep1-latex-and-code/next-welcome.png"
-  alt="fig 1 - default next page after setup"
-  caption="next@14.2.5: default page"
+  alt="Fig 1 - default Next page after setup"
+  caption="Next@14.2.5: default page"
 />
 
-that's essentially it for the setup, but now it's time for the coding. \
+That's essentially it for the setup, but now it's time for the coding. \
 \
-**note: please keep in mind that i am using the app router.**
+**Note: please keep in mind that I am using the App Router.**
 
 <br />
 
-## the home page!
+## The Home Page!
 
-the app router works in a way such that each folder is a route. for example:
+The App Router works in a way such that each folder is a route. For example:
 
 <BlogList>
-  <li>the page ``/`` renders the js file ``app/page.js``</li>
-  <li>the page ``/blog`` renders the js file ``app/blog/page.js``.</li>
+  <li>The page ``/`` renders the JS file ``app/page.js``</li>
+  <li>The page ``/blog`` renders the JS file ``app/blog/page.js``.</li>
   <li>
-    the page ``projects/[id]`` renders the js file ``app/projects/[id]/page.js``
+    The page ``projects/[id]`` renders the JS file ``app/projects/[id]/page.js``
     (yes, this folder structure works for dynamic fetching as well!)
   </li>
 </BlogList>
 
-with that being said, my home page's source code (`app/page.js`) will be shown below!
+With that being said, my home page's source code (`app/page.js`) will be shown below!
 
 <BlogCode language="js">
 {`
@@ -136,12 +136,12 @@ export default function Home() {
 
 </BlogCode>
 
-of course, im not gonna show all of it. if you want to see all of it, you can just go to my full source code (in the footer).\
+Of course, I'm not gonna show all of it. If you want to see all of it, you can just go to my full source code (in the footer).\
 \
-the important part here is the use of tailwind css! as you can see, the div and unordered list both have styling.
-the property name becomes "classname" (as opposed to "class" in html). now...what do the classes do? \
+The important part here is the use of Tailwind CSS! As you can see, the div and unordered list both have styling.
+The property name becomes "className" (as opposed to "class" in HTML). Now...what do the classes do? \
 \
-the class "space-y-5" causes all the inner elements to be seperated vertically. it essentially just adds
+The class "space-y-5" causes all the inner elements to be separated vertically. It essentially just adds
 
 <br />
 
@@ -150,9 +150,9 @@ margin-top: 1.25rem;
 ```
 
 \
-to the element. meanwhile, the "mx-6" sets the margin of each child element! \
+to the element. Meanwhile, the "mx-6" sets the margin of each child element! \
 \
-the great thing about tailwind is that the documentation is very easily readable. you can actually just search up
+The great thing about Tailwind is that the documentation is very easily readable. You can actually just search up
 "tailwind space between" and get the classnames required to do what you want! \
 \
 
@@ -163,31 +163,31 @@ is the link to the docs!
 
 <BlogImage
   src="/blogs/pdev-ep1-latex-and-code/tailwind-docs.png"
-  alt="tailwind docs - margin"
-  caption="look at these beautiful tailwind docs"
+  alt="Tailwind docs - margin"
+  caption="Look at these beautiful Tailwind docs"
 />
 
-now, you may notice that im missing a navbar. where is it???
+Now, you may notice that I'm missing a navbar. Where is it???
 
 <br />
 
-## layout.js and components
+## layout.js and Components
 
-one of the great things about next (and react) is components. you can make custom js files that are both
-reusable and independent to the rest of the code where the component is used. for example, i have a few components:
+One of the great things about Next (and React) is components. You can make custom JS files that are both
+reusable and independent to the rest of the code where the component is used. For example, I have a few components:
 
 <BlogList>
-  <li>navbar - to render the navigation bar at the top of my page</li>
+  <li>Navbar - to render the navigation bar at the top of my page</li>
   <li>
-    bloglist - to make lists in my blog (you are literally looking at it right
+    BlogList - to make lists in my blog (you are literally looking at it right
     now)
   </li>
-  <li>blogcode - to add code into my blog</li>
-  <li>latexwrapper - to add latex into my blog</li>
+  <li>BlogCode - to add code into my blog</li>
+  <li>LatexWrapper - to add LaTeX into my blog</li>
 </BlogList>
 
-in order to make a component, you just need a js file. i like to keep my stuff organized, so i have a folder:
-`src/components`. to give an example, ill show you my navbar code (`src/components/navbar.js`).
+In order to make a component, you just need a JS file. I like to keep my stuff organized, so I have a folder:
+`src/components`. To give an example, I'll show you my navbar code (`src/components/Navbar.js`).
 
 <BlogCode language="js">
 {`
@@ -230,15 +230,15 @@ export default Navbar;
 
 </BlogCode>
 
-the reason i have a duplicate link to each page is for responsiveness. if you read the tailwind css, you can see the word "hidden" in the class name.
-this is a tailwind class that hides the element on a certain screen size. in this case, the navbar is rendered differently on mobile screens. \
+The reason I have a duplicate link to each page is for responsiveness. If you read the Tailwind CSS, you can see the word "hidden" in the class name.
+This is a Tailwind class that hides the element on a certain screen size. In this case, the navbar is rendered differently on mobile screens. \
 \
-it is important to note that tailwind is mobile-first. this means that the classes you write will be applied to all screen sizes **and larger** unless you specify otherwise. \
+It is important to note that Tailwind is mobile-first. This means that the classes you write will be applied to all screen sizes **and larger** unless you specify otherwise. \
 \
-if you would like to understand the css better, i highly recommend checking out the <a href="https://tailwindcss.com/docs" target="_blank">tailwind docs</a>! \
+If you would like to understand the CSS better, I highly recommend checking out the <a href="https://tailwindcss.com/docs" target="_blank">Tailwind docs</a>! \
 \
-now...earlier, i mentioned that the navbar component was not in my home page's code. how did i add it? this is where **layout** comes in.
-this file (`app/layout.js`) is a wrapper for all of my pages. this is where i add my navbar and footer. everything else is rendered in the `{children}` prop.
+Now...earlier, I mentioned that the navbar component was not in my home page's code. How did I add it? This is where **layout** comes in.
+This file (`app/layout.js`) is a wrapper for all of my pages. This is where I add my navbar and footer. Everything else is rendered in the `{children}` prop.
 
 <BlogCode language="js">
 {`
@@ -286,17 +286,17 @@ export default async function RootLayout({ children }) {
 `}
 </BlogCode>
 
-as you can see, the navbar component is rendered at the top of the page! \
+As you can see, the navbar component is rendered at the top of the page! \
 \
-all in all, this becomes very useful when you have a lot of pages that need the same components. now...onto the next section!
+All in all, this becomes very useful when you have a lot of pages that need the same components. Now...onto the next section!
 
 <br />
 
-## the blog page
+## The Blog Page
 
-the blog page is a bit more complicated than the home page. this is because i have to parse the frontmatter and content of the .mdx files from a different directory. \
+The blog page is a bit more complicated than the home page. This is because I have to parse the frontmatter and content of the .mdx files from a different directory. \
 \
-all of my .mdx files are in the `src/posts` directory. the blog page (`app/blog/page.js`) is shown below.
+All of my .mdx files are in the `src/posts` directory. The blog page (`app/blog/page.js`) is shown below.
 
 <BlogCode language="js">
 {`
@@ -362,13 +362,13 @@ return (
 
 </BlogCode>
 
-the important part here is the use of the `getSortedPostsData()` function. this function is in the `src/lib/posts.js` file. the "@" symbol
+The important part here is the use of the `getSortedPostsData()` function. This function is in the `src/lib/posts.js` file. The "@" symbol
 is a shortcut to the "src" directory (we told the program not to change that shortcut when we initially set up the project). \
 \
-since this file is not in the app router (`src/app`), it is not able to be accessed by the browser. this means that the function is only used in the server-side rendering of the page.
-this ended up causing some problems for me later, but we'll get to that when we cover it. \
+Since this file is not in the App Router (`src/app`), it is not able to be accessed by the browser. This means that the function is only used in the server-side rendering of the page.
+This ended up causing some problems for me later, but we'll get to that when we cover it. \
 \
-the function essentially reads all the .mdx files in the `src/posts` directory and returns them in a sorted array. it also gets all blog tags and returns them to be rendered.
+The function essentially reads all the .mdx files in the `src/posts` directory and returns them in a sorted array. It also gets all blog tags and returns them to be rendered.
 
 <BlogCode language="js">
 {`
@@ -409,12 +409,12 @@ return -1;
 
 </BlogCode>
 
-this function uses the `fs` and `path` modules to read the files in the directory. it then uses the `gray-matter` package to parse the frontmatter of the .mdx files. \
+This function uses the `fs` and `path` modules to read the files in the directory. It then uses the `gray-matter` package to parse the frontmatter of the .mdx files. \
 \
-the function also takes in a tag as an argument. if the tag is not empty, the function will only return posts with that tag. this version of the function is used to render blogs in
+The function also takes in a tag as an argument. If the tag is not empty, the function will only return posts with that tag. This version of the function is used to render blogs in
 the page `/blog/[tag]/tag` (filtered blogs by tag).
 \
-now, let's get into the actual blog post page! here is the code for the page `app/blog/[id]/page.js` (you're looking at this page right now)!
+Now, let's get into the actual blog post page! Here is the code for the page `app/blog/[id]/page.js` (you're looking at this page right now)!
 
 <BlogCode language="js">
 {`
@@ -468,11 +468,11 @@ components={{ LatexWrapper, BlogImage, BlogList, BlogCode }}
 `}
 
 </BlogCode>
-the first part of my return statement simply renders the frontmatter of the .mdx file in a slightly nicer format. \
+The first part of my return statement simply renders the frontmatter of the .mdx file in a slightly nicer format. \
 \
-the ``getPostFromId()`` function is in the same file as the ``getSortedPostsData()`` function. it reads the .mdx file with the id ``params.id`` and returns the content and frontmatter. \
+The ``getPostFromId()`` function is in the same file as the ``getSortedPostsData()`` function. It reads the .mdx file with the id ``params.id`` and returns the content and frontmatter. \
 \
-the ``MDXRemote`` component is used to render the content. the ``components`` prop is used to render custom components (the ones i made) in the content. this allows me to write something like
+The ``MDXRemote`` component is used to render the content. The ``components`` prop is used to render custom components (the ones I made) in the content. This allows me to write something like
 
 <BlogCode language="mdx">
   {`
@@ -486,33 +486,33 @@ console.log("hello world");
 
 in my .mdx files! \
 \
-now, let's get to the interesting part: **the process**. most of the next section will be about the process of making the custom components - not the code itself. the tutorial basically
+Now, let's get to the interesting part: **the process**. Most of the next section will be about the process of making the custom components - not the code itself. The tutorial basically
 ends here.
 
 <br />
 
-## blog format and components
+## Blog Format and Components
 
-**this part exists for the purpose of documenting my thought process.**\
+**This part exists for the purpose of documenting my thought process.**\
 \
-i wanted to make my blog as readable as possible. this took me a long time to learn. originally, my blog was just a bunch of text and html that spread across the entire page.
-if you look at it now, it only takes up to a maximum of `56rem (896px)` of the page width. this was for the sake of responsiveness - it simply looked out of place when
-viewing the original version of my blog on a mobile viewport. this was also due to the inspiration of other people's blogs, since most of them were also not a full page's width.
+I wanted to make my blog as readable as possible. This took me a long time to learn. Originally, my blog was just a bunch of text and HTML that spread across the entire page.
+If you look at it now, it only takes up to a maximum of `56rem (896px)` of the page width. This was for the sake of responsiveness - it simply looked out of place when
+viewing the original version of my blog on a mobile viewport. This was also due to the inspiration of other people's blogs, since most of them were also not a full page's width.
 
 <BlogImage
   src="/blogs/pdev-ep1-latex-and-code/tumtarts.png"
-  alt="tumtarts blog"
-  caption="example: tumtarts blog - a blog that inspired me :D"
+  alt="Tumtarts blog"
+  caption="Example: Tumtarts blog - a blog that inspired me :D"
   source="https://tumtarts.com"
   style={{ border: "0.5rem white solid" }}
 />
 
-in the code shown earlier, you can see that the article tag has the class "min-w-0 max-w-4xl". this sets the minimum width of the article to 0 and the maximum width to 4xl.
+In the code shown earlier, you can see that the article tag has the class "min-w-0 max-w-4xl". This sets the minimum width of the article to 0 and the maximum width to 4xl.
 
 <br />
 
-for the most part, this helped my text stay readable. however, i also wanted to add a template for images, as it was getting painful to type out the html for each image. for example,
-this was the html behind my first image in my blog (<a href="/blog/insure-2024">insure 2024</a>):
+For the most part, this helped my text stay readable. However, I also wanted to add a template for images, as it was getting painful to type out the HTML for each image. For example,
+this was the HTML behind my first image in my blog (<a href="/blog/insure-2024">INSURE 2024</a>):
 
 <BlogCode language="html">
 {`
@@ -531,34 +531,34 @@ this was the html behind my first image in my blog (<a href="/blog/insure-2024">
 `}
 </BlogCode>
 
-i was getting quite tired of copy and pasting the same code over and over again. this is where the `BlogImage` component comes in. now, i am able to write this instead:
+I was getting quite tired of copy and pasting the same code over and over again. This is where the `BlogImage` component comes in. Now, I am able to write this instead:
 
 <BlogCode language="html">
   {`
 <BlogImage 
 src="/blogs/pdev-ep1-latex-and-code/tumtarts.png"
-alt="tumtarts blog"
-caption="example: tumtarts blog - a blog that inspired me :D"
+alt="Tumtarts blog"
+caption="Example: Tumtarts blog - a blog that inspired me :D"
 source="https://tumtarts.com"
 style={{border: "0.5rem white solid"}}
 />
 `}
 </BlogCode>
 
-(this is the code for the image above) \
-it makes things easier and more readable when i am reviewing my blogs. \
+(This is the code for the image above) \
+It makes things easier and more readable when I am reviewing my blogs. \
 \
-now, let's talk about the latex. when i was writing my last blog (<a href="/blog/cat-or-car">cat or car</a>), i wanted to explain some of the basic math behind a neural network.
-however, i was not able to render it in a nice format without latex. i spent a lot of time trying to figure out how to use <a href="https://katex.org" target="_blank">katex</a> in my blog,
-but i was not able to get it to work. this is specifically because i needed the latex to render in the server-side rendering of the page (otherwise, i had to rewrite my lib functions
-that i mentioned earlier). after spending about 2 days, i found a much simpler answer - a math api. \
+Now, let's talk about the LaTeX. When I was writing my last blog (<a href="/blog/cat-or-car">Cat or Car</a>), I wanted to explain some of the basic math behind a neural network.
+However, I was not able to render it in a nice format without LaTeX. I spent a lot of time trying to figure out how to use <a href="https://katex.org" target="_blank">KaTeX</a> in my blog,
+but I was not able to get it to work. This is specifically because I needed the LaTeX to render in the server-side rendering of the page (otherwise, I had to rewrite my lib functions
+that I mentioned earlier). After spending about 2 days, I found a much simpler answer - a math API. \
 \
-the math api i used was <a href="https://math.vercel.app/home" target="_blank">the math api vercel app</a>. by passing in a latex string, i was able to get a png image of the rendered
-latex. it was kind of a lazy workaround, but...it works. \
+The math API I used was <a href="https://math.vercel.app/home" target="_blank">the math API Vercel app</a>. By passing in a LaTeX string, I was able to get a PNG image of the rendered
+LaTeX. It was kind of a lazy workaround, but...it works. \
 \
-after getting the image, i needed to render it - preferrably automatically - to scale, since not all latex expressions would be the same size.
-in order to do this seamlessly, i made the `LatexWrapper` component. this component takes in a latex string and renders the image in a way that scales with the text. it estimates
-the size of the image based on the length of the text i pass in.
+After getting the image, I needed to render it - preferably automatically - to scale, since not all LaTeX expressions would be the same size.
+In order to do this seamlessly, I made the `LatexWrapper` component. This component takes in a LaTeX string and renders the image in a way that scales with the text. It estimates
+the size of the image based on the length of the text I pass in.
 
 <BlogCode language="html">
   {`
@@ -566,17 +566,17 @@ the size of the image based on the length of the text i pass in.
 `}
 </BlogCode>
 
-gives me this:
+Gives me this:
 
 <LatexWrapper content="\sum_{i=1}^{n} i = \frac{n(n+1)}{2}" />
 
-cool! now i can write math in my blog. but...what about code? \
+Cool! Now I can write math in my blog. But...what about code? \
 \
-originally, i just used the `<code>` tag to write code. however, it looked super ugly. in order to get syntax highlighting, i used the `rehype` package.
-this package adds classes to the code tags in the .mdx files. i then used the `BlogCode` component to render the code. this component takes in a language prop and a content prop. \
+Originally, I just used the `<code>` tag to write code. However, it looked super ugly. In order to get syntax highlighting, I used the `rehype` package.
+This package adds classes to the code tags in the .mdx files. I then used the `BlogCode` component to render the code. This component takes in a language prop and a content prop. \
 \
-thankfully, since the `BlogCode` component was a sub-component, i could render it on the client side. this meant that i could use the `highlight.js` package to render the code.
-i also used the file `atom-one-dark.css` to style the "classified" code (the import line is in the main blog page).
+Thankfully, since the `BlogCode` component was a sub-component, I could render it on the client side. This meant that I could use the `highlight.js` package to render the code.
+I also used the file `atom-one-dark.css` to style the "classified" code (the import line is in the main blog page).
 
 <BlogCode language="js">
 {`
@@ -614,36 +614,36 @@ return (
 
 </BlogCode>
 
-the `DOMPurify` package is used to sanitize the code. this is to prevent cross-scripting xss attacks (code injection). \
+The `DOMPurify` package is used to sanitize the code. This is to prevent cross-scripting XSS attacks (code injection). \
 \
-now, i can write code in my blog! \
+Now, I can write code in my blog! \
 \
-that's basically all i have so far, so let's jump to our final section:
+That's basically all I have so far, so let's jump to our final section:
 
 <br />
 
-## conclusion + future work?
+## Conclusion + Future Work?
 
-it's been a while since i've touched nextjs (or any javascript for that matter), so this was a nice refresher. i am also happy that i am blogging, since this is a way to
+It's been a while since I've touched NextJS (or any JavaScript for that matter), so this was a nice refresher. I am also happy that I am blogging, since this is a way to
 document my progress! \
 \
-there are a few things that i would like to do in the future:
+There are a few things that I would like to do in the future:
 
 <BlogList>
-  <li>add a search bar to my blog</li>
+  <li>Add a search bar to my blog</li>
   <li>
-    add a pagination system to my blog (especially if i keep blogging at this
+    Add a pagination system to my blog (especially if I keep blogging at this
     frequency)
   </li>
-  <li>add a spotify api to my blog (maybe see what im listening to?)</li>
+  <li>Add a Spotify API to my blog (maybe see what I'm listening to?)</li>
   <li>
-    further optimize my blog components - maybe create new ones on demand (maybe
-    cooking related, since im trying to learn how to cook - blog coming soon?)
+    Further optimize my blog components - maybe create new ones on demand (maybe
+    cooking related, since I'm trying to learn how to cook - blog coming soon?)
   </li>
 </BlogList>
 
-i hope you enjoyed this blog! i will be back soon with another one. \
+I hope you enjoyed this blog! I will be back soon with another one. \
 \
-if you have anything you'd like to or ask about (or suggest improvements), feel free to <a href="/">reach out</a> i always love talking to new people :)\
+If you have anything you'd like to or ask about (or suggest improvements), feel free to <a href="/">reach out</a> I always love talking to new people :)\
 \
-that's it! byebye~
+That's it! Byebye~
