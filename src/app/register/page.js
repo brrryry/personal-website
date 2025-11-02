@@ -53,9 +53,9 @@ const Register = () => {
   return (
     <div className="flex justify-center items-center p-4">
       <form onSubmit={handleSubmit} className="rounded shadow-md max-w-2xl">
-        <h2 className="text-2xl mb-4">register</h2>
+        <h2 className="text-2xl mb-4">Register</h2>
         <div className="mb-4">
-          <label className="block mb-2">username</label>
+          <label className="block mb-2">Username</label>
           <input
             type="text"
             value={username}
@@ -65,7 +65,7 @@ const Register = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block mb-1">password</label>
+          <label className="block mb-1">Password</label>
           <input
             type="password"
             value={password}
@@ -75,7 +75,7 @@ const Register = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block mb-1">retype password</label>
+          <label className="block mb-1">Retype Password</label>
           <input
             type="password"
             value={retypedPassword}
@@ -88,10 +88,10 @@ const Register = () => {
           type="submit"
           className="w-full bg-[#6a0dad] text-white p-2 rounded"
         >
-          {loading ? "loading..." : "register"}
+          {loading ? "Loading..." : "Register"}
         </button>
         <p>
-          already have an account? <Link href="/login">login</Link>
+          Already have an account? <Link href="/login">Login</Link>
         </p>
 
         <div className="mb-4 min-h-[24px] max-w-full">

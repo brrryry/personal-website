@@ -1,49 +1,49 @@
 ---
-title: "ms-dp100 self-learning course: module 1"
+title: "MS-DP100 Self-Learning Course: Module 1"
 date: "2025-07-12"
 updated: "2025-07-27"
-description: "my knowledge base of the microsoft dp-100 self-learning course (module 1)"
+description: "My knowledge base of the Microsoft DP-100 self-learning course (Module 1)"
 tags: ["ms-dp100-series"]
 ---
 
-update (2025-07-27): i decided to make this post a bit more general - instead of just covering 1.1, it covers all of module 1. \
+Update (2025-07-27): I decided to make this post a bit more general - instead of just covering 1.1, it covers all of Module 1. \
 \
-this is my overview/notes for the first module of the microsoft dp-100 self-learning course! 
-i hope you find this helpful :)
+This is my overview/notes for the first module of the Microsoft DP-100 self-learning course! 
+I hope you find this helpful :)
 
 
 <BlogImage
 src="/blogs/ms-dp100/slc/1/module1.png"
-alt="module 1 submodules"
-caption="not too shabby - i should know most of this stuff already since ive worked with it before"
+alt="Module 1 submodules"
+caption="Not too shabby - I should know most of this stuff already since I've worked with it before"
 source="https://learn.microsoft.com/en-us/training/paths/explore-azure-machine-learning-workspace/"
 />
 
-### submodules 1-2 - intro
+### Submodules 1-2 - Intro
 
-the first two submodules detail what is in a machine learning service (the workspace) as well as how to create one.
-in order to make one, you need to:
+The first two submodules detail what is in a machine learning service (the workspace) as well as how to create one.
+In order to make one, you need to:
 
-
-<BlogList>
-<li>get access to an azure account and subscription (as you do with most cloud services)</li>
-<li>create a resource group (aka a container to organize an azure "solution")</li>
-<li>create a machine learning workspace (the actual service - "workspace" and "service" seem to be used interchangeably)</li>
-</BlogList>
-
-there are multiple ways to do the last step as well, those methods being:
 
 <BlogList>
-<li>using the azure portal (yay, fancy ui)</li>
-<li>using the azure command line interface (cli)</li>
-<li>using the python sdk</li>
+<li>Get access to an Azure account and subscription (as you do with most cloud services)</li>
+<li>Create a resource group (aka a container to organize an Azure "solution")</li>
+<li>Create a machine learning workspace (the actual service - "workspace" and "service" seem to be used interchangeably)</li>
 </BlogList>
 
-i tried to create a workspace using the azure portal, and it was pretty straightforward.
-in the future, i would like to try using the sdk. clis are usually not my thing, and i prefer using either the 
-portal of the sdk for the time being. they provided some nice code snippets though!
+There are multiple ways to do the last step as well, those methods being:
 
-<BlogCode language="python" title="creating workspace (ripped from the material)" copy="false">
+<BlogList>
+<li>Using the Azure portal (yay, fancy UI)</li>
+<li>Using the Azure command line interface (CLI)</li>
+<li>Using the Python SDK</li>
+</BlogList>
+
+I tried to create a workspace using the Azure portal, and it was pretty straightforward.
+In the future, I would like to try using the SDK. CLIs are usually not my thing, and I prefer using either the 
+portal of the SDK for the time being. They provided some nice code snippets though!
+
+<BlogCode language="python" title="Creating workspace (ripped from the material)" copy="false">
 {`
 from azure.ai.ml.entities import Workspace
 
@@ -61,352 +61,352 @@ ml_client.workspaces.begin_create(ws_basic)
 
 <BlogImage
 src="/blogs/ms-dp100/slc/1/created-azure-portal.png"
-alt="created workspace in azure portal"
-caption="i created a workspace! yay!"
+alt="Created workspace in Azure portal"
+caption="I created a workspace! Yay!"
 />
 
-the second submodule in particular goes over the automatically created resources in the workspace.
-these resources include:
+The second submodule in particular goes over the automatically created resources in the workspace.
+These resources include:
 
 <BlogList>
-<li>**azure storage account** - used to store files/notebooks and job/model metadata</li>
-<li>**azure key vault** - used to store secrets (like api keys, passwords, etc)</li>
-<li>**application insights** - to monitor applications and services</li>
-<li>**azure container registry** - used to store images for the workspace</li>
+<li>**Azure Storage Account** - used to store files/notebooks and job/model metadata</li>
+<li>**Azure Key Vault** - used to store secrets (like API keys, passwords, etc)</li>
+<li>**Application Insights** - to monitor applications and services</li>
+<li>**Azure Container Registry** - used to store images for the workspace</li>
 </BlogList>
 
-azure uses role-based access control (rbac), meaning that you can assign roles to 
-users/groups to control what they can do. the docs give three general
-examples of roles (owner, contributor and reader), and there are two others
-that are specific for a machine learning workspace (azureml data scientist
-and azureml compute operator). however, there are a bunch of other roles that can be
-seen in the actual iam screen. custom roles can also be created.
+Azure uses role-based access control (RBAC), meaning that you can assign roles to 
+users/groups to control what they can do. The docs give three general
+examples of roles (Owner, Contributor and Reader), and there are two others
+that are specific for a machine learning workspace (AzureML Data Scientist
+and AzureML Compute Operator). However, there are a bunch of other roles that can be
+seen in the actual IAM screen. Custom roles can also be created.
 
 <BlogImage
 src="/blogs/ms-dp100/slc/1/roles.png"
-alt="roles in azure portal"
-caption="wow, theres a lot of options..."
+alt="Roles in Azure portal"
+caption="Wow, there's a lot of options..."
 />
 
-### tangent: azure rbac ([skip](#skip-rbac))
-azure rbac works in a similar fashion to most abstract rbac systems.
-however, as with most of these systems, there is a lot of beurocracy and 
-fine-grained control. i can see why this is useful for large organizations,
-but as someone who is used to small teams, i would find this to be a bit
+### Tangent: Azure RBAC ([Skip](#skip-rbac))
+Azure RBAC works in a similar fashion to most abstract RBAC systems.
+However, as with most of these systems, there is a lot of bureaucracy and 
+fine-grained control. I can see why this is useful for large organizations,
+but as someone who is used to small teams, I would find this to be a bit
 overwhelming. \
 \
-essentially, roles are defined using a few general fields.
+Essentially, roles are defined using a few general fields.
 
 <BlogImage
 src="/blogs/ms-dp100/slc/1/role-definition.png"
-alt="role definition properties"
-caption="a lot of role defintion properties..."
+alt="Role definition properties"
+caption="A lot of role definition properties..."
 source="https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions"
 />
 
-there are a few scopes that can be defined for a role as well.
-below is an image that shows this!
+There are a few scopes that can be defined for a role as well.
+Below is an image that shows this!
 
 <BlogImage
 src="/blogs/ms-dp100/slc/1/rbac-scope.png"
-alt="rbac scope levels"
-caption="the four scope levels"
+alt="RBAC scope levels"
+caption="The four scope levels"
 source="https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
 />
 
-azure rbac is an **additive** model. if you have multiple roles,
+Azure RBAC is an **additive** model. If you have multiple roles,
 you will have the union (sum) of all the permissions of those roles. \
 \
-azure rbac is also stored globally to "ensure that customers can timely
+Azure RBAC is also stored globally to "ensure that customers can timely
 access resources regardless from where they're accessing" (<a href="https://learn.microsoft.com/en-us/azure/role-based-access-control/overview" target="_blank">source</a>). \
 \
-in fact, i seem to be citing the rbac overview a lot. here is just
-a link to the page itself: <a href="https://learn.microsoft.com/en-us/azure/role-based-access-control/overview" target="_blank">rbac overview</a>.
+In fact, I seem to be citing the RBAC overview a lot. Here is just
+a link to the page itself: <a href="https://learn.microsoft.com/en-us/azure/role-based-access-control/overview" target="_blank">RBAC Overview</a>.
 
 <br />
 
-### tangent over <span id="skip-rbac"/>
+### Tangent Over <span id="skip-rbac"/>
 
-azure has a machine learning studio which 
+Azure has a Machine Learning Studio which 
 is a web-based interface for managing machine learning resources.
-at a first glance, it looks somewhat self-explanatory.
+At a first glance, it looks somewhat self-explanatory.
 
 <BlogImage
 src="/blogs/ms-dp100/slc/1/mlstudio.png"
-alt="azure machine learning studio"
-caption="azure machine learning studio"
+alt="Azure Machine Learning Studio"
+caption="Azure Machine Learning Studio"
 />
 
-azure also offers a tutorial on how to 
+Azure also offers a tutorial on how to 
 <a href="https://learn.microsoft.com/en-us/azure/machine-learning/quickstart-create-resources?view=azureml-api-2" target="_blank">organize multiple workspaces in an enterprise setting</a>.
-that's very useful! i havent read it, but i definitely should in the future.
+That's very useful! I haven't read it, but I definitely should in the future.
 
 <br />
 
-## submodule 3 - resources
-this submodule goes over azure machine learning resources ("the infrastructure
+## Submodule 3 - Resources
+This submodule goes over Azure Machine Learning resources ("the infrastructure
 you need to run a machine learning workflow"). \
 \
-the workspace itself is a resource, and the other two resources
-are compute resoucres and data storage resources. \
+The workspace itself is a resource, and the other two resources
+are compute resources and data storage resources. \
 \
-the workspace is just...the workspace. you use the workspace to train/track/deploy models.
-this is also where logs and snapshots reside. \
+The workspace is just...the workspace. You use the workspace to train/track/deploy models.
+This is also where logs and snapshots reside. \
 \
-compute resources a bit more nuanced. apparently there are five types of compute resources.
+Compute resources a bit more nuanced. Apparently there are five types of compute resources.
 
 <BlogList>
-<li>**compute instance** - basically a virtual machine.</li>
-<li>**compute clusters** - clusters of cpus and gpus. usually used in production workloads because they are scalable</li>
-<li>**kubernetes clusters** - azure kubernetes service (aks) clusters. basically kubernetes, but on azure...</li>
-<li>**attached computes** - other azure compute resources external to the workspace</li>
-<li>**serverless compute** - used for training jobs, just a compute resource. no server.</li>
+<li>**Compute Instance** - basically a virtual machine.</li>
+<li>**Compute Clusters** - clusters of CPUs and GPUs. Usually used in production workloads because they are scalable</li>
+<li>**Kubernetes Clusters** - Azure Kubernetes Service (AKS) clusters. Basically Kubernetes, but on Azure...</li>
+<li>**Attached Computes** - other Azure compute resources external to the workspace</li>
+<li>**Serverless Compute** - used for training jobs, just a compute resource. No server.</li>
 </BlogList>
 
-these compute resources are usually the most expensive part of the workspace. after all, processing costs money. \
+These compute resources are usually the most expensive part of the workspace. After all, processing costs money. \
 \
-finally, **data storage resources**. so, the workspace actually doesnt
+Finally, **data storage resources**. So, the workspace actually doesn't
 store data - it uses **datastores**. \
 \
-datastores use azure's data services. the workspace just makes connections
-to these datastores. the connection information is stored in the key vault (mentioned earlier). \
+Datastores use Azure's data services. The workspace just makes connections
+to these datastores. The connection information is stored in the key vault (mentioned earlier). \
 \
-there are four default datastores that are created when the workspace is created:
+There are four default datastores that are created when the workspace is created:
 
 <BlogList>
 <li>**workspaceartifactstore** - stores compute/experiment logs</li>
 <li>**workspaceworkingdirectory** - stores files from compute instances (usually used by notebooks)</li>
 <li>**workspaceblobstore** - default datastore, used for unstructured data</li>
-<li>**workspacefilestore** - connects azure storage account to workspace</li>
+<li>**workspacefilestore** - connects Azure storage account to workspace</li>
 </BlogList>
 
-of course, you can create your own datastores. \
+Of course, you can create your own datastores. \
 \
-i started looking around to see if i could find the datastores in the azure portal.
+I started looking around to see if I could find the datastores in the Azure portal.
 
 <BlogImage
 src="/blogs/ms-dp100/slc/1/blobstore.png"
-alt="workspace blobstore in azure portal"
-caption="found the blobstore!"
+alt="Workspace blobstore in Azure portal"
+caption="Found the blobstore!"
 />
 
 <BlogImage
 src="/blogs/ms-dp100/slc/1/filestore.png"
-alt="workspace filestore in azure portal"
-caption="found the filestore!"
+alt="Workspace filestore in Azure portal"
+caption="Found the filestore!"
 />
-these were both found in the "data storage" tab on the portal. \
+These were both found in the "Data Storage" tab on the portal. \
 \
-it makes sense that i couldnt find the other two, as i had not done anything with compute yet. 
+It makes sense that I couldn't find the other two, as I had not done anything with compute yet. 
 
 <br />
 
-## submodule 1.4 - assets
-this submodule goes over assets. \
+## Submodule 1.4 - Assets
+This submodule goes over assets. \
 \
-assets can be a bunch of things.
+Assets can be a bunch of things.
 
 <BlogList>
-<li>**models**</li>
-<li>**environments** (like conda?)</li>
-<li>**data**</li>
-<li>**components** (resusable code?)</li>
+<li>**Models**</li>
+<li>**Environments** (like conda?)</li>
+<li>**Data**</li>
+<li>**Components** (reusable code?)</li>
 </BlogList>
 
-azure goes over some ways to log workflow artifacts like checkpoints and metrics.
-personally, i have beef with this. it advertises a ``.pkl`` format, but...this
-is not safe. use safetensors!!! \
+Azure goes over some ways to log workflow artifacts like checkpoints and metrics.
+Personally, I have beef with this. It advertises a ``.pkl`` format, but...this
+is not safe. Use safetensors!!! \
 \
-azure has built-in versioning for the creation of models. that's pretty nice,
+Azure has built-in versioning for the creation of models. That's pretty nice,
 since it's very easy to forget when you made what model and which ones are good. \
 \
-then they say something about environments and how they are used so that
-your code can run on any compute...same reason why we have venvs and docker. yea. \
+Then they say something about environments and how they are used so that
+your code can run on any compute...same reason why we have venvs and Docker. Yea. \
 \
-**azure environments** are stored as images in the container registry (mentioned earlier).
-thankfully, azure makes it easy to select an environment when creating a job. that's sick. \
+**Azure Environments** are stored as images in the container registry (mentioned earlier).
+Thankfully, Azure makes it easy to select an environment when creating a job. That's sick. \
 \
-**data assets** - in this context - refer to a file or folder.
-they also have version control. \
+**Data Assets** - in this context - refer to a file or folder.
+They also have version control. \
 \
-**components** are also used in jobs. they represent reusable code, and they are
+**Components** are also used in jobs. They represent reusable code, and they are
 particularly strong in pipelines (i.e. normalizing data, regression, k-fold validation, etc.). \
 \
-**now, we get to the juicy stuff.**
+**Now, we get to the juicy stuff.**
 
 <br />
 
-## submodule 5 - training models
-this submodule goes through an example of training a model. it cites 
-the first github lab (see repo from megablog) as an example. \
+## Submodule 5 - Training Models
+This submodule goes through an example of training a model. It cites 
+the first GitHub lab (see repo from megablog) as an example. \
 \
-there are three cited ways to train a model:
+There are three cited ways to train a model:
 
 <BlogList>
-<li>automated machine learning (automl)</li>
-<li>jupyter notebooks</li>
-<li>running a script (as a job)</li>
+<li>Automated Machine Learning (AutoML)</li>
+<li>Jupyter Notebooks</li>
+<li>Running a script (as a job)</li>
 </BlogList>
 
-(note: i spent so long trying to figure out what a job was. man.) 
+(Note: I spent so long trying to figure out what a job was. Man.) 
 
 <br />
 
-### tangent: automl ([skip](#skip-automl))
-when did this become a thing???? \
+### Tangent: AutoML ([Skip](#skip-automl))
+When did this become a thing???? \
 \
-**automl does not use code**. how in the world?? according
+**AutoML does not use code**. How in the world?? According
 to the 
 <a href="https://learn.microsoft.com/en-us/azure/machine-learning/concept-automated-ml" target="_blank">docs</a>, 
-automl only requires a few steps:
+AutoML only requires a few steps:
 
 <BlogList>
-<li>identify ml problem (clasification, regression, nlp, etc.)</li>
-<li>choose whether you want to code or not???</li>
-<li>select labeled training data</li>
-<li>configure hyperparameters and preprocessing</li>
-<li>just let it do its thing</li>
+<li>Identify ML problem (classification, regression, NLP, etc.)</li>
+<li>Choose whether you want to code or not???</li>
+<li>Select labeled training data</li>
+<li>Configure hyperparameters and preprocessing</li>
+<li>Just let it do its thing</li>
 </BlogList>
 
-what??? like...it does seem like it only works with supervised learning, but that's insane.
-way to get rid of my job. i mean...surely, it isn't perfect, but it has so many functions
-like feature engineering and ensemble models. one day, we'll have models to train models. insane.
+What??? Like...it does seem like it only works with supervised learning, but that's insane.
+Way to get rid of my job. I mean...surely, it isn't perfect, but it has so many functions
+like feature engineering and ensemble models. One day, we'll have models to train models. Insane.
 
 <br />
 
-### tangent over <span id="skip-automl"/>
+### Tangent Over <span id="skip-automl"/>
 
-at this point, i tried to clone the repo into the workspace (the second way).
-in order to do this, i needed a terminal. \
+At this point, I tried to clone the repo into the workspace (the second way).
+In order to do this, I needed a terminal. \
 \
-in order to do **that**, i had to create a compute instance. 
-for now, i just created a cpu instance (i dont want to pay that much...).
-the process was pretty straightforward!
+In order to do **that**, I had to create a compute instance. 
+For now, I just created a CPU instance (I don't want to pay that much...).
+The process was pretty straightforward!
 
 <BlogImage
 src="/blogs/ms-dp100/slc/1/computeinstance.png"
-alt="compute instance in azure portal"
-caption="creating a cpu compute instance"
+alt="Compute instance in Azure portal"
+caption="Creating a CPU compute instance"
 />
 
-they gave a few optional settings like idle shutdown (which i set to 60 minutes),
+They gave a few optional settings like idle shutdown (which I set to 60 minutes),
 security, a startup script and tags. \
 \
-after this, it took a bit for the compute to start. \
+After this, it took a bit for the compute to start. \
 \
-it turns out that the github repo that i was trying to clone
-(which was in the other repo that i linked in the megablog) did not publicly exist.
-darn. thankfully, the next submodule covered this. \
+It turns out that the GitHub repo that I was trying to clone
+(which was in the other repo that I linked in the megablog) did not publicly exist.
+Darn. Thankfully, the next submodule covered this. \
 \
-i want to extend a bit on the third option: running a script as a job. this is 
-because it is specialized to azure.
-jobs can be used to automate script execution, and there are three types of jobs
+I want to extend a bit on the third option: running a script as a job. This is 
+because it is specialized to Azure.
+Jobs can be used to automate script execution, and there are three types of jobs
 that are specified in the course:
 
 <BlogList>
-<li>**command** - used to execute a script</li>
-<li>**sweep** - hyperparameter tuning when executing a script</li>
-<li>**pipline** - a sequence of multiple scrips/jobs in order</li>
+<li>**Command** - used to execute a script</li>
+<li>**Sweep** - hyperparameter tuning when executing a script</li>
+<li>**Pipeline** - a sequence of multiple scripts/jobs in order</li>
 </BlogList>
 
-## submodule 1.6 - exploration
-this submodule just gave a practical example of how to make a training job. 
+## Submodule 1.6 - Exploration
+This submodule just gave a practical example of how to make a training job. 
 
 <BlogImage
 src="/blogs/ms-dp100/slc/1/authoring.png"
-alt="authoring options"
-caption="authoring options - all options are present from submodule 5!"
+alt="Authoring options"
+caption="Authoring options - all options are present from submodule 5!"
 />
 
-the tutorial asked me to go through the automated machine learning setup, so i did!
-this is what the confirmation page for data looked like:
+The tutorial asked me to go through the automated machine learning setup, so I did!
+This is what the confirmation page for data looked like:
 
 <BlogImage
 src="/blogs/ms-dp100/slc/1/automl-confirmation.png"
-alt="automl confirmation page"
-caption="automl data insertion confirmation."
+alt="AutoML confirmation page"
+caption="AutoML data insertion confirmation."
 />
 
 
-the task settings detailed the labelled data, the classification-specific settings
+The task settings detailed the labelled data, the classification-specific settings
 (since we are doing classification) and various limit settings
-(i.e. experiment timeout, iteration timeout, max trials). it also
-allowed me to decide the train-testing split (i did 90/10). \
+(i.e. experiment timeout, iteration timeout, max trials). It also
+allowed me to decide the train-testing split (I did 90/10). \
 \
-i set up my compute instance for the job, and then it took me to the review page.
+I set up my compute instance for the job, and then it took me to the review page.
 
 <BlogImage
 src="/blogs/ms-dp100/slc/1/automl-confirmation1.png"
-alt="automl confirmation page"
-caption="automl confirmation page for the job"
+alt="AutoML confirmation page"
+caption="AutoML confirmation page for the job"
 />
 
 <BlogImage
 src="/blogs/ms-dp100/slc/1/automl-training.png"
-alt="automl training status"
-caption="the job is starting!!!"
+alt="AutoML training status"
+caption="The job is starting!!!"
 />
 
-the job took approximately 10 minutes to complete. there was a child job
-that was spawned (probably for automation purposes?). a few other
+The job took approximately 10 minutes to complete. There was a child job
+that was spawned (probably for automation purposes?). A few other
 miscellaneous jobs were spawned as well in the experiment. \
 \
-there were some pretty nice guardrails in the job that were automatically set up.
-this included class balancing, missing feature handling, high cardinality feature detection
+There were some pretty nice guardrails in the job that were automatically set up.
+This included class balancing, missing feature handling, high cardinality feature detection
 and validation split handling.
 
 <BlogImage
 src="/blogs/ms-dp100/slc/1/guardrails.png"
-alt="automl guardrails"
-caption="automl guardrails"
+alt="AutoML guardrails"
+caption="AutoML guardrails"
 />
 
-after looking at the jobs, i deduced that automl seems to use pytorch (at least by default). \
+After looking at the jobs, I deduced that AutoML seems to use PyTorch (at least by default). \
 \
-what's nice is that the "models + child jobs" section has all the 
+What's nice is that the "Models + Child Jobs" section has all the 
 models that were trained.
 
 <BlogImage
 src="/blogs/ms-dp100/slc/1/models.png"
-alt="automl models"
-caption="automl output models"
+alt="AutoML models"
+caption="AutoML output models"
 />
 
-after this, i can simply select a model, register is and deploy it to an endpoint. pretty sick!
+After this, I can simply select a model, register it and deploy it to an endpoint. Pretty sick!
 
 <br />
 
-## conclusion
-this seems to end the first module (1.1) of the self-learning course.
-this seemed to cover the basics of the workspace and how to use it to train models. \
+## Conclusion
+This seems to end the first module (1.1) of the self-learning course.
+This seemed to cover the basics of the workspace and how to use it to train models. \
 \
-looking at the next few models, it looks like they'll go more in depth with
+Looking at the next few models, it looks like they'll go more in depth with
 connecting data (remote and local), more specific compute targets and how to use
 more custom-made environments. \
 \
-all in all, feeling pretty confident about this course so far.
+All in all, feeling pretty confident about this course so far.
 
 <BlogImage
 src="/blogs/ms-dp100/slc/1/fin.png"
-alt="cat meme, feeling good"
-caption="feelin good"
+alt="Cat meme, feeling good"
+caption="Feelin good"
 />
 
-update (2025-07-27): i am continuing the blog from this point, but i will be making it more general. otherwise,
-im just basically restating the entire module (which is kinda...useless). \
+Update (2025-07-27): I am continuing the blog from this point, but I will be making it more general. Otherwise,
+I'm just basically restating the entire module (which is kinda...useless). \
 \
-while the first submodule covers the more general overview of the stuff that the studio has to offer, the rest of the submodules
+While the first submodule covers the more general overview of the stuff that the studio has to offer, the rest of the submodules
 cover more specific aspects of the workspace. 
 
 <br />
 
-## second module: developer tools
-the second submodule covers developer tools (i.e. the studio, cli, python sdk, etc.) and how to use them to interact with the workspace. 
-it is said that the python sdk is "an ideal tool for data scientists", as it can be used in any python environment. \
+## Second Module: Developer Tools
+The second submodule covers developer tools (i.e. the studio, CLI, Python SDK, etc.) and how to use them to interact with the workspace. 
+It is said that the Python SDK is "an ideal tool for data scientists", as it can be used in any Python environment. \
 \
-when i started using it, i was a bit worried about credentials. however, it was pretty straightforward (thankfully).
+When I started using it, I was a bit worried about credentials. However, it was pretty straightforward (thankfully).
 
-<BlogCode language="python" title="authenticating with the workspace" copy="false">
+<BlogCode language="python" title="Authenticating with the workspace" copy="false">
 {`
 from azure.identity import DefaultAzureCredential
 from azure.ai.ml import MLClient
@@ -422,22 +422,22 @@ ml_client = MLClient(
 
 <br />
 
-## third module: data management
+## Third Module: Data Management
 
-the third submodule goes into data management \
-to start, this included an overview of uniform resource identifiers (uris) and how they are used to access data.
-there are three types of uris that are used in the workspace:
+The third submodule goes into data management \
+To start, this included an overview of uniform resource identifiers (URIs) and how they are used to access data.
+There are three types of URIs that are used in the workspace:
 
 <BlogList>
-<li>http(s) uris - used to access data in the workspace - you may have seen these before!</li>
-<li>abfs(s) uris - used for azure data lake storage (2nd gen)</li>
-<li>azureml uris - used for datastores</li>
+<li>HTTP(S) URIs - used to access data in the workspace - you may have seen these before!</li>
+<li>ABFS(S) URIs - used for Azure Data Lake Storage (2nd gen)</li>
+<li>AzureML URIs - used for datastores</li>
 </BlogList>
 
-creating a datastore is pretty straightforward in the sdk. the mlclient object has a function called `create_or_update()`, and it's used to create any
-azure ml resources (note: you can also use `begin_create_or_update()` to create resources asynchronously).
+Creating a datastore is pretty straightforward in the SDK. The MLClient object has a function called `create_or_update()`, and it's used to create any
+Azure ML resources (Note: you can also use `begin_create_or_update()` to create resources asynchronously).
 
-<BlogCode language="python" title="creating a datastore" copy="false">
+<BlogCode language="python" title="Creating a datastore" copy="false">
 {`
 blob_datastore = AzureBlobDatastore(
     			name = "blob_example",
@@ -452,14 +452,14 @@ ml_client.create_or_update(blob_datastore)
 `}
 </BlogCode>
 
-in these datastores, you can store data assets. these are just files or folders that are stored in the datastore.
-typically, each data asset represents a dataset, but the definition can be pretty abstract. \
+In these datastores, you can store data assets. These are just files or folders that are stored in the datastore.
+Typically, each data asset represents a dataset, but the definition can be pretty abstract. \
 \
-in particular, the course talks about mltables, which are a way to organize and manage tabular data in Azure ML. \
-mltables provide a unified interface for working with data, making it easier to perform operations like filtering, joining, and aggregating data. \
-they also support versioning and lineage tracking, which can be helpful for reproducibility and auditing purposes.
+In particular, the course talks about MLTables, which are a way to organize and manage tabular data in Azure ML. \
+MLTables provide a unified interface for working with data, making it easier to perform operations like filtering, joining, and aggregating data. \
+They also support versioning and lineage tracking, which can be helpful for reproducibility and auditing purposes.
 
-<BlogCode language="python" title="creating a data asset" copy="false">
+<BlogCode language="python" title="Creating a data asset" copy="false">
 {`
 from azure.ai.ml.entities import Data
 from azure.ai.ml.constants import AssetTypes
@@ -478,5 +478,5 @@ ml_client.data.create_or_update(my_data)
 `}
 </BlogCode>
 
-## the last two modules
-the last two modules cover compute management and environment management, respecvtively.
+## The Last Two Modules
+The last two modules cover compute management and environment management, respectively.

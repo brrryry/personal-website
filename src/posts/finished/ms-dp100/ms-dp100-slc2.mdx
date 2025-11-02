@@ -1,27 +1,27 @@
 ---
-title: "ms-dp100 self-learning course: module 2"
+title: "MS-DP100 Self-Learning Course: Module 2"
 date: "2025-07-18"
 updated: "2025-07-27"
-description: "my knowledge base of the microsoft dp-100 self-learning course (module 2)"
+description: "My knowledge base of the Microsoft DP-100 self-learning course (Module 2)"
 tags: ["ms-dp100-series"]
 ---
 
-this is my overview/notes for the second module of the microsoft dp-100 self-learning course. 
+This is my overview/notes for the second module of the Microsoft DP-100 self-learning course. 
 
 <BlogImage
 src="/blogs/ms-dp100/slc/2/module2.png"
-alt="module 2 overview"
-caption="module 2!"
+alt="Module 2 overview"
+caption="Module 2!"
 source="https://learn.microsoft.com/en-us/training/paths/automate-machine-learning-model-selection-azure-machine-learning"
 />
 
-## module 1 - classification models
-the module starts by recommending automl. lol... \
+## Module 1 - Classification Models
+The module starts by recommending AutoML. LOL... \
 \
-it goes over the the typical data proprocessing steps.
-firstly, you need your data asset. then, you can specify it as an input to the task at hand.
+It goes over the the typical data preprocessing steps.
+Firstly, you need your data asset. Then, you can specify it as an input to the task at hand.
 
-<BlogCode language="python" title="setting mltable as input" copy="false">
+<BlogCode language="python" title="Setting MLTable as input" copy="false">
 {`
 from azure.ai.ml.constants import AssetTypes
 from azure.ai.ml import Input
@@ -30,35 +30,35 @@ my_training_data_input = Input(type=AssetTypes.MLTABLE, path="azureml:input-data
 `}
 </BlogCode>
 
-the data also has to be scaled and normalized. these functions and their parameters/definitions may vary.
-apparently, automl does this automatically. pretty cool. \
+The data also has to be scaled and normalized. These functions and their parameters/definitions may vary.
+Apparently, AutoML does this automatically. Pretty cool. \
 \
-there are a bunch of experiments that you can run with automl, including:
+There are a bunch of experiments that you can run with AutoML, including:
 
 <BlogList>
-<li>logistic regression</li>
-<li>light gradient boosting machine (lgbm)</li>
-<li>decision trees</li>
-<li>random forest</li>
-<li>naive bayes</li>
-<li>linear support vector machine (svm)</li>
-<li>xgboost</li>
+<li>Logistic Regression</li>
+<li>Light Gradient Boosting Machine (LGBM)</li>
+<li>Decision Trees</li>
+<li>Random Forest</li>
+<li>Naive Bayes</li>
+<li>Linear Support Vector Machine (SVM)</li>
+<li>XGBoost</li>
 </BlogList>
 
 <BlogImage
 src="/blogs/ms-dp100/slc/2/supported.png"
-alt="supported algorithms in automl"
-caption="yeah...quite a few."
+alt="Supported algorithms in AutoML"
+caption="Yeah...quite a few."
 source="https://learn.microsoft.com/en-us/azure/machine-learning/how-to-configure-auto-train?view=azureml-api-2&tabs=python#supported-algorithms?azure-portal=true"
 />
 
-"by default, automl will randomly select fvrom the full range of algorithms for the specified task." \
-it seems like you can block some algorithms if you know that they won't work for your data. that's definitely pretty
+"By default, AutoML will randomly select from the full range of algorithms for the specified task." \
+It seems like you can block some algorithms if you know that they won't work for your data. That's definitely pretty
 useful in terms of both efficiency and policy adherence. \
 \
-creating an automl experiment in the sdk makes sense!
+Creating an AutoML experiment in the SDK makes sense!
 
-<BlogCode language="python" title="creating an automl experiment" copy="false">
+<BlogCode language="python" title="Creating an AutoML experiment" copy="false">
 {`
 from azure.ai.ml import automl
 
@@ -75,11 +75,11 @@ classification_job = automl.classification(
 `}
 </BlogCode>
 
-the primary metric is the metric that will be optimized. in the case of the code above, it's accuracy.
-however, some tasks may have different primary metrics (the most popular alternative i have seen is precision).
-the full list of primary metrics can be found in <a href="https://learn.microsoft.com/en-us/azure/machine-learning/how-to-understand-automated-ml?view=azureml-api-2" target="_blank">the documentation.</a> \
+The primary metric is the metric that will be optimized. In the case of the code above, it's accuracy.
+However, some tasks may have different primary metrics (the most popular alternative I have seen is precision).
+The full list of primary metrics can be found in <a href="https://learn.microsoft.com/en-us/azure/machine-learning/how-to-understand-automated-ml?view=azureml-api-2" target="_blank">the documentation.</a> \
 \
-limits can also be set for the experiment.
+Limits can also be set for the experiment.
 
 <BlogList>
 <li>`timeout_minutes` - the maximum time that the experiment can run for.</li>
@@ -88,12 +88,12 @@ limits can also be set for the experiment.
 <li>`enable_early_termination` - whether to enable early termination of trials.</li>
 </BlogList>
 
-trials can also be concurrently run, and the respective limit can be set with the `max_concurrent_trials` parameter. \
+Trials can also be concurrently run, and the respective limit can be set with the `max_concurrent_trials` parameter. \
 \
-starting the monitoring the job is also easy in the python sdk. well, to be particular, you can't monitor the 
-job directly in the sdk, but you can reference a link to the job in the azure portal.
+Starting the monitoring the job is also easy in the Python SDK. Well, to be particular, you can't monitor the 
+job directly in the SDK, but you can reference a link to the job in the Azure portal.
 
-<BlogCode language="python" title="monitoring the automl job" copy="false">
+<BlogCode language="python" title="Monitoring the AutoML job" copy="false">
 {`
 returned_job = ml_client.jobs.create_or_update(
     classification_job
@@ -104,37 +104,37 @@ print("Monitor your job at", aml_url)
 `}
 </BlogCode>
 
-what's cool about automl is that guardrails can be automatically applied to the job. 
-some examples of guardrails could be:
+What's cool about AutoML is that guardrails can be automatically applied to the job. 
+Some examples of guardrails could be:
 
 <BlogList>
-<li>**class balancing detection** - automl can detect if the classes in the training data are imbalanced and apply techniques to balance them.</li>
-<li>**missing feature value detection** - automl can detect if there are missing values in the features and apply techniques to handle them.</li>
-<li>**high cardinality feature detection** - automl can detect if there are features with high cardinality (i.e. a large number of unique values) and apply techniques to handle them.</li>
+<li>**Class balancing detection** - AutoML can detect if the classes in the training data are imbalanced and apply techniques to balance them.</li>
+<li>**Missing feature value detection** - AutoML can detect if there are missing values in the features and apply techniques to handle them.</li>
+<li>**High cardinality feature detection** - AutoML can detect if there are features with high cardinality (i.e. a large number of unique values) and apply techniques to handle them.</li>
 </BlogList>
 
-automl can possibly fix these issues on their own (`done` status), or it can just detect them
+AutoML can possibly fix these issues on their own (`done` status), or it can just detect them
 if they are not fixable (`alerted` status). \
 \
-all of the models that are trained in the automl job can be seen in the job's "models" tab in the azure portal. 
-these models will have their metrics in the overview. pretty sick!
+All of the models that are trained in the AutoML job can be seen in the job's "Models" tab in the Azure portal. 
+These models will have their metrics in the overview. Pretty sick!
 
 <br />
 
-## module 2 - track model training in jupyter notebooks
-so...you know how i said that you can't monitor the automl job directly in the sdk? \
-well, you can actually track the job in a jupyter notebook. lol i lied ahahaha 
+## Module 2 - Track Model Training in Jupyter Notebooks
+So...you know how I said that you can't monitor the AutoML job directly in the SDK? \
+Well, you can actually track the job in a Jupyter notebook. LOL I lied ahahaha 
 
-<BlogCode language="python" title="tracking the automl job in a jupyter notebook" copy="false">
+<BlogCode language="python" title="Tracking the AutoML job in a Jupyter notebook" copy="false">
 {`
 mlflow.set_tracking_uri = "MLFLOW-TRACKING-URI"
 `}
 </BlogCode>
 
-using the `mlflow` library, you can set the tracking uri to the mlflow tracking server. 
-from there, you can track the job and metrics in the notebook.
+Using the `mlflow` library, you can set the tracking URI to the MLflow tracking server. 
+From there, you can track the job and metrics in the notebook.
 
-<BlogCode language="python" title="tracking the automl job in a jupyter notebook" copy="false">
+<BlogCode language="python" title="Tracking the AutoML job in a Jupyter notebook" copy="false">
 {`
 from xgboost import XGBClassifier
 
@@ -146,24 +146,23 @@ with mlflow.start_run():
 `}
 </BlogCode>
 
-custom logging is also possible!
+Custom logging is also possible!
 
-<BlogCode language="python" title="custom logging in a jupyter notebook" copy="false">
+<BlogCode language="python" title="Custom logging in a Jupyter notebook" copy="false">
 {`
 mlflow.log_metric("accuracy", accuracy)
 `}
 </BlogCode>
 
-logged metrics can all be found in the studio if done correctly.
+Logged metrics can all be found in the studio if done correctly.
 <br />
 
-## conclusion
-all in all, this module was pretty useful. the first module was more of a review in terms of the 
-math, but learning about automl and logging was pretty cool.
+## Conclusion
+All in all, this module was pretty useful. The first module was more of a review in terms of the 
+math, but learning about AutoML and logging was pretty cool.
 
 <BlogImage
 src="/blogs/ms-dp100/slc/2/fin.jpg"
-alt="a picture of 34th street in new york city."
-caption="fin. a picture of 34th street at night :)"
+alt="A picture of 34th Street in New York City."
+caption="Fin. A picture of 34th Street at night :)"
 />
-

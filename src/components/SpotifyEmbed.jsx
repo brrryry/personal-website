@@ -39,11 +39,11 @@ export function SpotifyEmbed() {
     return (
       <>
         <p>
-          listening to:{" "}
+          Listening to:{" "}
           <a href={song.songUrl} target="_blank" rel="noreferrer">
             {song.title.toLowerCase()} ({song.artist.toLowerCase()})
           </a>{" "}
-          on spotify!
+          on Spotify!
         </p>
       </>
     );
@@ -51,7 +51,7 @@ export function SpotifyEmbed() {
 
   return (
     <>
-      <p>not listening to spotify rn</p>
+      <p>Not listening to music right now...</p>
     </>
   );
 }

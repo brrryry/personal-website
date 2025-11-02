@@ -1,92 +1,92 @@
 ---
-title: "gimme my mail: self-hosted email server"
+title: "Gimme My Mail: Self-Hosted Email Server"
 date: "2025-10-27"
 updated: "2025-10-27"
-description: "building a self-hosted email server with a smtp relay!"
+description: "Building a self-hosted email server with a SMTP relay!"
 tags: ["coding", "career"]
 ---
 
-hi! hasnt been too long since my last post, but i made something cool that i wanted to share. \
+Hi! It hasn't been too long since my last post, but I made something cool that I wanted to share. \
 \
-recently, i have been working on self-hosting my email with a custom domain.
+Recently, I have been working on self-hosting my email with a custom domain.
 
 <br />
 
-## why self-hosted email?
-currently, my email is kinda long and clunky. because of this, i wanted to use a custom domain for my email. \
+## Why Self-Hosted Email?
+Currently, my email is kinda long and clunky. Because of this, I wanted to use a custom domain for my email. \
 \
-my domain provider (hostway) provides email hosting services, but they are kinda pricey for larger mailboxes.
-at the same time, this would be a great opportunity to learn more about email servers!
-for these two reasons, i decided that i would try to make my own email server. \
+My domain provider (Hostway) provides email hosting services, but they are kinda pricey for larger mailboxes.
+At the same time, this would be a great opportunity to learn more about email servers!
+For these two reasons, I decided that I would try to make my own email server. \
 \
-while these reasons are pretty nice (+ theres also privacy benefits), i will probably not actually
-start using this email server for my daily email until i am sure that it is reliable and secure enough.
+While these reasons are pretty nice (+ there's also privacy benefits), I will probably not actually
+start using this email server for my daily email until I am sure that it is reliable and secure enough.
 
 <br />
 
-## email servers: smtp and imap/pop3
-email turns out to be a bit complicated. \
+## Email Servers: SMTP and IMAP/POP3
+Email turns out to be a bit complicated. \
 \
-to send an email, you use a protocol called **"simple mail transfer protocol" (smtp)**. \
+To send an email, you use a protocol called **"Simple Mail Transfer Protocol" (SMTP)**. \
 \
-smtp is used to send your email to a mail server. this server will do a dns translation to turn 
-domain names into ip addresses. for example, if i am sending an email to {"\"bruh@domain.com\""},
-the smtp server will look up the mail exchange (mx) record for domain.com to find out which server
+SMTP is used to send your email to a mail server. This server will do a DNS translation to turn 
+domain names into IP addresses. For example, if I am sending an email to {"\"bruh@domain.com\""},
+the SMTP server will look up the mail exchange (MX) record for domain.com to find out which server
 handles email for that domain. \
 \
-from here, the email is relayed from server to server until it reaches the destination mail server.
-once it reaches the destination mail server, the email sits there. \
+From here, the email is relayed from server to server until it reaches the destination mail server.
+Once it reaches the destination mail server, the email sits there. \
 \
-when a client (like outlook, gmail, etc.) wants to check mail, it uses either:
+When a client (like Outlook, Gmail, etc.) wants to check mail, it uses either:
 
 <BlogList>
-    <li>**"internet message access protocol" (imap)** - view email on the server</li>
-    <li>**"post office protocol version 3" (pop3)** - download (and delete) email from server</li>  
+    <li>**"Internet Message Access Protocol" (IMAP)** - view email on the server</li>
+    <li>**"Post Office Protocol Version 3" (POP3)** - download (and delete) email from server</li>  
 </BlogList>
 
-imap is generally used more since it allows you to view email on multiple devices without downloading it.
+IMAP is generally used more since it allows you to view email on multiple devices without downloading it.
 
 <BlogImage
 src="/blogs/selfhosted-mailserver/ipxo.jpg"
-alt="an illustration of how email servers work"
-caption="a nice image of email server processing"
+alt="An illustration of how email servers work"
+caption="A nice image of email server processing"
 source="https://www.ipxo.com/blog/what-is-an-email-server/"
 />
 
-now with these protocols, theres a couple terms that you should know:
+Now with these protocols, there's a couple terms that you should know:
 
 <BlogList>
-    <li>**mail user agent (mua)** - the email client that you use to read and send email (eg. outlook, gmail, thunderbird)</li>
-    <li>**mail transfer agent (mta)** - the smtp server that relays email from one server to another (eg. postfix, exim)</li>
-    <li>**mail delivery agent (mda)** - the server that stores and delivers email to the recipient (eg. dovecot, courier)</li>
+    <li>**Mail User Agent (MUA)** - the email client that you use to read and send email (eg. Outlook, Gmail, Thunderbird)</li>
+    <li>**Mail Transfer Agent (MTA)** - the SMTP server that relays email from one server to another (eg. Postfix, Exim)</li>
+    <li>**Mail Delivery Agent (MDA)** - the server that stores and delivers email to the recipient (eg. Dovecot, Courier)</li>
 </BlogList>
 
-muas will use smtp (mta) to send mail, and imap/pop3 (mda) to receive mail.
+MUAs will use SMTP (MTA) to send mail, and IMAP/POP3 (MDA) to receive mail.
 
-### what if you send an email that has cc or bcc?
-cc (carbon copy) and bcc (blind carbon copy) are just additional fields in the email header. \
+### What if you send an email that has CC or BCC?
+CC (Carbon Copy) and BCC (Blind Carbon Copy) are just additional fields in the email header. \
 \
-when you send an email with cc or bcc, the smtp server will send copies of the email to the additional recipients specified in those fields. \
+When you send an email with CC or BCC, the SMTP server will send copies of the email to the additional recipients specified in those fields. \
 \
-the process of relaying the email to the destination mail servers is the same as with regular emails
+The process of relaying the email to the destination mail servers is the same as with regular emails.
 
 <br />
 
-## setting up my own email server
-in order to set up my own email server, i did a few things! 
+## Setting Up My Own Email Server
+In order to set up my own email server, I did a few things! 
 
 <br />
 
-### 1. open ports on my router
-this step is pretty straightforward, i opened ports 25 (smtp), 587 (smtp with tls) and 993 (imap with ssl/tls) on my router to the internal ip address of my nas.
+### 1. Open Ports on My Router
+This step is pretty straightforward, I opened ports 25 (SMTP), 587 (SMTP with TLS) and 993 (IMAP with SSL/TLS) on my router to the internal IP address of my NAS.
 
 <br />
-### 2. set up a mailserver
-i used a docker container called <a href="https://hub.docker.com/r/mailserver/docker-mailserver/" target="_blank" rel="noopener noreferrer">docker-mailserver</a> (creative name) to set up my mail server. \
+### 2. Set Up a Mailserver
+I used a Docker container called <a href="https://hub.docker.com/r/mailserver/docker-mailserver/" target="_blank" rel="noopener noreferrer">docker-mailserver</a> (creative name) to set up my mail server. \
 \
-this container had a bunch of features like spam filtering, antivirus and postfix support (i will get into postfix later). \
+This container had a bunch of features like spam filtering, antivirus and Postfix support (I will get into Postfix later). \
 \
-they also have their own mda (dovecot) built in! 
+They also have their own MDA (Dovecot) built in! 
 
 <BlogCode language="yml" caption="docker-compose.yml for mailserver">
 {`
@@ -114,11 +114,10 @@ services:
 `}
 </BlogCode>
 
-the ports are mapped to the host machine, and the volumes are used to store mail data, mail state, configuration files and ssl certificates. \
+The ports are mapped to the host machine, and the volumes are used to store mail data, mail state, configuration files and SSL certificates. \
 \
-but...what is the ``mailserver.env`` file? well, its the file that contains environment variables.
-theres some change sthat i had to make to it:
-
+But...what is the ``mailserver.env`` file? Well, it's the file that contains environment variables.
+There's some changes that I had to make to it:
 
 <BlogCode language="env" caption="mailserver.env changes" copy="false">
 {`
@@ -133,11 +132,11 @@ SSL_KEY_PATH=/etc/docker-mailserver/ssl/privkey1.pem
 `}
 </BlogCode>
 
-as a note, the ssl certificates were created using an nginx proxy manager container.
-this container runs on a different machine, and i just copied the ssl certificates over to my mailserver.
-however, i am - at the moment - still trying to find an easy way to automate ssl renewal. \
+As a note, the SSL certificates were created using an Nginx Proxy Manager container.
+This container runs on a different machine, and I just copied the SSL certificates over to my mailserver.
+However, I am - at the moment - still trying to find an easy way to automate SSL renewal. \
 \
-after setting up the container, i created a mailbox for myself using the following command:
+After setting up the container, I created a mailbox for myself using the following command:
 
 <BlogCode language="bash" caption="create mailbox command" copy="false">
 {`
@@ -145,22 +144,22 @@ setup email add me@bryanchan.org <password>
 `}
 </BlogCode>
 
-### 3. add dns records
-in order for email to be sent and received properly, i had to add some dns records to my domain. but...why? \
+### 3. Add DNS Records
+In order for email to be sent and received properly, I had to add some DNS records to my domain. But...why? \
 \
-there are a few protocols that help with email delivery and preventing spam. these protocols are:
+There are a few protocols that help with email delivery and preventing spam. These protocols are:
 
 <BlogList>
-    <li>**"sender policy framework" (spf)** - says which mail servers are allowed to send email on behalf of your domain</li>
-    <li>**"domainkeys identified mail" (dkim)** - adds a signature to verify that the email was sent by an authorized server</li>
-    <li>**"domain-based message authentication, reporting & conformance" (dmarc)** - uses spf and dkim to determine if an email is legitimate and provides instructions on how to handle emails that fail these checks</li>
+    <li>**"Sender Policy Framework" (SPF)** - says which mail servers are allowed to send email on behalf of your domain</li>
+    <li>**"DomainKeys Identified Mail" (DKIM)** - adds a signature to verify that the email was sent by an authorized server</li>
+    <li>**"Domain-based Message Authentication, Reporting & Conformance" (DMARC)** - uses SPF and DKIM to determine if an email is legitimate and provides instructions on how to handle emails that fail these checks</li>
 </BlogList>
 
-in order to reliably send my mail, i need spf and dkim records to match correctly. otherwise, my emails might get marked as spam or rejected. \
+In order to reliably send my mail, I need SPF and DKIM records to match correctly. Otherwise, my emails might get marked as spam or rejected. \
 \
-in order to do this, i need to change dns records.
+In order to do this, I need to change DNS records.
 
-<BlogCode language="txt" caption="dns records for bryanchan.org" copy="false">
+<BlogCode language="txt" caption="DNS records for bryanchan.org" copy="false">
 {`
 ; A record
 mail.bryanchan.org <WAN IP> ; mail server
@@ -176,9 +175,9 @@ bryanchan.org. MX 10 mail.bryanchan.org. ; mail exchanger
 `}
 </BlogCode>
 
-the a record points to my mail server, and the mx record tells other mail servers where to send email for my domain. \
+The A record points to my mail server, and the MX record tells other mail servers where to send email for my domain. \
 \
-so in theory, i should be able to send and receive email now...right?
+So in theory, I should be able to send and receive email now...right?
 
 <BlogCode language="txt" caption="mail logs part 1" copy="false">
 {`
@@ -186,46 +185,46 @@ connect to alt1.gmail-smtp-in.l.google.com timed out
 `}
 </BlogCode>
 
-well...shoot. \
+Well...shoot. \
 \
-looks like my mail server is having trouble connecting to gmail's smtp server.
+Looks like my mail server is having trouble connecting to Gmail's SMTP server.
 
 <br />
 
-### 4. realizing the problem: port 25 blocking
-turns out...a lot of people had the same idea as me a while ago and started self-hosting email servers.
-however, they used this to spam other people. \
+### 4. Realizing the Problem: Port 25 Blocking
+Turns out...a lot of people had the same idea as me a while ago and started self-hosting email servers.
+However, they used this to spam other people. \
 \
-as a result, most internet service providers (isps) block port 25 traffic - especially on residential connections - to prevent spam. \
+As a result, most Internet Service Providers (ISPs) block port 25 traffic - especially on residential connections - to prevent spam. \
 \
-that is why my mail server couldnt connect to gmails smtp server. \
+That is why my mail server couldn't connect to Gmail's SMTP server. \
 \
-so...what can i possibly do about this? this is where the importance of mail transit servers come in.
-to solve this problem, i need a **relay**. 
+So...what can I possibly do about this? This is where the importance of mail transit servers come in.
+To solve this problem, I need a **relay**. 
 
 <br />
 
-### 5. setting up a smtp relay
-a smtp relay is a server that will accept mail from my mail server and then forward it to the destination mail server. \
+### 5. Setting Up a SMTP Relay
+A SMTP relay is a server that will accept mail from my mail server and then forward it to the destination mail server. \
 \
-the nice part is that i can use a different port (like 587) to send mail to the relay, and since the relay is on a different network
-(that is usually not blocked by isps), it can then forward the mail to the destination mail server on port 25. \
+The nice part is that I can use a different port (like 587) to send mail to the relay, and since the relay is on a different network
+(that is usually not blocked by ISPs), it can then forward the mail to the destination mail server on port 25. \
 \
-in order to do this, i bought a cheap virtual private server (vps) for 7 bucks from <a href="https://www.hostinger.com/" target="_blank" rel="noopener noreferrer">hostinger</a>.
-i plan to change this to a more...ethical vps provider later, but this will do for now. \
+In order to do this, I bought a cheap Virtual Private Server (VPS) for 7 bucks from <a href="https://www.hostinger.com/" target="_blank" rel="noopener noreferrer">Hostinger</a>.
+I plan to change this to a more...ethical VPS provider later, but this will do for now. \
 \
-this vps will serve as my smtp relay. (i can also use it for other stuff later too!) \
+This VPS will serve as my SMTP relay. (I can also use it for other stuff later too!) \
 \
-i setup the vps to have a standard ubuntu 22.04 installation, and i installed postfix.
+I setup the VPS to have a standard Ubuntu 22.04 installation, and I installed Postfix.
 
-<BlogCode language="bash" caption="postfix installation commands">
+<BlogCode language="bash" caption="Postfix installation commands">
 {`
 sudo apt update
 sudo apt install postfix
 `}
 </BlogCode>
 
-after installing it, i had to configure it to accept mail from my server and forward it.
+After installing it, I had to configure it to accept mail from my server and forward it.
 
 <BlogCode language="conf" caption="/etc/postfix/main.cf changes" copy="false">
 {`
@@ -241,62 +240,62 @@ disable_vrfy_command = yes
 `}
 </BlogCode>
 
-the important part is that i changed the relayhost to be my server and allowed mail.bryanchan.org in my networks. \
+The important part is that I changed the relayhost to be my server and allowed mail.bryanchan.org in my networks. \
 \
-i changed the hostname of my vps to be ``smtp.bryanchan.org`` so that it matches the spf record that i set earlier. \
-after this, i had to restart postfix!
+I changed the hostname of my VPS to be ``smtp.bryanchan.org`` so that it matches the SPF record that I set earlier. \
+After this, I had to restart Postfix!
 
-<BlogCode language="bash" caption="restart postfix command">
+<BlogCode language="bash" caption="restart Postfix command">
 {`
 sudo systemctl restart postfix
 `}
 </BlogCode>
 
-### 6. testing it out! (part 2)
-i quickly installed thunderbird on my computer to test it out. \
+### 6. Testing It Out! (Part 2)
+I quickly installed Thunderbird on my computer to test it out. \
 \
-connecting my email worked fine! i was able to access the inbox, and i was able to receive mail! however...
+Connecting my email worked fine! I was able to access the inbox, and I was able to receive mail! However...
 
 <BlogImage
 src = "/blogs/selfhosted-mailserver/test1.png"
-alt = "email got put in spam folder"
-caption = "email got sent to spam folder :("
+alt = "Email got put in spam folder"
+caption = "Email got sent to spam folder :("
 />
 
-i dug a bit deeper to find out why! gmail actually gives you the ability to view the original email along with the tests that it ran on it.
-here were the results:
+I dug a bit deeper to find out why! Gmail actually gives you the ability to view the original email along with the tests that it ran on it.
+Here were the results:
 
 <BlogImage
 src = "/blogs/selfhosted-mailserver/spffail.png"
-alt = "gmail spf fail"
-caption = "original email headers"
+alt = "Gmail SPF fail"
+caption = "Original email headers"
 />
 
-turns out my spf was "softfailing". this is because my spf record did not include my smtp relay.
-to fix this, i included the smtp relay in my spf record. on top of this, i made a spf record for the smtp relay too.
+Turns out my SPF was "softfailing". This is because my SPF record did not include my SMTP relay.
+To fix this, I included the SMTP relay in my SPF record. On top of this, I made a SPF record for the SMTP relay too.
 
-<BlogCode language="txt" caption="new spf record" copy="false">
+<BlogCode language="txt" caption="new SPF record" copy="false">
 {`
 ; SPF record for smtp.bryanchan.org
 smtp.bryanchan.org v=spf1 ip4:<VPS_IP_ADDRESS> ~all
 `}
 </BlogCode>
 
-after waiting for dns propagation, i sent another email...
+After waiting for DNS propagation, I sent another email...
 
 <BlogImage
 src="/blogs/selfhosted-mailserver/test2.png"
-alt="email in inbox"
-caption="email successfully delivered to inbox!"
+alt="Email in inbox"
+caption="Email successfully delivered to inbox!"
 />
 
-amazing! email works! 
+Amazing! Email works! 
 
 <br />
 
-### 7. whats next?
-well, i tried sending emails to other providers. in particular, i tried sending emails to my school email.
-however, the emails got put into spam. some of the important log parts are shown below.
+### 7. What's Next?
+Well, I tried sending emails to other providers. In particular, I tried sending emails to my school email.
+However, the emails got put into spam. Some of the important log parts are shown below.
 
 <BlogCode language="txt" caption="mail logs part 2" copy="false">
 {`
@@ -308,37 +307,35 @@ CAT:SPM;SFS:(13230040)(43540500003);DIR:INB;
 `}
 </BlogCode>
 
-the important part is the scl value. scl stands for "spam confidence level", and it ranges from -1 to 9. \
+The important part is the SCL value. SCL stands for "Spam Confidence Level", and it ranges from -1 to 9. \
 \
-unfortunately, my emails had an scl of 5, meaning that they were likely to be spam. this could be because of a few things:
+Unfortunately, my emails had an SCL of 5, meaning that they were likely to be spam. This could be because of a few things:
 
 <BlogList>
-<li>content of the email is spammy</li>
-<li>subject of the email is spammy</li>
-<li>ip address of the smtp relay is blacklisted/not reputable</li>
+<li>Content of the email is spammy</li>
+<li>Subject of the email is spammy</li>
+<li>IP address of the SMTP relay is blacklisted/not reputable</li>
 </BlogList>
 
-i think that the last option is the most probable one. since i havent been sending emails, i probably have a more neutral - and thus less reputable - ip address. \
+I think that the last option is the most probable one. Since I haven't been sending emails, I probably have a more neutral - and thus less reputable - IP address. \
 \
-to fix this, i plan to send more emails over time to build up a better reputation.
+To fix this, I plan to send more emails over time to build up a better reputation.
 
 <br />
 
-## conclusion
-wrapping things up, i dont intend to use this as a daily email. however, i would like to have a mail server status of some sort running
-on my website. im not sure how feasible this is at the moment, but i would like to try it in the future. \
+## Conclusion
+Wrapping things up, I don't intend to use this as a daily email. However, I would like to have a mail server status of some sort running
+on my website. I'm not sure how feasible this is at the moment, but I would like to try it in the future. \
 \
-next stop?
+Next stop?
 
 <BlogList>
-<li>visitor stats?</li>
-<li>uptime monitoring?</li>
-<li>job application experience?</li>
-<li>adding gpg signing to my emails</li>
+<li>Visitor stats?</li>
+<li>Uptime monitoring?</li>
+<li>Job application experience?</li>
+<li>Adding GPG signing to my emails</li>
 </BlogList>
 
-not sure yet. anyways, thanks for reading for now! see you soon :) \
+Not sure yet. Anyways, thanks for reading for now! See you soon :) \
 \
-(as a note: this post will likely be edited quite a bit within the next few days. its more of a draft than a final version!)
-
-
+(As a note: this post will likely be edited quite a bit within the next few days. It's more of a draft than a final version!)

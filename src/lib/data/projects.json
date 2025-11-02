@@ -1,56 +1,56 @@
 [
   {
     "id": "cat-or-car",
-    "title": "cat or car?",
+    "title": "Cat or Car?",
     "url": "/projects/cat-or-car",
     "external": false,
-    "description": "this personal project was meant to apply my small bit of knowledge in machine learning in preperation for my [cs559 course](https://web.stevens.edu/catalog/archive/2023-2024/en/catalog/academic-catalog/courses/cs-computer-science/500/cs-559.html). it uses a tensorflow.js model to predict whether an image is a cat or a car.",
+    "description": "A small neural net (personal project) that classifies images as a cat or a car. Built with Tensorflow.",
     "blog": "/blog/cat-or-car",
     "status": "complete"
   },
   {
     "id": "rov-plus-plus-survey",
-    "title": "a survey of rov++: we may need another napkin",
+    "title": "A Survey of ROV++: We May Need Another Napkin",
     "url": "https://www.caecommunity.org/cop-cyber-research/cae-r-research-symposium/2024-cae-r-cop-research-symposium",
     "external": true,
-    "description": "did a little research with the [insure+e program](https://www.caecommunity.org/initiatives/initiative-insure) to create a poster/paper on the security of border gateway protocol, rov++ and rpki infrastructure.",
+    "description": "A poster created with the [insure+e program](https://www.caecommunity.org/initiatives/initiative-insure) on the security of BGP, RPKI/ROV and ROV++.",
     "blog": "/blog/insure-2024",
     "status": "complete"
   },
   {
     "id": "portfolio-website",
-    "title": "portfolio website",
-    "description": "youre literally looking at it...but...i made this website with nextjs in order to hone my web development skills and to have a place to put all my projects. i also have some blogs about it!",
+    "title": "bryanchan.org",
+    "description": "A Nextjs-based portfolio website (you're looking at it!).",
     "github": "https://github.com/brrryry/personal-website",
     "blog": "/blog?tag=portfolio-dev",
     "status": "maintained"
   },
   {
     "id": "osu-beatmap-generator",
-    "title": "osu-beatmap-generator",
-    "description": "this personal project is a collaboration with [Dhruv Prasanna](https://github.com/21dhruvp) as we go through a machine learning project related to a video game we both enjoy. the goal is to take any song and generate an osu beatmap with manually inputted difficulty stats.",
+    "title": "Osu Beatmap Generator",
+    "description": "A LSTM model that generates osu beatmaps from MP3 files. Built with Pytorch.",
     "github": "https://github.com/brrryry/osu-beatmap-generator",
     "status": "building"
   },
   {
     "id": "brew-review",
-    "title": "brew review",
-    "description": "this was a cs554 final project. we used redis, firebase/fireauth and nextjs to make a basic website to review coffee shops.",
+    "title": "Brew Review",
+    "description": "(CS554 final project) A website built with Nextjs and Firebase that allows users to review coffee shops.",
     "github": "https://github.com/Dedicated-RAM/brewreview",
     "status": "complete"
   },
   {
     "id": "goodminton",
-    "title": "goodminton",
+    "title": "Goodminton",
     "github": "https://github.com/JasonQiu21/goodminton",
-    "description": "this was a cs546 final project. we used handlebars and an expressjs backend to create a static reservation and tournament site for our collegiate badminton club.",
+    "description": "(CS546 final project) A reservation/tournament site for our badminton club. Built with Handlebars.",
     "status": "complete"
   },
   {
     "id": "discord-bot",
-    "title": "discord bot",
+    "title": "Discord Bot",
     "github": "https://github.com/brrryry/discord-bot",
-    "description": "this was a project made with discord.js. it was made for a twitch server that i ran! it has a moderation system, a levelling system, and some rank commands using the brawlhalla api.",
+    "description": "A bot made with DiscordJS that has a moderation system, a levelling system, and a mini-Brawlhalla API.",
     "status": "deprecated"
   }
 ]

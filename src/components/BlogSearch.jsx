@@ -241,7 +241,7 @@ export default function BlogSearch({ posts = [] }) {
           // animate size changes (height/width) via CSS transitions.
           // use a conservative maxHeight based on item count so height changes animate smoothly.
           <div
-            className="space-y-5 md:w-4/5"
+            className="space-y-5"
             style={{
               transition:
                 "max-height 300ms ease, width 300ms ease, height 300ms ease",
