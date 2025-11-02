@@ -5,7 +5,12 @@ import { getSortedPostsData } from "@/lib/posts";
 
 export default function Home() {
   const allPostsData = getSortedPostsData("", false);
-  const recentPosts = allPostsData.slice(0, 4).map(({ data }) => data);
+  const recentPosts = allPostsData.slice(0, 4).map((post) => {
+    return {
+      id: post.id,
+      ...post.data,
+    };
+  });
 
   return (
     <div className="space-y-5 max-w-6xl justify-center mx-auto">
