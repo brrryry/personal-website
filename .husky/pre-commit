@@ -3,4 +3,5 @@
 npm run lint
 npm run format
 
-git add -A .
+# Re-add only files that were staged before running the hook
+git diff --cached --name-only -z | xargs -0 git add --
