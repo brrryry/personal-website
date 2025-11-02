@@ -1,14 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useSession } from "./SessionContext";
+import ThemeSwitcher from "@/app/ThemeSwitcher";
+import { useTheme } from "next-themes";
 
 const Navbar = () => {
   const { session, loading, logout } = useSession();
+  const [mounted, setMounted] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname() || "";
+  const { theme, resolvedTheme } = useTheme();
+
+  useEffect(() => {
+    // avoid hydration mismatch with next-themes
+    setMounted(true);
+  }, []);
+
+  const currentTheme = mounted
+    ? theme === "system"
+      ? resolvedTheme
+      : theme
+    : "light";
 
   const handleLogout = async (event) => {
     event.preventDefault();
@@ -25,27 +40,39 @@ const Navbar = () => {
   };
 
   const hoverClasses =
-    "transition-colors duration-200 ease-in-out hover:text-white cursor-pointer";
+    "transition-colors duration-200 ease-in-out cursor-pointer" +
+    (currentTheme === "dark" ? " hover:text-white" : " hover:text-purple-900");
 
   const getLinkClasses = (href, skipActive = false) => {
     // Determine active: for root require exact match, otherwise allow startsWith so nested routes still highlight
     const active =
       !skipActive &&
       (href === "/" ? pathname === "/" : pathname.startsWith(href));
-    return `text-2xl ${active ? "text-white" : "text-purple-200"} font-bold ${hoverClasses}`;
+
+    // theme-aware colors
+    const activeColor =
+      currentTheme === "dark" ? "text-white" : "text-gray-900";
+    const inactiveColor =
+      currentTheme === "dark" ? "text-purple-200" : "text-purple-700";
+
+    return `text-2xl ${active ? activeColor : inactiveColor} font-bold ${hoverClasses}`;
   };
+
+  // optional: adjust mobile toggle button color by theme
+  const mobileButtonClasses =
+    currentTheme === "dark"
+      ? "md:hidden text-purple-200 text-xl focus:outline-none bg-purple-700/20 p-2 rounded"
+      : "md:hidden text-purple-700 text-xl focus:outline-none bg-purple-200/30 p-2 rounded";
 
   return (
     <>
       <nav className="bg-transparent p-0 h-auto md:h-32 flex flex-col md:flex-row justify-between items-start md:items-center">
-        <div className="flex justify-between items-center w-full py-4 md:py-0 md:w-auto">
+        <div className="flex justify-between items-center w-full py-4 md:py-0 md:w-auto space-x-4">
           <Link href="/" className="flex items-center p-0 mx-0">
             <p className={getLinkClasses("/")}>bryan chan.</p>
           </Link>
-          <button
-            onClick={toggleMobileMenu}
-            className="md:hidden text-purple-200 text-xl focus:outline-none bg-purple-500/50"
-          >
+          <ThemeSwitcher />
+          <button onClick={toggleMobileMenu} className={mobileButtonClasses}>
             ☰
           </button>
         </div>
