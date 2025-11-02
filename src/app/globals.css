@@ -14,7 +14,7 @@ html[data-theme="dark"] {
   --muted: #d8bfd8; /* light purple for headers/emphasis */
   --link: #9c7bde; /* medium purple links */
   --primary: #6a0dad; /* primary purple */
-  --primary-hover: #9370db;
+  --primary-hover: #d8bfd8;
   --border: #6a0dad;
   --code-bg: #282c34;
   --on-primary: #ffffff;
@@ -33,7 +33,7 @@ html[data-theme="light"] {
   --muted: #6a0dad; /* use primary purple for emphasis */
   --link: #6a0dad; /* purple links */
   --primary: #6a0dad; /* primary purple */
-  --primary-hover: #7b4fc1;
+  --primary-hover: #000000;
   --border: #6a0dad;
   --code-bg: #f0f0f2;
   --on-primary: #ffffff;
@@ -161,7 +161,7 @@ a {
 }
 
 a:hover {
-  color: var(--muted);
+  color: var(--primary-hover);
 }
 
 figure {
