@@ -118,9 +118,9 @@ export default function Home() {
           </p>
           <p>
             I&apos;m passionate about research and development in{" "}
-            <mark className="text-purple-400 bg-transparent">
+            <span className="font-semibold">
               statistical learning, artificial intelligence and optimization
-            </mark>
+            </span>
             . Recently, I have worked on projects involving security of
             Retrieval Augmented Generation (RAG) systems and trajectory
             prediction of unmanned aerial vehicles (UAVs) using neural nets and
