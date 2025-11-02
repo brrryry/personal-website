@@ -69,7 +69,7 @@ export function SpotifyEmbed() {
 
   return (
     <>
-      <p className={activeColor}>not listening to spotify rn</p>
+      <p className={activeColor}>Not listening to music right now!</p>
     </>
   );
 }
