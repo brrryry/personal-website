@@ -131,6 +131,7 @@ export default function AboutPage() {
       <hr />
 
       <div className="projects space-y-2">
+        <span id="projects" />
         <h2 className="text-2xl font-bold underline">Projects</h2>
         <div className="space-y-10">
           {projects.map((p) => (

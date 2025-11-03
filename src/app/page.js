@@ -125,12 +125,12 @@ export default function Home() {
             . Recently, I have worked on projects involving security of
             Retrieval Augmented Generation (RAG) systems and trajectory
             prediction of unmanned aerial vehicles (UAVs) using neural nets and
-            cellular network data. Currently, I would like to start contributing
-            to open source projects!
+            cellular network data. You can view my current open-source projects{" "}
+            <a href="/about#projects">here!</a>
           </p>
           <p>
             In my free time, I like to code new things, play badminton/video
-            games, compose music and chill out with my cat. Feel free to reach
+            games, compose music, and chill out with my cat. Feel free to reach
             out :D
           </p>
           <br />
