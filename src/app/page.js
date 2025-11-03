@@ -29,6 +29,7 @@ export default function Home() {
             width={500}
             height={200}
             className="rounded-lg border border-purple-400/40 object-contain max-w-[300px] justify-center mx-auto"
+            priority
           />
           <div className="flex justify-center gap-4">
             <a

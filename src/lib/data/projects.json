@@ -13,7 +13,7 @@
     "title": "A Survey of ROV++: We May Need Another Napkin",
     "url": "https://www.caecommunity.org/cop-cyber-research/cae-r-research-symposium/2024-cae-r-cop-research-symposium",
     "external": true,
-    "description": "A poster created with the [insure+e program](https://www.caecommunity.org/initiatives/initiative-insure) on the security of BGP, RPKI/ROV and ROV++.",
+    "description": "A poster created with the INSuRE+E Program on the security of BGP, RPKI/ROV and ROV++.",
     "blog": "/blog/insure-2024",
     "status": "complete"
   },
