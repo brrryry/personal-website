@@ -86,17 +86,8 @@ const Navbar = () => {
           <Link href="/" className="flex items-center mx-0">
             <p className={getLinkClasses("/")}>-- home</p>
           </Link>
-          <Link
-            href="/Chan_Bryan_Resume.pdf"
-            target="_blank"
-            className="flex items-center mx-0"
-          >
-            <p className={getLinkClasses("/Chan_Bryan_Resume.pdf")}>
-              -- resume
-            </p>
-          </Link>
-          <Link href="/projects" className="flex items-center mx-0">
-            <p className={getLinkClasses("/projects")}>-- projects</p>
+          <Link href="/about" className="flex items-center mx-0">
+            <p className={getLinkClasses("/about")}>-- about</p>
           </Link>
           <Link href="/blog" className="flex items-center mx-0">
             <p className={getLinkClasses("/blog")}>-- blog</p>
@@ -126,13 +117,8 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
-            <Link href="/Chan_Bryan_Resume.pdf" target="_blank">
-              <p className={getLinkClasses("/Chan_Bryan_Resume.pdf")}>resume</p>
-            </Link>
-          </li>
-          <li>
-            <Link href="/projects">
-              <p className={getLinkClasses("/projects")}>projects</p>
+            <Link href="/about">
+              <p className={getLinkClasses("/about")}>about</p>
             </Link>
           </li>
           <li>

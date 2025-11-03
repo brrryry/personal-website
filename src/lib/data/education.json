@@ -1,0 +1,137 @@
+[
+  {
+    "institution": "Stevens Institute of Technology",
+    "degree": "Master of Science in Data Science",
+    "startDate": "2025",
+    "endDate": "2026",
+    "location": "Hoboken, NJ",
+    "gpa": "3.777/4.0",
+    "courses": [
+      {
+        "name": "Advanced Optimization Methods",
+        "code": "MA 630",
+        "link": "https://web.stevens.edu/catalog/archive/2024-2025/en/catalog/academic-catalog/courses/ma-mathematics/600/ma-630.html"
+      },
+      {
+        "name": "Introduction to Probability Theory",
+        "code": "MA 540",
+        "link": "https://web.stevens.edu/catalog/archive/2023-2024/en/catalog/academic-catalog/courses/ma-mathematics/500/ma-540.html"
+      },
+      {
+        "name": "Statistical Learning",
+        "code": "FA 590",
+        "link": "https://fsc.stevens.edu/fe590-statistical-learning-in-finance/"
+      },
+      {
+        "name": "Data Acquisition/Modeling/Analysis",
+        "code": "AAI 627",
+        "link": "https://web.stevens.edu/catalog/archive/2024-2025/en/catalog/academic-catalog/courses/aai-applied-artificial-intelligence/600/aai-627.html"
+      },
+      {
+        "name": "Numerical Linear Algebra for Big Data",
+        "code": "MA 544",
+        "link": "https://web.stevens.edu/catalog/archive/2024-2025/en/catalog/academic-catalog/courses/ma-mathematics/500/ma-544.html"
+      },
+      {
+        "name": "Deep Learning",
+        "code": "CS 583",
+        "link": "https://web.stevens.edu/catalog/archive/2024-2025/en/catalog/academic-catalog/courses/cs-computer-science/500/cs-583.html"
+      },
+      {
+        "name": "Natural Language Processing",
+        "code": "CS 584",
+        "link": "https://web.stevens.edu/catalog/archive/2022-2023/en/catalog/academic-catalog/courses/cs-computer-science/500/cs-584.html"
+      }
+    ]
+  },
+  {
+    "institution": "Stevens Institute of Technology",
+    "degree": "Bachelor of Science in Computer Science",
+    "startDate": "2022",
+    "endDate": "2025",
+    "location": "Hoboken, NJ",
+    "gpa": "3.769/4.0",
+    "courses": [
+      {
+        "name": "Data Structures",
+        "code": "CS 284",
+        "link": "https://web.stevens.edu/catalog/archive/2024-2025/en/catalog/academic-catalog/courses/cs-computer-science/200/cs-284.html"
+      },
+      {
+        "name": "Algorithms",
+        "code": "CS 385",
+        "link": "https://stevens.smartcatalogiq.com/en/2024-2025/academic-catalog/courses/cs-computer-science/300/cs-385"
+      },
+      {
+        "name": "Operating Systems",
+        "code": "CS 492",
+        "link": "https://stevens.smartcatalogiq.com/en/2023-2024/academic-catalog/courses/cs-computer-science/400/cs-492"
+      },
+      {
+        "name": "Web Programming II",
+        "code": "CS 554",
+        "link": "https://web.stevens.edu/catalog/archive/2024-2025/en/catalog/academic-catalog/courses/cs-computer-science/500/cs-554.html"
+      },
+      {
+        "name": "Database Management Systems",
+        "code": "CS 442",
+        "link": "https://stevens.smartcatalogiq.com/en/2022-2023/academic-catalog/courses/cs-computer-science/400/cs-442"
+      },
+      {
+        "name": "Concurrent Programming",
+        "code": "CS 511",
+        "link": "https://stevens.smartcatalogiq.com/en/2022-2023/academic-catalog/courses/cs-computer-science/500/cs-511"
+      },
+      {
+        "name": "Statistical Machine Learning",
+        "code": "CS 560",
+        "link": "https://stevens.smartcatalogiq.com/en/2021-2022/academic-catalog/courses/cs-computer-science/500/cs-560"
+      }
+    ]
+  },
+  {
+    "institution": "Middlesex County Academy for SMET",
+    "degree": "High School Diploma",
+    "startDate": "2018",
+    "endDate": "2022",
+    "location": "Clifton, NJ",
+    "gpa": "3.600/4.0",
+    "courses": [
+      {
+        "name": "Introduction to Differential Equations",
+        "code": null,
+        "link": null
+      },
+      {
+        "name": "Multivariable Calculus",
+        "code": null,
+        "link": null
+      },
+      {
+        "name": "Linear Algebra",
+        "code": null,
+        "link": null
+      },
+      {
+        "name": "Discrete Mathematics",
+        "code": null,
+        "link": null
+      },
+      {
+        "name": "AP Statistics",
+        "code": null,
+        "link": "https://apstudents.collegeboard.org/courses/ap-statistics"
+      },
+      {
+        "name": "AP Calculus BC",
+        "code": null,
+        "link": "https://apstudents.collegeboard.org/courses/ap-calculus-bc"
+      },
+      {
+        "name": "AP Physics 1",
+        "code": null,
+        "link": "https://apstudents.collegeboard.org/courses/ap-physics-1-algebra-based"
+      }
+    ]
+  }
+]

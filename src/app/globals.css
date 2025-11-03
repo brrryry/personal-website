@@ -15,7 +15,7 @@ html[data-theme="dark"] {
   --link: #9c7bde; /* medium purple links */
   --primary: #6a0dad; /* primary purple */
   --primary-hover: #d8bfd8;
-  --border: #6a0dad;
+  --border: #d8bfd8;
   --code-bg: #282c34;
   --on-primary: #ffffff;
   --scrollbar-thumb: #6a0dad;
@@ -246,4 +246,10 @@ img {
   img {
     transition: none !important;
   }
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 40px 0;
 }

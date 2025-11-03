@@ -25,7 +25,7 @@ export default async function RootLayout({ children, hideFooter = false }) {
   const isLoggedIn = hdrs.get("isLoggedIn") === "true";
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning={true}>
       <body className={`${inter.className} max-w-6xl items-center mx-auto`}>
         <ThemeProvider>
           <main className="min-h-screen">

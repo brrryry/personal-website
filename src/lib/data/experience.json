@@ -1,0 +1,26 @@
+[
+  {
+    "company": "INSuRE+E Program (Illinois State University)",
+    "role": "Research - AI in Enterprise Data",
+    "duration": "Jun 2025 - Present",
+    "description": "Working on research related to mitigation of large language model biases in Retrieval Augmented Generation (RAG) systems."
+  },
+  {
+    "company": "INSuRE+E Program (Iowa State University)",
+    "role": "Research - BGP Empirical Studies",
+    "duration": "Jun 2024 - Aug 2024",
+    "description": "Created an empirical study on the effectiveness of security measures in Border Gateway Protocol (BGP) using BGPy and NetworkX (Python)."
+  },
+  {
+    "company": "Stevens Institute of Technology",
+    "role": "Course Assistant - Introduction to Computer Science (CS 115), Data Structures (CS 284), Intermediate Statistics (MA 331)",
+    "duration": "Sep 2023 - May 2025",
+    "description": "Conducted duties - included hosting labs, troubleshooting code issues, grading assignments/exams and hosting office hours."
+  },
+  {
+    "company": "Stevens Institute of Technology",
+    "role": "Undergraduate Researcher - Online Collapse of Gaming Communities",
+    "duration": "Nov 2022 - Aug 2023",
+    "description": "Investigated the dynamics of online gaming communities in \"Eve Online\" using a parallel processing web scraper (Python) and qualitative analysis in R."
+  }
+]
