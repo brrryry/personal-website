@@ -2,6 +2,7 @@ import { accounts, sessions } from "./accounts/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import bcrypt from "bcryptjs";
 import { v4 } from "uuid";
+import { Filter } from "bad-words";
 
 import * as typecheck from "./typecheck.js";
 import { type } from "os";
@@ -20,6 +21,11 @@ const createNewAccount = async (username, password) => {
 
   typecheck.isValidString(username, "username");
   typecheck.isValidString(password, "password");
+
+  const filter = new Filter();
+  if (filter.isProfane(username)) {
+    throw new BadRequestError("Username contains inappropriate language");
+  }
 
   try {
     let acc = await getAccountByUsername(username);

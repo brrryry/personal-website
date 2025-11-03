@@ -6,6 +6,8 @@ import { getAccountById } from "./accounts.js";
 import * as typecheck from "./typecheck.js";
 import { BadRequestError, RouteError, NotFoundError } from "./errors.ts";
 
+import { Filter } from "bad-words";
+
 const createComment = async (accountId, blogId, content) => {
   const commentCollection = await comments();
 
@@ -14,6 +16,9 @@ const createComment = async (accountId, blogId, content) => {
   typecheck.isValidString(accountId, "account ID");
   typecheck.isValidString(blogId, "blog ID");
   typecheck.isValidString(content, "content");
+
+  const filter = new Filter();
+  content = filter.clean(content);
 
   if (!ObjectId.isValid(accountId)) {
     throw new BadRequestError("Invalid account id format");
@@ -96,6 +101,9 @@ const editComment = async (commentId, newContent, accountId) => {
   if (newContent.length > 500) {
     throw new BadRequestError("Content cannot exceed 500 characters");
   }
+
+  const filter = new Filter();
+  newContent = filter.clean(newContent);
 
   const comment = await commentCollection.findOne({
     _id: new ObjectId(commentId),
