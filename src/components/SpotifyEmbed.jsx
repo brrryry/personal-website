@@ -59,7 +59,7 @@ export function SpotifyEmbed() {
         <p className={activeColor}>
           Listening to:{" "}
           <a href={song.songUrl} target="_blank" rel="noreferrer">
-            {song.title.toLowerCase()} ({song.artist.toLowerCase()})
+            {song.title} ({song.artist})
           </a>{" "}
           on Spotify!
         </p>

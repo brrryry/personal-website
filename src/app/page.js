@@ -130,14 +130,14 @@ export default function Home() {
           </p>
           <p>
             In my free time, I like to code new things, play badminton/video
-            games, compose music, and chill out with my cat. Feel free to reach
+            games, compose music, and chill outt with my cat. Feel free to reach
             out :D
           </p>
           <br />
           <h2 className="text-2xl font-bold mb-3">Recent News!</h2>
           <div className="space-y-2">
             <div className="flex highlight-item space-x-10">
-              <div className="left-side">
+              <div className="left-side min-w-[100px]">
                 <p>06-2025</p>
               </div>
               <div className="right-side">
@@ -165,8 +165,8 @@ export default function Home() {
             <hr className="border-purple-400/40" />
 
             <div className="flex highlight-item space-x-10">
-              <div className="left-side">
-                <p>08-2024</p>
+              <div className="left-side min-w-[100px]">
+                <p>10-2024</p>
               </div>
               <div className="right-side">
                 <p className="text">
@@ -191,7 +191,7 @@ export default function Home() {
             <hr className="border-purple-400/40" />
 
             <div className="flex highlight-item space-x-10">
-              <div className="left-side">
+              <div className="left-side min-w-[100px]">
                 <p>06-2024</p>
               </div>
               <div className="right-side">
@@ -211,7 +211,7 @@ export default function Home() {
                   >
                     INSuRE+E Program
                   </a>
-                  . Poster published in August 2024.
+                  . Poster published in October 2024.
                 </p>
               </div>
             </div>
@@ -219,7 +219,7 @@ export default function Home() {
             <hr className="border-purple-400/40" />
 
             <div className="flex highlight-item space-x-10">
-              <div className="left-side">
+              <div className="left-side min-w-[100px]">
                 <p>09-2023</p>
               </div>
               <div className="right-side">
@@ -246,7 +246,7 @@ export default function Home() {
             <hr className="border-purple-400/40" />
 
             <div className="flex highlight-item space-x-10">
-              <div className="left-side">
+              <div className="left-side min-w-[100px]">
                 <p>11-2022</p>
               </div>
               <div className="right-side">
