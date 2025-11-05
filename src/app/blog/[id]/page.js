@@ -46,7 +46,7 @@ export default async function BlogPost({ params }) {
 
   return (
     <div className="max-w-full mx-auto px-4">
-      <article className="min-w-0 max-w-full">
+      <article className="min-w-0 max-w-full wrap-normal">
         - - -<h3>{data.title}</h3>
         <p>originally created on {data.date}</p>
         {data.updated && <p>updated on {data.updated} </p>}
