@@ -107,7 +107,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="bio space-y-5 py-5">
+        <div className="bio space-y-5 py-5 text-pretty">
           <h2 className="text-2xl font-bold mb-3">Hi, I&apos;m Bryan.</h2>
           <p>
             I&apos;m a graduate student at{" "}
@@ -124,13 +124,13 @@ export default function Home() {
             </span>
             . Recently, I have worked on projects involving security of
             Retrieval Augmented Generation (RAG) systems and trajectory
-            prediction of unmanned aerial vehicles (UAVs) using neural nets and
-            cellular network data. You can view my current open-source projects{" "}
+            prediction of unmanned aerial vehicles (UAVs) using deep neural nets
+            and cellular network data. You can view my projects{" "}
             <a href="/about#projects">here!</a>
           </p>
           <p>
             In my free time, I like to code new things, play badminton/video
-            games, compose music, and chill outt with my cat. Feel free to reach
+            games, compose music, and chill out with my cat. Feel free to reach
             out :D
           </p>
           <br />
