@@ -13,6 +13,7 @@ import { BlogComments } from "@/components/BlogComments";
 
 //import code highlighting css
 import "@/../public/styles/atom-one-dark.css";
+import { NewLatexWrapper } from "@/components/NewLatexWrapper";
 
 export async function generateMetadata({ params }) {
   const { data } = await getPostFromId(params.id);
@@ -63,7 +64,13 @@ export default async function BlogPost({ params }) {
         </p>
         <MDXRemote
           source={content}
-          components={{ LatexWrapper, BlogImage, BlogList, BlogCode }}
+          components={{
+            NewLatexWrapper,
+            LatexWrapper,
+            BlogImage,
+            BlogList,
+            BlogCode,
+          }}
         />
       </article>
 
