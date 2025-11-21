@@ -1,5 +1,10 @@
 // @refresh reset
 import { MDXRemote } from "next-mdx-remote/rsc";
+
+import rehypeKatex from "rehype-katex";
+import remarkMath from "remark-math";
+import rehypeRaw from "rehype-raw";
+
 import { getPostFromId } from "@/lib/posts";
 
 import { LatexWrapper } from "@/components/LatexWrapper";
@@ -13,7 +18,6 @@ import { BlogComments } from "@/components/BlogComments";
 
 //import code highlighting css
 import "@/../public/styles/atom-one-dark.css";
-import { NewLatexWrapper } from "@/components/NewLatexWrapper";
 
 export async function generateMetadata({ params }) {
   const { data } = await getPostFromId(params.id);
@@ -45,6 +49,14 @@ export default async function BlogPost({ params }) {
     document.querySelector("h1").innerText = data.title;
   }
 
+  const mdxOptions = {
+    mdxOptions: {
+      remarkPlugins: [remarkMath],
+      rehypePlugins: [rehypeKatex],
+      format: "mdx",
+    },
+  };
+
   return (
     <div className="max-w-full mx-auto px-4">
       <article className="min-w-0 max-w-full wrap-normal">
@@ -65,12 +77,12 @@ export default async function BlogPost({ params }) {
         <MDXRemote
           source={content}
           components={{
-            NewLatexWrapper,
             LatexWrapper,
             BlogImage,
             BlogList,
             BlogCode,
           }}
+          options={mdxOptions}
         />
       </article>
 
