@@ -157,7 +157,7 @@ export default function Home() {
                   >
                     INSuRE+E Program
                   </a>
-                  . Currently in progress.
+                  . A poster is expected to be presented in December 2025.
                 </p>
               </div>
             </div>
