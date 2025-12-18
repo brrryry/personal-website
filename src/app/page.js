@@ -157,7 +157,8 @@ export default function Home() {
                   >
                     INSuRE+E Program
                   </a>
-                  . A poster is expected to be presented in December 2025.
+                  . A poster was presented in a private showcase in December
+                  2025.
                 </p>
               </div>
             </div>
