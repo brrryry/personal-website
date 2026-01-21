@@ -68,7 +68,10 @@ export function getSortedPostsData(tag = "", drafts = true) {
     .filter(Boolean);
   // Sort posts by date
   return allPostsData.sort((a, b) => {
-    if (a.data.date < b.data.date) {
+    let adate = a.data.updated ? a.data.updated : a.data.date;
+    let bdate = b.data.updated ? b.data.updated : b.data.date;
+
+    if (adate < bdate) {
       return 1;
     } else {
       return -1;
