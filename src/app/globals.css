@@ -268,3 +268,46 @@ hr {
   margin-bottom: 1em;
   margin-top: 1em;
 }
+
+/* globals.css or similar */
+.math-display {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin: 1.5em 0;
+  padding: 0.5em 0;
+}
+
+.katex-display {
+  display: inline-block !important;
+  min-width: min-content;
+}
+
+.katex,
+.katex * {
+  max-width: 100%;
+}
+
+/* Responsive font sizes */
+@media (max-width: 768px) {
+  .katex {
+    font-size: 0.95em !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .katex {
+    font-size: 0.9em !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .katex {
+    font-size: 0.85em !important;
+  }
+
+  .math-display .katex-display {
+    transform: scale(0.95);
+    transform-origin: left center;
+  }
+}
