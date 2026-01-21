@@ -285,7 +285,7 @@ hr {
 
 .katex,
 .katex * {
-  max-width: 100%;
+  max-width: 90%;
 }
 
 /* Responsive font sizes */
