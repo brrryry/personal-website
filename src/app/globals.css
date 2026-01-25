@@ -293,11 +293,19 @@ hr {
   .katex {
     font-size: 0.95em !important;
   }
+
+  h2 {
+    font-size: 1.8em;
+  }
 }
 
 @media (max-width: 640px) {
   .katex {
     font-size: 0.9em !important;
+  }
+
+  h2 {
+    font-size: 1.6em;
   }
 }
 
@@ -309,5 +317,9 @@ hr {
   .math-display .katex-display {
     transform: scale(0.95);
     transform-origin: left center;
+  }
+
+  h2 {
+    font-size: 1.5em;
   }
 }
