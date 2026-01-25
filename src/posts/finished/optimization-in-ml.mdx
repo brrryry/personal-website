@@ -175,7 +175,7 @@ If $f$ is convex and its **gradient** is Lipschitz continuous with constant $L$,
 then the following property holds for with a fixed learning rate $\alpha \in (0, \frac{1}{L})$:
 
 $$
-f(x^{k}) - f(x^*) \leq \frac{\| x^0 - x^* \|^2}{2 \alpha k}
+f(x^{k}) - f(x^*) \leq \frac{\| x^0 - x^* \\|^2}{2 \alpha k}
 $$
 
 If we disregard $x^0$ (where we start), we can see that the error generally decreases at a rate of $O(\frac{1}{k})$. This is known as a **sublinear convergence rate** - the convergence slows down as we get closer to the minimum. Pretty slow.
