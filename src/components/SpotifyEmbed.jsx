@@ -1,75 +1,55 @@
 "use client";
 
-export const revalidate = 60;
-
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
+import useSWR from "swr";
+
+// Standard fetcher for SWR
+const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export function SpotifyEmbed() {
-  const [song, setSong] = useState({});
   const [mounted, setMounted] = useState(false);
   const { theme, resolvedTheme } = useTheme();
+
+  const { data: song, error } = useSWR("/api/current-spotify", fetcher, {
+    refreshInterval: 10000, // 10s polling
+    revalidateOnFocus: true,
+  });
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    let mounted = true;
-
-    const fetchCurrent = async () => {
-      try {
-        const res = await fetch("/api/current-spotify", {
-          next: { revalidate: 10 },
-        });
-        const data = await res.json();
-        if (data.status === 204) {
-          if (mounted) setSong({ isPlaying: false });
-          return;
-        }
-        if (mounted) setSong(data);
-      } catch (err) {
-        // handle or ignore
-      }
-    };
-
-    fetchCurrent(); // initial fetch
-    const intervalId = setInterval(fetchCurrent, 10000); // poll every 10s
-
-    return () => {
-      mounted = false;
-      clearInterval(intervalId);
-    };
-  }, []);
-
-  const currentTheme = mounted
-    ? theme === "system"
-      ? resolvedTheme
-      : theme
-    : "light";
-
-  const activeColor =
-    currentTheme === "dark" ? "text-[#f8f8ff]" : "text-[#1e1e1e]";
-  const inactiveColor =
-    currentTheme === "dark" ? "text-purple-200" : "text-purple-700";
-
-  if (song.isPlaying) {
+  if (!mounted) {
     return (
-      <>
-        <p className={activeColor}>
-          Listening to:{" "}
-          <a href={song.songUrl} target="_blank" rel="noreferrer">
-            {song.title} ({song.artist})
-          </a>{" "}
-          on Spotify!
-        </p>
-      </>
+      <div className="h-6 w-48 animate-pulse rounded-md bg-gray-200 dark:bg-gray-700" />
     );
   }
 
+  const currentTheme = theme === "system" ? resolvedTheme : theme;
+  const activeColor =
+    currentTheme === "dark" ? "text-[#f8f8ff]" : "text-[#1e1e1e]";
+
+  if (!song) return <p className={activeColor}>Loading song status...</p>;
+
   return (
-    <>
-      <p className={activeColor}>Not listening to music right now!</p>
-    </>
+    <p className={activeColor}>
+      {song.isPlaying ? (
+        <>
+          Listening to:{" "}
+          <a
+            href={song.songUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="underline"
+          >
+            {song.title} ({song.artist})
+          </a>{" "}
+          on Spotify!
+        </>
+      ) : (
+        "Not listening to music right now!"
+      )}
+    </p>
   );
 }
