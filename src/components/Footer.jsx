@@ -45,6 +45,10 @@ export function Footer({ hash }) {
         <a href="https://tailwindcss.com/" target="_blank">
           tailwindcss
         </a>
+        {" | "}
+        <a href="https://docker.com/" target="_blank">
+          docker
+        </a>
       </p>
     </>
   );
