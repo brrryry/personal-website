@@ -16,8 +16,8 @@ export default function Home() {
     <div className="space-y-5 max-w-6xl justify-center mx-auto">
       <div className="bg-purple-500/20 border border-purple-400/40 rounded-lg p-4">
         <p>
-          Latest News: Capitalization Overhaul and{" "}
-          <a href="/blog/pdev-ep4-frontend-and-misc">Blog QOL Updates</a>
+          Latest News: Badminton Stringing (blog TBD), CAE Symposium
+          Presentation (TBD)
         </p>
       </div>
 
@@ -158,7 +158,23 @@ export default function Home() {
                     INSuRE+E Program
                   </a>
                   . A poster was presented in a private showcase in December
-                  2025.
+                  2025. A presentation will be given at
+                  <a
+                    href="https://jindal.utdallas.edu/biz-ai-conference/biz-ai-conference-2026/"
+                    target="_blank"
+                  >
+                    {" "}
+                    the 2026 BizAI Conference
+                  </a>{" "}
+                  and{" "}
+                  <a
+                    href="https://www.caecommunity.org/symposium"
+                    target="_blank"
+                  >
+                    {" "}
+                    the 2026 CAE Symposium
+                  </a>{" "}
+                  in March and April of 2026 (respectively).
                 </p>
               </div>
             </div>
