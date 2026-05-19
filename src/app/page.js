@@ -17,7 +17,7 @@ export default function Home() {
       <div className="bg-purple-500/20 border border-purple-400/40 rounded-lg p-4">
         <p>
           Latest News: Badminton Stringing (blog TBD), CAE Symposium
-          Presentation
+          Presentation (TBD)
         </p>
       </div>
 
@@ -110,7 +110,7 @@ export default function Home() {
         <div className="bio space-y-5 py-5 text-pretty">
           <h2 className="text-2xl font-bold mb-3">Hi, I&apos;m Bryan.</h2>
           <p>
-            I&apos;m a graduate student at{" "}
+            I{"'"}m a graduate student at{" "}
             <a href="https://www.stevens.edu/" target="_blank">
               Stevens Institute of Technology
             </a>{" "}
@@ -118,7 +118,7 @@ export default function Home() {
             with a B.S. in Computer Science.
           </p>
           <p>
-            I&apos;m passionate about research and development in{" "}
+            I{";"}m passionate about research and development in{" "}
             <span className="font-semibold">
               statistical learning, artificial intelligence and optimization
             </span>
@@ -136,36 +136,6 @@ export default function Home() {
           <br />
           <h2 className="text-2xl font-bold mb-3">Recent News!</h2>
           <div className="space-y-2">
-
-            <div className="flex highlight-item space-x-10">  
-              <div className="left-side min-w-[100px]">
-                <p>03-2026</p>
-              </div>
-              <div className="right-side">
-                <p className="text">
-                  "A Machine Learning-based Approach to Malicious Document Detection for RAG Chunk Ingestion" presentation was given at
-                  <a
-                    href="https://jindal.utdallas.edu/biz-ai-conference/biz-ai-conference-2026/"
-                    target="_blank"
-                  >
-                    {" "}
-                    <i>2026 BizAI Conference</i>
-                  </a>{" "}
-                  and the{" "}
-                  <a
-                    href="https://www.caecommunity.org/symposium"
-                    target="_blank"
-                  >
-                    {" "}
-                    <i>2026 CAE Symposium</i>
-                  </a>{" "}
-                  in March and April of 2026 (respectively).
-                </p>
-              </div>
-            </div>
-
-            <hr className="border-purple-400/40" />
-
             <div className="flex highlight-item space-x-10">
               <div className="left-side min-w-[100px]">
                 <p>06-2025</p>
@@ -188,7 +158,23 @@ export default function Home() {
                     INSuRE+E Program
                   </a>
                   . A poster was presented in a private showcase in December
-                  2025.
+                  2025. A presentation will be given at
+                  <a
+                    href="https://jindal.utdallas.edu/biz-ai-conference/biz-ai-conference-2026/"
+                    target="_blank"
+                  >
+                    {" "}
+                    the 2026 BizAI Conference
+                  </a>{" "}
+                  and{" "}
+                  <a
+                    href="https://www.caecommunity.org/symposium"
+                    target="_blank"
+                  >
+                    {" "}
+                    the 2026 CAE Symposium
+                  </a>{" "}
+                  in March and April of 2026 (respectively).
                 </p>
               </div>
             </div>
