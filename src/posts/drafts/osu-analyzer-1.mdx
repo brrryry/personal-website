@@ -1,11 +1,11 @@
 ---
 title: "osu analyzer: the pilot episode"
-date: "2025-01-03"
+date: "2025-08-14"
 description: "the (theoretical) beginning of a deep dive into osu tool development"
 tags: ["coding", "ml"]
 ---
 
-happy new year! welcome to 2025 :))
+happy new year! welcome to 2025 :)) (i started writing this blog in january, but never finished it...)
 
 today, I am here to talk about a project that i thought of off the top of my head.
 this is the first blog in which i will be documenting the project as i go as opposed to writing about it after the fact.
@@ -14,14 +14,23 @@ let's see how this goes!
 <br />
 
 ## osu: an introduction
-if you know what osu is, you can skip this section. \
-\
-so, what...is is osu? \
-\
-well...osu is a rhythm game. you click circles to the beat of a song. \
-it's a pretty simple concept, but it can get hard pretty quickly. 
+if you know what osu is, you can [skip this section.](#skip-intro)
 
-// insert image of osu gameplay here \
+so, what...is osu?
+
+well...osu is a rhythm game. you click circles to the beat of a song.
+it's a pretty simple concept, but it can get hard pretty quickly. \
+\
+below is my strongest current attempt at the map <a href="https://osu.ppy.sh/beatmapsets/1212452" target="_blank">"flying out to the sky"</a> (6.62 star difficulty).
+
+<br />
+
+
+<video controls>
+<source src="/blogs/osu-analyzer-1/osuexport.mp4" type="video/mp4"/>
+your browser does not support video tags :(
+</video>
+ \
 \
 osu has a pretty big community, and there are a lot of custom maps that people make.
 these maps can range from easy to hard, and they can be made for any song. \
@@ -32,7 +41,7 @@ these maps can range from easy to hard, and they can be made for any song. \
 <br />
 
 
-## so what's the idea?
+## so what's the idea? <span id="skip-intro"/>
 well, previously, i wanted to make a tool that could generate osu beatmaps. the current progress of this project can be found 
 <a href="https://github.com/brrryry/osu-beatmap-generator" target="_blank">here</a>. however, i realized that this project was a bit 
 too ambitious for me - especially since i'm not too experienced with deep learning yet (i'm taking a class on it this semester though!
@@ -48,7 +57,6 @@ off the top of my head, i can think of a few categories that a beatmap can fall 
 <li>stream maps - maps that frequently require you to "stream"</li>
 <li>tech maps - maps that purposely don't follow a pattern</li>
 <li>speed maps - maps that are just...fast.</li>
-<li>practice maps - maps that heavily focus on one aspect of gameplay</li>
 </BlogList>
 
 of course, these categories are not mutually exclusive. a map can be a mix of all of these categories. 
@@ -56,162 +64,15 @@ it may not also be possible to even categorize maps this way. there's only one w
 
 <br />
 
-## fetching maps & extracting features 
+## fetching maps
 the first step to this project is to gather a dataset of osu beatmaps. 
-honestly, fetching the maps is probably the easiest part. i will use <a href="https://beatconnect.io">beatconnect</a> to download a bunch of beatmaps.
+honestly, fetching the maps is probably the easiest part. i will use <a href="https://nerinyan.moe" target="_blank">nerinyan.moe</a> (an osu beatmap mirror) to download a bunch of beatmaps.
 while the api is not publicly available at the moment, i can use their direct download links to download maps. \
 \
 the question would be: how do i analyze these maps? 
 for now, i will only get the map files (not the audio files). from there, i will generate a bunch of features that i think are important. 
 
-<BlogCode language="python" title="fetch_maps.py">
-{`
-###########################
-# This script will collect osu! maps from an osu! API (beatconnect.io) and extract them.
-# The directories to each section (audio, maps) can be edited in the config file. 
-###########################
 
-
-# Python library imports
-import requests
-import zipfile
-import io
-import os
-import random
-import datetime
-from concurrent.futures import ThreadPoolExecutor
-
-# Osu API
-import osu
-from osu import Client
-
-# import config
-import config
-
-# file-specific configurations!!
-NUM_MAPS = 1000 #number of maps to fetch (including what is already there)
-BATCH_SIZE = 25 #number of maps to fetch at a time using ThreadPoolExecutor
-
-
-# Set up the osu! API client
-client = Client.from_credentials(config.osu_api_client_id, config.osu_api_client_secret, config.osu_api_redirect_uri)
-
-
-# Function to print with timestamp
-def tsprint(s):
-    print("[" + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "] " + s)
-
-
-# Fetcher function to fetch a map
-def fetch_map(map_id):
-    tsprint(f'Fetching map {map_id}...')
-
-    # Try to fetch the map
-    try:
-        # Fetch the map
-        response = requests.get(config.api_link + map_id)
-        response.raise_for_status()
-        tsprint(f'Successfully fetched map {map_id}!')
-    except:
-        tsprint(f'Failed to fetch map {map_id} - got status code {response.status_code}')
-        return
-    
-    # Extract the map in memory
-    try:
-        zip_file = zipfile.ZipFile(io.BytesIO(response.content))
-    except:
-        tsprint(f'Failed to extract map {map_id} - not a valid zip file')
-        return
-    
-    count = 0 #count the number of osu files extracted from the zip
-
-    # Loop through the files in the zip and extract the .osu files
-    for file in zip_file.namelist():
-        if file.endswith('.osu'):
-            zip_file.extract(file, config.map_folder)
-
-
-            # Confirm that the file is the right type of map (not mania or taiko)
-            with open(config.map_folder + file, 'r', encoding='utf-8') as f:
-                lines = f.readlines()
-                
-                # find the line that specifies the mode
-                mode_line = [line for line in lines if line.startswith("Mode:")]
-                if len(mode_line) == 0:
-                    tsprint(f'Failed to find mode line in {file}')
-                    os.remove(config.map_folder + file)
-                    return
-                
-                # check if the mode is standard
-                mode = int(mode_line[0].split(":")[1].strip())
-                if mode != 0:
-                    tsprint(f'Map {file} is not a standard map')
-                    os.remove(config.map_folder + file)
-                    return
-            
-            # Rename the file to the map_id + count + .osu
-            try:
-                os.rename(config.map_folder + file, config.map_folder + map_id + "_" + str(count) + ".osu")
-                count += 1
-            except:
-                tsprint(f'Failed to rename file {file} to {map_id}_{count}.osu')
-                os.remove(config.map_folder + file) #remove the file if it cannot be renamed
-                return
-
-    tsprint(f'Successfully extracted {count} osu files from map {map_id}!')
-    return
-
-
-
-# Function to fetch maps!
-def fetch_maps(num_maps = 100):
-    while True:
-        count = 0
-        file_count = os.listdir(config.map_folder)
-        if len(file_count) >= num_maps:
-            break
-
-        # fetch maps in batches
-        filter = osu.util.BeatmapsetSearchFilter()
-        filter.set_mode(osu.GameModeInt.STANDARD)
-        filter.set_status(osu.BeatmapsetSearchStatus.RANKED)  
-        filter.set_sort(osu.BeatmapsetSearchSort.PLAYS)
-
-        # get the top 1000 maps
-        beatmapsearchresult = client.search_beatmapsets(filter, BATCH_SIZE)
-
-        tsprint(f'Fetched {beatmapsearchresult.total} mapsets from the osu! API')
-
-
-        map_ids = [beatmapset.id for beatmapset in beatmapsearchresult.beatmapsets]
-        
-        if beatmapsearchresult.total > num_maps:
-            map_ids = map_ids[:num_maps]
-            tsprint(f'Only fetching {num_maps} mapsets!')
-
-        # use concurrent threads to fetch maps
-        with ThreadPoolExecutor() as executor:
-
-            # call fetcher function on each map id concurrently
-            futures = [executor.submit(fetch_map, str(map_id)) for map_id in map_ids]
-
-            # wait for all threads to finish
-            for future in futures:
-                future.result()
-    
-    tsprint(f'Successfully fetched {num_maps} maps!')
-
-# Main function...that's it
-if __name__ == "__main__":
-
-    # create maps folder if it does not exist
-    if not os.path.exists(config.map_folder):
-        os.makedirs(config.map_folder)
-
-    #fetch this stuff
-    fetch_maps(NUM_MAPS)
-`}
-</BlogCode>
 
 this code ensures that 1000 osu beatmaps are fetched and extracted. 
 these maps are also guaranteed to be the most played maps.
