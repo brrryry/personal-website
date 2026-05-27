@@ -1,0 +1,100 @@
+---
+title: "Putnam 2001 B6 Problem"
+date: "2026-05-21"
+description: "A friend gave me this problem for fun, and I thought it was interesting."
+tags: ["math-teasers-series", "math"]
+---
+
+I have a friend, and this friend gives me fun problems. I will turn this into a series and post the interesting problems and solutions here. \
+\
+For this problem, I know that this solution exists online. However, I want to try to solve it on my own first (with some internet assistance, LOL). I will also keep an update log
+for any corrections to the solution (as I may be wrong with my original blog post).
+
+<br />
+
+## The Problem
+
+The problem is as follows: \
+\
+You have a sequence $a_1 < a_2 < a_3 < \ldots$ of positive real numbers such that $lim_{n \to \infty} \frac{a_n}{n} = 0$. \
+Must there exist infinitely many positive integers $n$ such that
+
+$$
+a_{n - i} + a_{n + i} < 2a_n \quad \forall i = 1, 2, \ldots, n - 1?
+$$
+
+## Intuition: Convexity
+The first thing I saw was a midpoint inequality. \
+\
+We can graph the points $(n, a_n)$ on the Cartesian plane. This creates a set $\{(n, a_n) | n \in \mathbb{Z}^+\}$ of points. \
+Meanwhile, we can look at the inequality: $a_{n - i} + a_{n + i} < 2a_n$. This is equivalent to saying that the point $(n, a_n)$ is below the midpoint of the points $(n - i, a_{n - i})$ and $(n + i, a_{n + i})$. \
+Using an example $y = \sqrt{x}$, we can see that this applies. An image is provided below.
+
+<BlogImage
+src="/blogs/math-teasers/putnam2001-b6/graph.png"
+alt="Graph of a sequence with the midpoint inequality"
+caption="Example of a sequence that satisfies the midpoint inequality."
+source="https://desmos.com"
+/>
+
+As we can see, the midpoint inequality is satisfied. The straight line is the midpoint of the two points, and the curve point is above the straight line. 
+However, this is only an example, and we need to show that this is true for ALL sequences for infinitely many points. \
+\
+To do this, we use the upper convex hull.
+
+<br />
+
+## Upper Convex Hulls
+To understand what a convex hull is, we first need to go over the **convex set**. \
+\
+A set $S$ of points in a plane is **convex** if for any two points $A$ and $B$ in $S$, the line segment that connects $A$ and $B$ is also in $S$. 
+
+<BlogImage
+src="/blogs/math-teasers/putnam2001-b6/convex.png"
+alt="Convex set example"
+caption="Visualization of Convexity"
+source="https://medium.com/@heliyahasani/1-convex-sets-and-functions-modern-optimization-techniques-687736d78f80"
+/>
+
+There are some other mathematical definitions, but let's keep it simple. Now, a **convex hull** of any set of points $S$ is the SMALLEST CONVEX SET
+that contains all of the points in $S$. 
+
+<BlogImage
+src="/blogs/math-teasers/putnam2001-b6/convexhull.png"
+alt="Convex hull example"
+caption="Visualization of a Convex Hull"
+source="https://allaboutalgorithms.com/computing-convex-hulls-b08c9c48ab5a"
+/>
+
+Meanwhile, the **upper convex hull** of a set of points $S$ is the part of the convex hull that is above the points in $S$.
+
+<br />
+
+## Looking at the Upper Convex Hull
+Going back to the problem, we have discrete points $(n, a_n)$. We can look at the upper convex hull of these points and prove two things:
+
+<BlogList>
+<li>There are infinitely many points on the upper convex hull.</li>
+<li>All points on the upper convex hull satisfy the midpoint inequality seen earlier.</li>
+</BlogList>
+
+To do the first part, we will use contradiction. 
+
+<BlogList>
+<li>Assume there are only finitely many points on the upper convex hull. Let the largest point be $(N, a_N)$.</li>
+<li>The slope of the convex hull to any point $(n, a_n)$ where $n > N$ is $\sup_n\frac{a_n - a_N}{n - N}$. This slope would hover above all subsequent points in the sequence.</li>
+<li>We know that $lim_{n \to \infty} \frac{a_n}{n} = 0$. This means that $lim_{n \to \infty} \frac{a_n - a_N}{n - N} = 0$.</li>
+<li>This means that the supremeum over these slopes is actually MAXIMIZED at some point $M$ that lies on the sequence, causing a contradiction.</li>
+</BlogList>
+
+There's our proof that there are infinitely many points on the upper convex hull. The second part is easier! \
+\
+By the definition of the upper convex hull - a convex set - we know that any boundary point $(n, a_n)$ on the upper convex hull lies 
+above the midpoint of any two points $(n - i, a_{n - i})$ and $(n + i, a_{n + i})$ since they are in the convex set. 
+
+<br />
+
+## Conclusion
+Since both points are proven, we can conclude that there are infinitely many points that satisfy the problem's inequality. In other words, **yes**. \
+\
+This was a fun problem! An update log will be provided below for any corrections to the solution. I will try to keep it as organized as possible!
