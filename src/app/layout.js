@@ -13,15 +13,11 @@ import { ThemeProvider } from "next-themes";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "bryan",
-  description: "a typical cs portfolio",
+  title: "Bryan Chan",
+  description: "A typical computer science portfolio!",
 };
 
 export default async function RootLayout({ children, hideFooter = false }) {
-  // Get the headers to check if the user is logged in
-  const hdrs = await headers();
-  const isLoggedIn = hdrs.get("isLoggedIn") === "true";
-
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body className={`${inter.className} max-w-6xl items-center mx-auto`}>

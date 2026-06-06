@@ -13,7 +13,6 @@ const Navbar = () => {
   const { theme, resolvedTheme } = useTheme();
 
   useEffect(() => {
-    // avoid hydration mismatch with next-themes
     setMounted(true);
   }, []);
 
@@ -58,7 +57,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center w-full py-4 md:py-0 md:w-auto md:space-x-4">
           <div className="flex space-x-4">
             <Link href="/" className="flex items-center p-0 mx-0">
-              <p className={getLinkClasses("/")}>bryan chan.</p>
+              <p className={getLinkClasses("/")}>Bryan Chan</p>
             </Link>
             <ThemeSwitcher />
           </div>

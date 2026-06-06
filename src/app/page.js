@@ -134,7 +134,7 @@ export default function Home() {
             out :D
           </p>
           <br />
-          <h2 className="text-2xl font-bold mb-3">Recent News!</h2>
+          <h2 className="text-2xl font-bold mb-3">Recent News</h2>
           <div className="space-y-2">
             <div className="flex highlight-item space-x-10">
               <div className="left-side min-w-[100px]">

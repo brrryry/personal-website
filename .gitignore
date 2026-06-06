@@ -48,3 +48,7 @@ deploy/secret.sh
 
 archive/*
 git-filter-repo
+
+
+# drafts
+src/app/posts/drafts/*
