@@ -49,6 +49,10 @@ export function Footer({ hash }) {
         <a href="https://docker.com/" target="_blank">
           docker
         </a>
+        {" | "}
+        <a href="https://nas.ugreen.com/" target="_blank">
+          ugreen
+        </a>
       </p>
     </>
   );

@@ -118,7 +118,7 @@ export default function Home() {
             with a B.S. in Computer Science.
           </p>
           <p>
-            I{";"}m passionate about research and development in{" "}
+            I{"'"}m passionate about research and development in{" "}
             <span className="font-semibold">
               statistical learning, artificial intelligence and optimization
             </span>
