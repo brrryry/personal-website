@@ -29,14 +29,14 @@ html[data-theme="dark"] {
 html[data-theme="light"] {
   --bg: #f8f8ff; /* off-white background */
   --text: #1e1e1e; /* dark text */
-  --surface: #ffffff; /* header/nav/footer surface */
+  --surface: #f8f8ff; /* header/nav/footer surface */
   --muted: #6a0dad; /* use primary purple for emphasis */
   --link: #6a0dad; /* purple links */
   --primary: #6a0dad; /* primary purple */
   --primary-hover: #000000;
   --border: #6a0dad;
   --code-bg: #f0f0f2;
-  --on-primary: #ffffff;
+  --on-primary: #f8f8ff;
   --scrollbar-thumb: #6a0dad;
   --scrollbar-track: #e6e6e6;
   overflow: auto;
