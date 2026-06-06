@@ -14,8 +14,6 @@ import { BlogCode } from "@/components/BlogCode";
 
 import NotFound from "@/app/[...not_found]/page";
 
-import { BlogComments } from "@/components/BlogComments";
-
 //import code highlighting css
 import "@/../public/styles/atom-one-dark.css";
 
@@ -87,8 +85,6 @@ export default async function BlogPost({ params }) {
           />
         </div>
       </article>
-
-      <BlogComments blogId={params.id} />
     </div>
   );
 }

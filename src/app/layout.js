@@ -8,8 +8,6 @@ import Tooltip from "@/components/Tooltip";
 import { SpotifyEmbed } from "@/components/SpotifyEmbed";
 import { Footer } from "@/components/Footer";
 
-import { SessionProvider } from "@/components/SessionContext";
-
 import { ThemeProvider } from "next-themes";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -29,10 +27,8 @@ export default async function RootLayout({ children, hideFooter = false }) {
       <body className={`${inter.className} max-w-6xl items-center mx-auto`}>
         <ThemeProvider>
           <main className="min-h-screen">
-            <SessionProvider>
-              <Navbar loggedIn={isLoggedIn} />
-              {children}
-            </SessionProvider>
+            <Navbar />
+            {children}
 
             {!hideFooter && (
               <footer className="bg-transparent text-purple-200 p-4 flex flex-col items-center justify-center">

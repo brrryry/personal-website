@@ -3,12 +3,10 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { useSession } from "./SessionContext";
 import ThemeSwitcher from "@/app/ThemeSwitcher";
 import { useTheme } from "next-themes";
 
 const Navbar = () => {
-  const { session, loading, logout } = useSession();
   const [mounted, setMounted] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname() || "";
@@ -24,16 +22,6 @@ const Navbar = () => {
       ? resolvedTheme
       : theme
     : "light";
-
-  const handleLogout = async (event) => {
-    event.preventDefault();
-    try {
-      await logout();
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-    window.location.href = "/";
-  };
 
   const toggleMobileMenu = () => {
     setMobileOpen(!mobileOpen);
@@ -92,21 +80,6 @@ const Navbar = () => {
           <Link href="/blog" className="flex items-center mx-0">
             <p className={getLinkClasses("/blog")}>-- blog</p>
           </Link>
-          {session?.sessionId && !loading && (
-            <Link
-              href="/"
-              onClick={handleLogout}
-              className="flex items-center mx-0"
-            >
-              {/* don't treat logout link as "active" even though href is "/" */}
-              <p className={getLinkClasses("/", true)}>-- logout</p>
-            </Link>
-          )}
-          {!session?.sessionId && !loading && (
-            <Link href="/login" className="flex items-center mx-0">
-              <p className={getLinkClasses("/login")}>-- login</p>
-            </Link>
-          )}
         </div>
 
         {/* Desktop Menu */}
@@ -126,20 +99,6 @@ const Navbar = () => {
               <p className={getLinkClasses("/blog")}>blog</p>
             </Link>
           </li>
-          {session?.sessionId && !loading && (
-            <li>
-              <Link href="/" onClick={handleLogout}>
-                <p className={getLinkClasses("/", true)}>logout</p>
-              </Link>
-            </li>
-          )}
-          {!session?.sessionId && !loading && (
-            <li>
-              <Link href="/login">
-                <p className={getLinkClasses("/login")}>login</p>
-              </Link>
-            </li>
-          )}
         </ul>
       </nav>
     </>
