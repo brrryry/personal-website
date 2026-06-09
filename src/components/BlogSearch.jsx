@@ -35,11 +35,24 @@ export default function BlogSearch({ posts = [] }) {
 
   tags = tags.filter((tag) => !tag.includes("series"));
 
-  // initialize visibleIds to show the initial list
+  // initialize visibleIds to show the initial list with stagger
   useEffect(() => {
-    const ids = new Set((displayed || []).map((p) => p.id));
-    setVisibleIds(ids);
-    // cleanup on unmount
+    clearAllTimeouts();
+    setVisibleIds(new Set());
+    const STAGGER_MS = 120;
+    (displayed || []).forEach((post, i) => {
+      const tt = setTimeout(
+        () => {
+          setVisibleIds((prev) => {
+            const next = new Set(prev);
+            next.add(post.id);
+            return next;
+          });
+        },
+        i * STAGGER_MS + 20,
+      );
+      timeouts.current.push(tt);
+    });
     return () => clearAllTimeouts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // run once on mount

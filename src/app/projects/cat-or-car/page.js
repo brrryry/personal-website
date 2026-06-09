@@ -62,7 +62,7 @@ export default function Home() {
   if (loading) return <p>Loading TensorFlow Libraries...</p>;
 
   return (
-    <div>
+    <div className="animate-fade-in-up delay-100">
       <h1>Cat or Car?</h1>
       <form onSubmit={handleSubmit}>
         <input type="file" onChange={handleFileChange} />

@@ -14,24 +14,28 @@ export default function Home() {
 
   return (
     <div className="space-y-5 max-w-6xl justify-center mx-auto">
-      <div className="bg-purple-500/20 border border-purple-400/40 rounded-lg p-4">
-        <p>Latest News: CAE Symposium 2026!</p>
+      <div className="animate-fade-in-up delay-100">
+        <div className="bg-purple-500/20 border border-purple-400/40 rounded-lg p-4 animate-border-glow">
+          <p>Latest News: CAE Symposium 2026!</p>
+        </div>
       </div>
 
-      <div className="pic-and-bio mx-auto flex-col items-center">
+      <div className="pic-and-bio mx-auto flex-col items-center animate-fade-in-up delay-200">
         <div className="md:relative md:float-right md:my-auto md:py-5 md:pl-5 flex flex-col md:block justify-center items-center">
-          <Image
-            src="/me.jpg"
-            alt="picture of me"
-            width={500}
-            height={200}
-            className="rounded-lg border border-purple-400/40 object-contain max-w-[300px] justify-center mx-auto"
-            priority
-          />
-          <div className="flex justify-center gap-4">
+          <div className="animate-float">
+            <Image
+              src="/me.jpg"
+              alt="picture of me"
+              width={500}
+              height={200}
+              className="rounded-lg border border-purple-400/40 object-contain max-w-[300px] justify-center mx-auto transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(168,85,247,0.35)]"
+              priority
+            />
+          </div>
+          <div className="flex justify-center gap-4 mt-2">
             <a
               href="mailto:thisisbryanchan@gmail.com"
-              className="inline-flex items-center p-2 rounded hover:bg-white/5"
+              className="inline-flex items-center p-2 rounded hover:bg-white/5 transition-transform duration-200 hover:scale-125 hover:text-purple-400"
               aria-label="email: thisisbryanchan@gmail.com"
             >
               <span className="sr-only">email</span>
@@ -58,7 +62,7 @@ export default function Home() {
 
             <a
               rel="noopener noreferrer"
-              className="inline-flex items-center p-2 rounded hover:bg-white/5"
+              className="inline-flex items-center p-2 rounded hover:bg-white/5 transition-transform duration-200 hover:scale-125 hover:text-purple-400 cursor-pointer"
               aria-label="Discord: @brrryry"
             >
               <span className="sr-only">discord: @brrryry</span>
@@ -82,7 +86,7 @@ export default function Home() {
               href="https://github.com/brrryry"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center p-2 rounded hover:bg-white/5"
+              className="inline-flex items-center p-2 rounded hover:bg-white/5 transition-transform duration-200 hover:scale-125 hover:text-purple-400"
               aria-label="github profile"
             >
               <span className="sr-only">github profile</span>
@@ -105,7 +109,9 @@ export default function Home() {
         </div>
 
         <div className="bio space-y-5 py-5 text-pretty">
-          <h2 className="text-2xl font-bold mb-3">Hi, I&apos;m Bryan.</h2>
+          <h2 className="text-2xl font-bold mb-3">
+            Hi, I&apos;m <span className="animate-gradient-text">Bryan</span>.
+          </h2>
           <p>
             I{"'"}m a graduate student at{" "}
             <a href="https://www.stevens.edu/" target="_blank">
@@ -132,196 +138,201 @@ export default function Home() {
           </p>
           <br />
 
-          <h2 className="text-2xl font-bold mb-3">Recent News</h2>
-          <div className="space-y-2">
-            <div className="flex highlight-item space-x-10">
-              <div className="left-side min-w-[100px]">
-                <p>04-2026</p>
+          <div className="animate-fade-in-up delay-300">
+            <h2 className="text-2xl font-bold mb-3">Recent News</h2>
+            <div className="space-y-2">
+              <div className="flex highlight-item space-x-10">
+                <div className="left-side min-w-[100px]">
+                  <p>04-2026</p>
+                </div>
+                <div className="right-side">
+                  <p className="text">
+                    <a
+                      href="https://www.caecommunity.org/symposium-archive/2026-cae-in-cybersecurity-symposium"
+                      target="_blank"
+                    >
+                      A Machine Learning-based Approach to Malicious Document
+                      Detection for RAG Chunk Ingestion
+                    </a>{" "}
+                    presented at{" "}
+                    <a
+                      href="https://jindal.utdallas.edu/biz-ai-conference/biz-ai-conference-2026/"
+                      target="_blank"
+                    >
+                      <em>BizAI 2026</em>
+                    </a>{" "}
+                    and{" "}
+                    <a
+                      href="https://www.caecommunity.org/symposium"
+                      target="_blank"
+                    >
+                      <em>CAE Symposium 2026</em>
+                    </a>
+                    .
+                  </p>
+                </div>
               </div>
-              <div className="right-side">
-                <p className="text">
-                  <a
-                    href="https://www.caecommunity.org/symposium-archive/2026-cae-in-cybersecurity-symposium"
-                    target="_blank"
-                  >
-                    A Machine Learning-based Approach to Malicious Document
-                    Detection for RAG Chunk Ingestion
-                  </a>{" "}
-                  presented at{" "}
-                  <a
-                    href="https://jindal.utdallas.edu/biz-ai-conference/biz-ai-conference-2026/"
-                    target="_blank"
-                  >
-                    <em>BizAI 2026</em>
-                  </a>{" "}
-                  and{" "}
-                  <a
-                    href="https://www.caecommunity.org/symposium"
-                    target="_blank"
-                  >
-                    <em>CAE Symposium 2026</em>
-                  </a>
-                  .
-                </p>
-              </div>
-            </div>
 
-            <hr className="border-purple-400/40" />
+              <hr className="border-purple-400/40" />
 
-            <div className="flex highlight-item space-x-10">
-              <div className="left-side min-w-[100px]">
-                <p>06-2025</p>
+              <div className="flex highlight-item space-x-10">
+                <div className="left-side min-w-[100px]">
+                  <p>06-2025</p>
+                </div>
+                <div className="right-side">
+                  <p className="text">
+                    Started research (AI in Enterprise Data) at Illinois State
+                    University under{" "}
+                    <a
+                      href="https://it.illinoisstate.edu/faculty-staff/profile/?ulid=dzhdano"
+                      target="_blank"
+                    >
+                      Dr. Dmitry Zhdanov
+                    </a>{" "}
+                    and the{" "}
+                    <a
+                      href="https://www.caecommunity.org/initiatives/initiative-insure"
+                      target="_blank"
+                    >
+                      INSuRE+E Program
+                    </a>
+                    . A poster was presented in a private showcase in December
+                    2025.
+                  </p>
+                </div>
               </div>
-              <div className="right-side">
-                <p className="text">
-                  Started research (AI in Enterprise Data) at Illinois State
-                  University under{" "}
-                  <a
-                    href="https://it.illinoisstate.edu/faculty-staff/profile/?ulid=dzhdano"
-                    target="_blank"
-                  >
-                    Dr. Dmitry Zhdanov
-                  </a>{" "}
-                  and the{" "}
-                  <a
-                    href="https://www.caecommunity.org/initiatives/initiative-insure"
-                    target="_blank"
-                  >
-                    INSuRE+E Program
-                  </a>
-                  . A poster was presented in a private showcase in December
-                  2025.
-                </p>
-              </div>
-            </div>
 
-            <hr className="border-purple-400/40" />
+              <hr className="border-purple-400/40" />
 
-            <div className="flex highlight-item space-x-10">
-              <div className="left-side min-w-[100px]">
-                <p>10-2024</p>
+              <div className="flex highlight-item space-x-10">
+                <div className="left-side min-w-[100px]">
+                  <p>10-2024</p>
+                </div>
+                <div className="right-side">
+                  <p className="text">
+                    <a
+                      href="https://131b1d64-a91b-4e72-9201-2d47ce0a189a.filesusr.com/ugd/eeb746_ca1016804fc0441597a22f1d72ae651d.pdf"
+                      target="_blank"
+                    >
+                      A Survey of ROV++: We May Need Another Napkin
+                    </a>{" "}
+                    poster presented at{" "}
+                    <a
+                      href="https://www.caecommunity.org/cop-cyber-research/cae-r-research-symposium/2024-cae-r-cop-research-symposium"
+                      target="_blank"
+                    >
+                      <em>2024 CAE Symposium</em>
+                    </a>
+                    .
+                  </p>
+                </div>
               </div>
-              <div className="right-side">
-                <p className="text">
-                  <a
-                    href="https://131b1d64-a91b-4e72-9201-2d47ce0a189a.filesusr.com/ugd/eeb746_ca1016804fc0441597a22f1d72ae651d.pdf"
-                    target="_blank"
-                  >
-                    A Survey of ROV++: We May Need Another Napkin
-                  </a>{" "}
-                  poster presented at{" "}
-                  <a
-                    href="https://www.caecommunity.org/cop-cyber-research/cae-r-research-symposium/2024-cae-r-cop-research-symposium"
-                    target="_blank"
-                  >
-                    <em>2024 CAE Symposium</em>
-                  </a>
-                  .
-                </p>
-              </div>
-            </div>
 
-            <hr className="border-purple-400/40" />
+              <hr className="border-purple-400/40" />
 
-            <div className="flex highlight-item space-x-10">
-              <div className="left-side min-w-[100px]">
-                <p>06-2024</p>
+              <div className="flex highlight-item space-x-10">
+                <div className="left-side min-w-[100px]">
+                  <p>06-2024</p>
+                </div>
+                <div className="right-side">
+                  <p className="text">
+                    Started research (BGP Empirical Studies) at Iowa State
+                    University under{" "}
+                    <a
+                      href="https://www.engineering.iastate.edu/people/profile/bgulmez/"
+                      target="_blank"
+                    >
+                      Dr. Burk Gulmezoglu
+                    </a>{" "}
+                    and the{" "}
+                    <a
+                      href="https://www.caecommunity.org/initiatives/initiative-insure"
+                      target="_blank"
+                    >
+                      INSuRE+E Program
+                    </a>
+                    . Poster published in October 2024.
+                  </p>
+                </div>
               </div>
-              <div className="right-side">
-                <p className="text">
-                  Started research (BGP Empirical Studies) at Iowa State
-                  University under{" "}
-                  <a
-                    href="https://www.engineering.iastate.edu/people/profile/bgulmez/"
-                    target="_blank"
-                  >
-                    Dr. Burk Gulmezoglu
-                  </a>{" "}
-                  and the{" "}
-                  <a
-                    href="https://www.caecommunity.org/initiatives/initiative-insure"
-                    target="_blank"
-                  >
-                    INSuRE+E Program
-                  </a>
-                  . Poster published in October 2024.
-                </p>
-              </div>
-            </div>
 
-            <hr className="border-purple-400/40" />
+              <hr className="border-purple-400/40" />
 
-            <div className="flex highlight-item space-x-10">
-              <div className="left-side min-w-[100px]">
-                <p>09-2023</p>
+              <div className="flex highlight-item space-x-10">
+                <div className="left-side min-w-[100px]">
+                  <p>09-2023</p>
+                </div>
+                <div className="right-side">
+                  <p className="text">
+                    Began Course Assistantship for{" "}
+                    <a
+                      href="https://web.stevens.edu/catalog/archive/2021-2022/en/catalog/academic-catalog/courses/cs-computer-science/100/cs-115.html"
+                      target="_blank"
+                    >
+                      <em>CS 115: Introduction to Computer Science</em>
+                    </a>{" "}
+                    and{" "}
+                    <a
+                      href="https://stevens.smartcatalogiq.com/en/2021-2022/academic-catalog/courses/ma-mathematics/300/ma-331"
+                      target="_blank"
+                    >
+                      <em>MA 331: Intermediate Statistics</em>
+                    </a>{" "}
+                    at Stevens Institute of Technology. (Fall 2023 - Spring
+                    2025)
+                  </p>
+                </div>
               </div>
-              <div className="right-side">
-                <p className="text">
-                  Began Course Assistantship for{" "}
-                  <a
-                    href="https://web.stevens.edu/catalog/archive/2021-2022/en/catalog/academic-catalog/courses/cs-computer-science/100/cs-115.html"
-                    target="_blank"
-                  >
-                    <em>CS 115: Introduction to Computer Science</em>
-                  </a>{" "}
-                  and{" "}
-                  <a
-                    href="https://stevens.smartcatalogiq.com/en/2021-2022/academic-catalog/courses/ma-mathematics/300/ma-331"
-                    target="_blank"
-                  >
-                    <em>MA 331: Intermediate Statistics</em>
-                  </a>{" "}
-                  at Stevens Institute of Technology. (Fall 2023 - Spring 2025)
-                </p>
-              </div>
-            </div>
 
-            <hr className="border-purple-400/40" />
+              <hr className="border-purple-400/40" />
 
-            <div className="flex highlight-item space-x-10">
-              <div className="left-side min-w-[100px]">
-                <p>11-2022</p>
-              </div>
-              <div className="right-side">
-                <p className="text">
-                  Started research (
-                  <em>Analyzing Collapse of Online Gaming Communities</em>) at
-                  Stevens Institute of Technology under{" "}
-                  <a
-                    href="https://www.stevens.edu/profile/jsun54"
-                    target="_blank"
-                  >
-                    Dr. Jingyi Sun
-                  </a>
-                  . (Fall 2022 - Summer 2023)
-                </p>
+              <div className="flex highlight-item space-x-10">
+                <div className="left-side min-w-[100px]">
+                  <p>11-2022</p>
+                </div>
+                <div className="right-side">
+                  <p className="text">
+                    Started research (
+                    <em>Analyzing Collapse of Online Gaming Communities</em>) at
+                    Stevens Institute of Technology under{" "}
+                    <a
+                      href="https://www.stevens.edu/profile/jsun54"
+                      target="_blank"
+                    >
+                      Dr. Jingyi Sun
+                    </a>
+                    . (Fall 2022 - Summer 2023)
+                  </p>
+                </div>
               </div>
             </div>
           </div>
 
           <br />
 
-          <h2 className="text-2xl font-bold mb-3">Recent Blog Posts</h2>
+          <div className="animate-fade-in-up delay-400">
+            <h2 className="text-2xl font-bold mb-3">Recent Blog Posts</h2>
 
-          {recentPosts.length > 0 && (
-            <div className="space-y-2 text-[1.3rem]">
-              {recentPosts.map(({ id, date, title }) => (
-                <div key={id} className="flex highlight-item space-x-5">
-                  <div className="left-side">
-                    <p>{date}</p>
+            {recentPosts.length > 0 && (
+              <div className="space-y-2 text-[1.3rem]">
+                {recentPosts.map(({ id, date, title }) => (
+                  <div key={id} className="flex highlight-item space-x-10">
+                    <div className="left-side min-w-[120px] shrink-0">
+                      <p>{date}</p>
+                    </div>
+                    <div className="right-side">
+                      <a
+                        href={`/blog/${id}`}
+                        className="text underline hover:text-purple-300 transition-colors duration-200 ease-out"
+                      >
+                        {title}
+                      </a>
+                    </div>
                   </div>
-                  <div className="right-side">
-                    <a
-                      href={`/blog/${id}`}
-                      className="text underline hover:text-purple-300 transition-colors duration-200 ease-out"
-                    >
-                      {title}
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

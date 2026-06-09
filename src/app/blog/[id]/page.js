@@ -56,7 +56,7 @@ export default async function BlogPost({ params }) {
   };
 
   return (
-    <div className="max-w-full mx-auto px-4">
+    <div className="max-w-full mx-auto px-4 animate-fade-in-up delay-100">
       <article className="min-w-0 max-w-full">
         - - -<h3>{data.title}</h3>
         <p>originally created on {data.date}</p>

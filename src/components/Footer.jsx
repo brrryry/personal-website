@@ -39,19 +39,19 @@ export function Footer({ hash }) {
 
       <p className="text-sm">
         <a href="https://nextjs.org/" target="_blank">
-          next.js
+          NextJS
         </a>
         {" | "}
         <a href="https://tailwindcss.com/" target="_blank">
-          tailwindcss
+          TailwindCSS
         </a>
         {" | "}
         <a href="https://docker.com/" target="_blank">
-          docker
+          Docker
         </a>
         {" | "}
         <a href="https://nas.ugreen.com/" target="_blank">
-          ugreen
+          UGreen NAS
         </a>
       </p>
     </>
