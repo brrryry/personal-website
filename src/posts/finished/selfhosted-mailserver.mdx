@@ -39,10 +39,12 @@ Once it reaches the destination mail server, the email sits there. \
 \
 When a client (like Outlook, Gmail, etc.) wants to check mail, it uses either:
 
+<br />
 <BlogList>
     <li>**"Internet Message Access Protocol" (IMAP)** - view email on the server</li>
     <li>**"Post Office Protocol Version 3" (POP3)** - download (and delete) email from server</li>  
 </BlogList>
+<br />
 
 IMAP is generally used more since it allows you to view email on multiple devices without downloading it.
 
@@ -55,11 +57,13 @@ source="https://www.ipxo.com/blog/what-is-an-email-server/"
 
 Now with these protocols, there's a couple terms that you should know:
 
+<br />
 <BlogList>
     <li>**Mail User Agent (MUA)** - the email client that you use to read and send email (eg. Outlook, Gmail, Thunderbird)</li>
     <li>**Mail Transfer Agent (MTA)** - the SMTP server that relays email from one server to another (eg. Postfix, Exim)</li>
     <li>**Mail Delivery Agent (MDA)** - the server that stores and delivers email to the recipient (eg. Dovecot, Courier)</li>
 </BlogList>
+<br />
 
 MUAs will use SMTP (MTA) to send mail, and IMAP/POP3 (MDA) to receive mail.
 
@@ -149,11 +153,13 @@ In order for email to be sent and received properly, I had to add some DNS recor
 \
 There are a few protocols that help with email delivery and preventing spam. These protocols are:
 
+<br />
 <BlogList>
     <li>**"Sender Policy Framework" (SPF)** - says which mail servers are allowed to send email on behalf of your domain</li>
     <li>**"DomainKeys Identified Mail" (DKIM)** - adds a signature to verify that the email was sent by an authorized server</li>
     <li>**"Domain-based Message Authentication, Reporting & Conformance" (DMARC)** - uses SPF and DKIM to determine if an email is legitimate and provides instructions on how to handle emails that fail these checks</li>
 </BlogList>
+<br />
 
 In order to reliably send my mail, I need SPF and DKIM records to match correctly. Otherwise, my emails might get marked as spam or rejected. \
 \
@@ -311,11 +317,13 @@ The important part is the SCL value. SCL stands for "Spam Confidence Level", and
 \
 Unfortunately, my emails had an SCL of 5, meaning that they were likely to be spam. This could be because of a few things:
 
+<br />
 <BlogList>
 <li>Content of the email is spammy</li>
 <li>Subject of the email is spammy</li>
 <li>IP address of the SMTP relay is blacklisted/not reputable</li>
 </BlogList>
+<br />
 
 I think that the last option is the most probable one. Since I haven't been sending emails, I probably have a more neutral - and thus less reputable - IP address. \
 \
@@ -329,12 +337,14 @@ on my website. I'm not sure how feasible this is at the moment, but I would like
 \
 Next stop?
 
+<br />
 <BlogList>
 <li>Visitor stats?</li>
 <li>Uptime monitoring?</li>
 <li>Job application experience?</li>
 <li>Adding GPG signing to my emails</li>
 </BlogList>
+<br />
 
 Not sure yet. Anyways, thanks for reading for now! See you soon :) \
 \

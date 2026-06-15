@@ -35,6 +35,7 @@ Apparently, AutoML does this automatically. Pretty cool. \
 \
 There are a bunch of experiments that you can run with AutoML, including:
 
+<br />
 <BlogList>
 <li>Logistic Regression</li>
 <li>Light Gradient Boosting Machine (LGBM)</li>
@@ -44,6 +45,7 @@ There are a bunch of experiments that you can run with AutoML, including:
 <li>Linear Support Vector Machine (SVM)</li>
 <li>XGBoost</li>
 </BlogList>
+<br />
 
 <BlogImage
 src="/blogs/ms-dp100/slc/2/supported.png"
@@ -81,12 +83,14 @@ The full list of primary metrics can be found in <a href="https://learn.microsof
 \
 Limits can also be set for the experiment.
 
+<br />
 <BlogList>
 <li>`timeout_minutes` - the maximum time that the experiment can run for.</li>
 <li>`trial_timeout_minutes` - the maximum time that each trial can run for.</li>
 <li>`max_trials` - the maximum number of trials that can be run.</li>
 <li>`enable_early_termination` - whether to enable early termination of trials.</li>
 </BlogList>
+<br />
 
 Trials can also be concurrently run, and the respective limit can be set with the `max_concurrent_trials` parameter. \
 \
@@ -107,11 +111,13 @@ print("Monitor your job at", aml_url)
 What's cool about AutoML is that guardrails can be automatically applied to the job. 
 Some examples of guardrails could be:
 
+<br />
 <BlogList>
 <li>**Class balancing detection** - AutoML can detect if the classes in the training data are imbalanced and apply techniques to balance them.</li>
 <li>**Missing feature value detection** - AutoML can detect if there are missing values in the features and apply techniques to handle them.</li>
 <li>**High cardinality feature detection** - AutoML can detect if there are features with high cardinality (i.e. a large number of unique values) and apply techniques to handle them.</li>
 </BlogList>
+<br />
 
 AutoML can possibly fix these issues on their own (`done` status), or it can just detect them
 if they are not fixable (`alerted` status). \

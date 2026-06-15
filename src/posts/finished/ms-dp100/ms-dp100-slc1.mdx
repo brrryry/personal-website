@@ -25,19 +25,23 @@ The first two submodules detail what is in a machine learning service (the works
 In order to make one, you need to:
 
 
+<br />
 <BlogList>
 <li>Get access to an Azure account and subscription (as you do with most cloud services)</li>
 <li>Create a resource group (aka a container to organize an Azure "solution")</li>
 <li>Create a machine learning workspace (the actual service - "workspace" and "service" seem to be used interchangeably)</li>
 </BlogList>
+<br />
 
 There are multiple ways to do the last step as well, those methods being:
 
+<br />
 <BlogList>
 <li>Using the Azure portal (yay, fancy UI)</li>
 <li>Using the Azure command line interface (CLI)</li>
 <li>Using the Python SDK</li>
 </BlogList>
+<br />
 
 I tried to create a workspace using the Azure portal, and it was pretty straightforward.
 In the future, I would like to try using the SDK. CLIs are usually not my thing, and I prefer using either the 
@@ -68,12 +72,14 @@ caption="I created a workspace! Yay!"
 The second submodule in particular goes over the automatically created resources in the workspace.
 These resources include:
 
+<br />
 <BlogList>
 <li>**Azure Storage Account** - used to store files/notebooks and job/model metadata</li>
 <li>**Azure Key Vault** - used to store secrets (like API keys, passwords, etc)</li>
 <li>**Application Insights** - to monitor applications and services</li>
 <li>**Azure Container Registry** - used to store images for the workspace</li>
 </BlogList>
+<br />
 
 Azure uses role-based access control (RBAC), meaning that you can assign roles to 
 users/groups to control what they can do. The docs give three general
@@ -155,6 +161,7 @@ This is also where logs and snapshots reside. \
 \
 Compute resources a bit more nuanced. Apparently there are five types of compute resources.
 
+<br />
 <BlogList>
 <li>**Compute Instance** - basically a virtual machine.</li>
 <li>**Compute Clusters** - clusters of CPUs and GPUs. Usually used in production workloads because they are scalable</li>
@@ -162,6 +169,7 @@ Compute resources a bit more nuanced. Apparently there are five types of compute
 <li>**Attached Computes** - other Azure compute resources external to the workspace</li>
 <li>**Serverless Compute** - used for training jobs, just a compute resource. No server.</li>
 </BlogList>
+<br />
 
 These compute resources are usually the most expensive part of the workspace. After all, processing costs money. \
 \
@@ -173,12 +181,14 @@ to these datastores. The connection information is stored in the key vault (ment
 \
 There are four default datastores that are created when the workspace is created:
 
+<br />
 <BlogList>
 <li>**workspaceartifactstore** - stores compute/experiment logs</li>
 <li>**workspaceworkingdirectory** - stores files from compute instances (usually used by notebooks)</li>
 <li>**workspaceblobstore** - default datastore, used for unstructured data</li>
 <li>**workspacefilestore** - connects Azure storage account to workspace</li>
 </BlogList>
+<br />
 
 Of course, you can create your own datastores. \
 \
@@ -206,12 +216,14 @@ This submodule goes over assets. \
 \
 Assets can be a bunch of things.
 
+<br />
 <BlogList>
 <li>**Models**</li>
 <li>**Environments** (like conda?)</li>
 <li>**Data**</li>
 <li>**Components** (reusable code?)</li>
 </BlogList>
+<br />
 
 Azure goes over some ways to log workflow artifacts like checkpoints and metrics.
 Personally, I have beef with this. It advertises a ``.pkl`` format, but...this
@@ -242,11 +254,13 @@ the first GitHub lab (see repo from megablog) as an example. \
 \
 There are three cited ways to train a model:
 
+<br />
 <BlogList>
 <li>Automated Machine Learning (AutoML)</li>
 <li>Jupyter Notebooks</li>
 <li>Running a script (as a job)</li>
 </BlogList>
+<br />
 
 (Note: I spent so long trying to figure out what a job was. Man.) 
 
@@ -260,6 +274,7 @@ to the
 <a href="https://learn.microsoft.com/en-us/azure/machine-learning/concept-automated-ml" target="_blank">docs</a>, 
 AutoML only requires a few steps:
 
+<br />
 <BlogList>
 <li>Identify ML problem (classification, regression, NLP, etc.)</li>
 <li>Choose whether you want to code or not???</li>
@@ -267,6 +282,7 @@ AutoML only requires a few steps:
 <li>Configure hyperparameters and preprocessing</li>
 <li>Just let it do its thing</li>
 </BlogList>
+<br />
 
 What??? Like...it does seem like it only works with supervised learning, but that's insane.
 Way to get rid of my job. I mean...surely, it isn't perfect, but it has so many functions
@@ -303,11 +319,13 @@ because it is specialized to Azure.
 Jobs can be used to automate script execution, and there are three types of jobs
 that are specified in the course:
 
+<br />
 <BlogList>
 <li>**Command** - used to execute a script</li>
 <li>**Sweep** - hyperparameter tuning when executing a script</li>
 <li>**Pipeline** - a sequence of multiple scripts/jobs in order</li>
 </BlogList>
+<br />
 
 ## Submodule 1.6 - Exploration
 This submodule just gave a practical example of how to make a training job. 
@@ -428,11 +446,13 @@ The third submodule goes into data management \
 To start, this included an overview of uniform resource identifiers (URIs) and how they are used to access data.
 There are three types of URIs that are used in the workspace:
 
+<br />
 <BlogList>
 <li>HTTP(S) URIs - used to access data in the workspace - you may have seen these before!</li>
 <li>ABFS(S) URIs - used for Azure Data Lake Storage (2nd gen)</li>
 <li>AzureML URIs - used for datastores</li>
 </BlogList>
+<br />
 
 Creating a datastore is pretty straightforward in the SDK. The MLClient object has a function called `create_or_update()`, and it's used to create any
 Azure ML resources (Note: you can also use `begin_create_or_update()` to create resources asynchronously).

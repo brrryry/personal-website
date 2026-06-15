@@ -9,6 +9,7 @@ As the school year comes in (I'm writing this in early August), I'm expecting to
 (even though this is not guaranteed to be the case). With this in mind, I would like to start documenting my
 development process so that:
 
+<br />
 <BlogList>
   <li>
     I don't lose track of what I'm doing and don't end myself over deprecated
@@ -19,6 +20,7 @@ development process so that:
     them make their own one day)
   </li>
 </BlogList>
+<br />
 
 This will be my first attempt at a more "formal" post - I'm hoping that this blog will have no glaring errors by the time I publish it.
 After all, my last few blogs represented more of a tangent than an actual blog... \
@@ -59,6 +61,7 @@ What import alias would you like configured? @/*
 This will create a Next app in a folder with your project's name on it. \
 I installed these packages for my blog, but not all of them are necessary (obviously).
 
+<br />
 <BlogList>
   <li>
     ``next-mdx-remote`` - parsing remote .mdx files (honestly not necessary). I
@@ -75,6 +78,7 @@ I installed these packages for my blog, but not all of them are necessary (obvio
   </li>
   <li>``rehype`` - adds classes to code tags to enable fancy code CSS</li>
 </BlogList>
+<br />
 
 You should familiarize yourself with the directories and what they are meant for. \
 \
@@ -98,6 +102,7 @@ That's essentially it for the setup, but now it's time for the coding. \
 
 The App Router works in a way such that each folder is a route. For example:
 
+<br />
 <BlogList>
   <li>The page ``/`` renders the JS file ``app/page.js``</li>
   <li>The page ``/blog`` renders the JS file ``app/blog/page.js``.</li>
@@ -106,6 +111,7 @@ The App Router works in a way such that each folder is a route. For example:
     (yes, this folder structure works for dynamic fetching as well!)
   </li>
 </BlogList>
+<br />
 
 With that being said, my home page's source code (`app/page.js`) will be shown below!
 
@@ -176,6 +182,7 @@ Now, you may notice that I'm missing a navbar. Where is it???
 One of the great things about Next (and React) is components. You can make custom JS files that are both
 reusable and independent to the rest of the code where the component is used. For example, I have a few components:
 
+<br />
 <BlogList>
   <li>Navbar - to render the navigation bar at the top of my page</li>
   <li>
@@ -185,6 +192,7 @@ reusable and independent to the rest of the code where the component is used. Fo
   <li>BlogCode - to add code into my blog</li>
   <li>LatexWrapper - to add LaTeX into my blog</li>
 </BlogList>
+<br />
 
 In order to make a component, you just need a JS file. I like to keep my stuff organized, so I have a folder:
 `src/components`. To give an example, I'll show you my navbar code (`src/components/Navbar.js`).
@@ -629,6 +637,7 @@ document my progress! \
 \
 There are a few things that I would like to do in the future:
 
+<br />
 <BlogList>
   <li>Add a search bar to my blog</li>
   <li>
@@ -641,6 +650,7 @@ There are a few things that I would like to do in the future:
     cooking related, since I'm trying to learn how to cook - blog coming soon?)
   </li>
 </BlogList>
+<br />
 
 I hope you enjoyed this blog! I will be back soon with another one. \
 \

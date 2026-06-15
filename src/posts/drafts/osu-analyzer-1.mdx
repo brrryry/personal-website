@@ -52,12 +52,14 @@ this is a pretty vague idea, but i think it's a good starting point. \
 \
 off the top of my head, i can think of a few categories that a beatmap can fall into:
 
+<br />
 <BlogList>
 <li>jump maps - maps that frequently require you to "jump" between circles</li>
 <li>stream maps - maps that frequently require you to "stream"</li>
 <li>tech maps - maps that purposely don't follow a pattern</li>
 <li>speed maps - maps that are just...fast.</li>
 </BlogList>
+<br />
 
 of course, these categories are not mutually exclusive. a map can be a mix of all of these categories. 
 it may not also be possible to even categorize maps this way. there's only one way to find out: by trying!
@@ -96,11 +98,13 @@ for now, i won't do tech maps (those are bit complicated). \
 \
 here are the features that i will extract:
 
+<br />
 <BlogList>
 <li>overall stats (ar, cs, etc.)</li>
 <li>jumps (number of small/medium/large jumps, jump density, etc.)</li>
 <li>streams/bursts (number of streams, stream length, etc.)</li>
 </BlogList>
+<br />
 
 we'll start with this. let's write the program!
 
@@ -394,10 +398,12 @@ this makes things a bit easier to test out! \
 \
 in order to pre-process the data, i will do some stuff:
 
+<br />
 <BlogList>
 <li>remove maps that are less than 4 stars in difficulty</li>
 <li>normalize features</li>
 </BlogList>
+<br />
 
 <BlogCode language="python" title="create_clusters.py">
 {`
@@ -440,10 +446,12 @@ kmeans clustering is a type of unsupervised learning algorithm that groups simil
 it is a centroid-based algorithm, where the goal is to partition the data into k clusters.
 the algorithm works over iterations! it repeats the following steps until the centroids do not change (converge):
 
+<br />
 <BlogList>
 <li>assign each data point to the nearest centroid</li>
 <li>update the centroids to the mean of the data points assigned to it</li>
 </BlogList>
+<br />
 
 initially, the number of k centroids are decided by the user (in our instance, we want 1 cluster for each map type).
 each centroid has a coordinate in the n-dimensional feature space (x<sub>1</sub>, x<sub>2</sub>, ..., x<sub>n</sub>). 

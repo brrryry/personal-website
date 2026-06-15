@@ -73,19 +73,23 @@ Meanwhile, the **upper convex hull** of a set of points $S$ is the part of the c
 ## Looking at the Upper Convex Hull
 Going back to the problem, we have discrete points $(n, a_n)$. We can look at the upper convex hull of these points and prove two things:
 
+<br />
 <BlogList>
 <li>There are infinitely many points on the upper convex hull.</li>
 <li>All points on the upper convex hull satisfy the midpoint inequality seen earlier.</li>
 </BlogList>
+<br />
 
 To do the first part, we will use contradiction. 
 
+<br />
 <BlogList>
 <li>Assume there are only finitely many points on the upper convex hull. Let the largest point be $(N, a_N)$.</li>
 <li>The slope of the convex hull to any point $(n, a_n)$ where $n > N$ is $\sup_n\frac{a_n - a_N}{n - N}$. This slope would hover above all subsequent points in the sequence.</li>
 <li>We know that $lim_{n \to \infty} \frac{a_n}{n} = 0$. This means that $lim_{n \to \infty} \frac{a_n - a_N}{n - N} = 0$.</li>
 <li>This means that the supremeum over these slopes is actually MAXIMIZED at some point $M$ that lies on the sequence, causing a contradiction.</li>
 </BlogList>
+<br />
 
 There's our proof that there are infinitely many points on the upper convex hull. The second part is easier! \
 \

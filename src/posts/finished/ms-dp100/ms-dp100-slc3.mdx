@@ -20,11 +20,13 @@ In this module, we get more into production workloads.
 We want to turn notebooks into scripts to make model training processes easily comparable and
 reproducible. This includes doing the following steps (cited directly from the course):
 
+<br />
 <BlogList>
 <li>**Removing non-essential code** - debug/redundant print statements, stuff like that</li>
 <li>**Converting cells into functions** - this is a good practice in general!</li>
 <li>**Script testing** - making sure that the script can work in a pipeline (this is why functions are important)</li>
 </BlogList>
+<br />
 
 <BlogCode title="Example of refactored code from the course" language="python" copy="false">
 {`
@@ -55,12 +57,14 @@ def split_data(df):
 From here, once your code is refactored, you need to interact with the Azure ML SDK to run the script as a command job.
 I kinda had a hard time wrapping my head around this, so I had to review the difference between...
 
+<br />
 <BlogList>
 <li>**Command job** - a job that runs a script</li>
 <li>**Experiment** - a collection of jobs</li>
 <li>**Pipeline** - a collection of jobs that are connected together</li>
 <li>**Run** - a single execution of a job</li>
 </BlogList>
+<br />
 
 <BlogCode title="Example of creating a command job" language="python" copy="false">
 {`
@@ -114,11 +118,13 @@ source="https://learn.microsoft.com/en-us/training/modules/train-models-training
 
 When you want to log manually, you have three basic options:
 
+<br />
 <BlogList>
 <li>mlflow.log_param(key, value): log a key-value parameter value (usually input parameters)</li>
 <li>mlflow.log_metric(key, value): log a key-value metric value (must be a number!!!)</li>
 <li>mlflow.log_artifact(local_path, artifact_path): log a file</li>
 </BlogList>
+<br />
 
 Metrics that are logged can be viewed in the studio by going to ``Studio > Experiment Run > Details > Metrics``.
 The view of these metrics (as well as charts and whatnot) can be edited in the ML Studio.
@@ -144,12 +150,14 @@ As with any machine learning project, hyperparameter tuning is a crucial step.
 The term "hyper" is used because these "parameters" cannot be adjusted - like weights and biases - during training. 
 Instead, they are set before the training process begins and remain constant. Some examples of hyperparameters would be...
 
+<br />
 <BlogList>
 <li>Learning rate</li>
 <li>Batch size</li>
 <li>Number of epochs</li>
 <li>Optimizer function</li>
 </BlogList>
+<br />
 
 In order to tune these hyperparameters, a validation set (as opposed to a **training** and **testing** set) is used.
 This validation set tests the performance of different hyperparameter combinations and helps to find the best one. \
@@ -175,12 +183,14 @@ command_job_for_sweep = job(
 
 When choosing these hyperparameter combinations, there are a few sampling methods that Azure implements:
 
+<br />
 <BlogList>
 <li>**Random sampling**: samples hyperparameter combinations randomly from the search space</li>
 <li>**Sobol sampling**: almost the same as random sampling, but uses a seed to make the results reproducible</li>
 <li>**Grid sampling**: samples hyperparameter combinations from a predefined "grid" of discrete combinations</li>
 <li>**Bayesian sampling**: uses past performance to sample better hyperparameter combinations</li>
 </BlogList>
+<br />
 
 When calling a sweep job (the job used for hyperparameter tuning), one of the parameters is ``sampling_algorithm``. There, you can specify the sampling method to use. \
 \
@@ -189,21 +199,25 @@ If a new tuning doesn't result in an improvement, the sweep job can be stopped. 
 \
 The sweep job early termination feature has two main parameters:
 
+<br />
 <BlogList>
 <li>**evaluation_interval**: the interval at which the early termination policy is checked</li>
 <li>**delay_evaluation**: the number of trials to wait before starting to evaluate the performance of the current best trial</li>
 </BlogList>
+<br />
 
 For example, if you wanted the early termination to - at earliest - be at the fifth trial and wanted to check if early
 termination is possible on every other trial, you would set ``evaluation_interval=2`` and ``delay_evaluation=5``. \
 \
 As for the policies themselves, there are a few policies that Azure implements:
 
+<br />
 <BlogList>
 <li>**Bandit policy** - uses a "slack factor / slack amount". Any new model must perform within the slack range of the best current model.</li>
 <li>**Median stopping policy** - any new model must perform better than the median performance of primary metrics</li>
 <li>**Truncation policy** - any new model must perform better than the worst percentage (arbitrary) of models in the current batch</li>
 </BlogList>
+<br />
 
 MLflow (from the last module) should be used to track the performance of hyperparameter tuning jobs,
 and a script should be made for tuning.

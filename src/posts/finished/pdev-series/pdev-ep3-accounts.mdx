@@ -119,6 +119,7 @@ I'm not going to show the code for all of them, as that is quite annoying to rea
 <a href="https://github.com/brrryry/personal-website" target="_blank">GitHub</a> for the code. All in all, I made 
 two files: `accounts.js` for account and session functions, and `comments.js` for comment functions. 
 
+<br />
 <BlogList>
 <li>Create/delete accounts</li>
 <li>Login/logout/session check</li>
@@ -126,6 +127,7 @@ two files: `accounts.js` for account and session functions, and `comments.js` fo
 <li>Get comments for a blog</li>
 <li>Get comments for a user</li>
 </BlogList>
+<br />
 
 After I made these functions, I had to start actually throwing it all together in the client side.
 
@@ -194,11 +196,13 @@ export function useSession() {
 
 Some examples of where this would be used would be...
 
+<br />
 <BlogList>
 <li>The login page - if you are logged in, redirect out!!</li>
 <li>The navbar component - show the login/logout button</li>
 <li>The blog comments component - show the comment form if logged in</li>
 </BlogList>
+<br />
 
 So...yeah, now we have an accurate way to tell on the client side if a user is logged in or not. Awesome!
 
@@ -206,6 +210,7 @@ So...yeah, now we have an accurate way to tell on the client side if a user is l
 Since the blog itself is a server side rendered page, it was easy to stick on a blog comment component in the client side.
 Of course, in order to have the client interact with the server, I had to make a few API routes.
 
+<br />
 <BlogList>
 <li>GET /api/comments/:blogid - get all comments for a blog</li>
 <li>POST /api/comments/:blogid - create a comment for a blog</li>
@@ -213,6 +218,7 @@ Of course, in order to have the client interact with the server, I had to make a
 <li>PUT /api/comments/:commentid - update a comment</li>
 <li>GET /api/account/:userid - get all comments for a user (I bundled this with profile because I'm lazy)</li>
 </BlogList>
+<br />
 
 Alright, so now we have a way to comment and stuff. To recap... \
 \

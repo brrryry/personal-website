@@ -93,12 +93,14 @@ Going back to why convexity is important - it gives us a function that's almost 
 we can follow the steepest descent to reach the bottom of the bowl (the global minimum). \
 \
 Here's what the update rule for Gradient Descent looks like! 
+<br />
 <BlogList>
 <li>Initialize parameters (in this case, $\beta$) randomly</li>
 <li>Compute the gradient of the loss function with respect to the parameters.</li>
 <li>Update the parameters by taking a step in the direction of the negative gradient.</li>
 <li>Repeat steps 2 and 3!</li>
 </BlogList>
+<br />
 
 The update rule can be summarized mathematically as:
 
@@ -111,10 +113,12 @@ where β represents the parameters, α is the learning rate (step size), and ∇
 The learning rate controls how much of a "step" we take in the direction of the negative gradient! 
 There are different ways to choose the learning rate! They can generally be classified into two categories:
 
+<br />
 <BlogList>
 <li>Fixed learning rate: A constant value throughout the training process.</li>
 <li>Adaptive learning rate: Adjusts the learning rate based on the progress of the optimization </li>
 </BlogList>
+<br />
 
 <BlogImage
 src="/blogs/optimization-in-ml/gd_sim.png"
