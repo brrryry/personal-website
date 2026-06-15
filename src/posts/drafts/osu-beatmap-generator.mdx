@@ -1,0 +1,53 @@
+---
+title: "Osu Beatmap Generator"
+date: "2026-06-15"
+description: "Creating a tool for rhythm detection and spatial inference!"
+tags: ["coding", "math", "ml"]
+---
+
+I recently had the honor of graduating with my Master's Degree in Data Science at Stevens Institute of Technology, and I'm currently
+waiting to start working. In my free time, I've spent most of my time - honestly - bumming around. However, I wanted to make sure that my technical
+chops were still there. \
+\
+Part of my bumming routing includes playing "osu!" - a rhythm game where you click circles in time with music. I've played it for a few years, and I'm currently
+trying to hit a 5 digit global rank. You can actually find my osu profile <a href="https://osu.ppy.sh/users/11781698">here.</a> I realized that there was
+potential to use the skills I learned to make something interesting - a tool that could generate beatmaps.
+
+<br />
+
+### Small Note :3
+I will try to explain some concepts at a higher level, but this blog will be more enjoyable to read if you have some prior knowledge of machine learning and deep learning.
+It will also be more enjoyable if you have a fundamental understanding of how osu is played (as long as you've seen/played the game, that's more than enough). The full topic list
+is provided below. \
+\
+<u>Osu Topics</u>:
+<BlogList>
+<li>Osu Beatmap File Structure </li>
+<li>Osu Hit Objects (Circles, Sliders, and Spinners) </li>
+<li>Difficulty Mechanics (HP, CS, AR, OD, etc.) </li>
+<li>Rhythm Patterns (Streams, Jumps, etc)</li>
+</BlogList>
+<br />
+
+<u>Machine Learning Topics</u>:
+<BlogList>
+<li>Convolutional Neural Networks (CNN) </li>
+<li>Recurrent Neural Networks (RNN) and Teacher Forcing</li>
+<li>Long Short-Term Memory (LSTM) models</li>
+<li>Transformers</li>
+<li>Diffusion Models</li>
+</BlogList>
+<br />
+
+## The Idea & Original Thinking
+This idea was formulated and briefly worked on about a year and a half ago. I recruited one of my friends, and we developed a basic idea.
+
+<BlogImage
+src = "/blogs/osu-beatmap-generator/basic-idea.png"
+alt = "A basic model idea using Seq2Seq"
+caption = "A basic model idea using Seq2Seq"
+/>
+
+The maps that users download are made by other people, and they are downloaded as an <a href="https://osu.ppy.sh/wiki/en/Client/File_formats/osz_%28file_format%29">.osz</a> file. 
+However, we found out through some research (two google searches) that .osz files are just ZIP files. Extracting from an .osz file reveals the contents of each beatmap
+in the form of an <a href="https://osu.ppy.sh/wiki/en/Client/File_formats/osu_%28file_format%29">.osu</a> file, along with any other assets (images, audio files, etc.) used in the beatmap. 
