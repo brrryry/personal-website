@@ -70,11 +70,6 @@ export default function BlogSearch({ posts = [] }) {
       const raw = post.data?.tags ?? post.tags;
       if (!raw) return false;
       if (Array.isArray(raw)) {
-        if (!tag.toLowerCase().includes("-series")) {
-          if (raw.some((t) => t.includes("-series"))) {
-            return false;
-          }
-        }
         return raw.includes(tag);
       }
       if (typeof raw === "string") {
@@ -265,7 +260,7 @@ export default function BlogSearch({ posts = [] }) {
                 return (
                   <li
                     key={post.id}
-                    className="p-6 rounded-2xl bg-purple-500/5 border border-purple-500/10 hover:border-purple-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/5 hover:translate-y-[-2px] flex flex-col gap-3"
+                    className="p-3 pb-4 rounded-2xl bg-purple-500/5 border border-purple-500/10 hover:border-purple-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/5 hover:translate-y-[-2px] flex flex-col"
                     style={itemTransitionStyle(post.id)}
                   >
                     <div className="flex flex-wrap gap-2.5 items-center text-xs text-purple-800 dark:text-purple-300">
