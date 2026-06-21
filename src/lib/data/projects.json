@@ -28,9 +28,15 @@
   {
     "id": "osu-beatmap-generator",
     "title": "Osu Beatmap Generator",
-    "description": "A LSTM model that generates osu beatmaps from MP3 files. Built with Pytorch.",
+    "description": "A machine learning model that generates osu beatmaps from MP3 files. Built with Pytorch.",
     "github": "https://github.com/brrryry/osu-beatmap-generator",
     "status": "building"
+  },
+  {
+    "id": "nyc-iot-security-estimations",
+    "title": "NYC IoT Cyberattack Threat Estimations",
+    "description": "Using NYC Open Data (311 complaints, LinkNYC kiosk status, etc.) to generate a spatial map of areas in NYC that are more likely to be targetted by cyberattacks.",
+    "status": "brainstorming"
   },
   {
     "id": "brew-review",

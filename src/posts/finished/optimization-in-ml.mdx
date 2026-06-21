@@ -172,7 +172,7 @@ Kind of the opposite of Lipschitz continuity - this means that the function has 
 You can kind of see the similarity between this and a normal convex function's definition!
 
 ---
-### Th: GD Convergence Rate (L-Smooth Functions) [[1]](#citation1)
+### Th: GD Convergence Rate (L-Smooth Functions) [\[1\]](#citation1)
 The speed of convergence of GD depends on the properties of the function $f$ that we are trying to minimize. \
 \
 If $f$ is convex and its **gradient** is Lipschitz continuous with constant $L$,
@@ -185,7 +185,7 @@ $$
 If we disregard $x^0$ (where we start), we can see that the error generally decreases at a rate of $O(\frac{1}{k})$. This is known as a **sublinear convergence rate** - the convergence slows down as we get closer to the minimum. Pretty slow.
 
 ---
-### Th: GD Convergence Rate (Strongly Convex Functions) [[1]](#citation1)
+### Th: GD Convergence Rate (Strongly Convex Functions) [\[1\]](#citation1)
 If $f$ is strongly convex with parameter $m > 0$ and its gradient is Lipschitz continuous with constant $L$,
 then the following property holds for GD with a fixed learning rate $\alpha \in (0, \frac{1}{L})$:
 
@@ -219,7 +219,7 @@ $$
 where $\nabla^2 f(x^k)$ is the Hessian matrix of second derivatives at point $x^k$. \
 \
 That being said, calculating the inverse of the Hessian can be computationally expensive. In practical cases, the Hessian is 
-factorized to avoid direct inversion [[3]](#citation3). A common example of this is the Cholesky decomposition. 
+factorized to avoid direct inversion [\[3\]](#citation3). A common example of this is the Cholesky decomposition. 
 
 $$
 A = LL^T \implies A^{-1} = (L^T)^{-1} L^{-1}
@@ -268,7 +268,7 @@ Gradient Descent took 16 iterations to converge, while Newton's Method took 1 it
 However, as we will see later, Newton's Method may be inefficient in other situations.
 
 ---
-### Th: Speed of Convergence of Newton's Method (PD Hessian) [[2]](#citation2)[[3]](#citation3)
+### Th: Speed of Convergence of Newton's Method (PD Hessian) [\[2\]](#citation2)[\[3\]](#citation3)
 (NOTE: This theorem assumes that we use the **two-slope** test for step size selection. I never covered this, but just assume we can find a reasonably optimal step size per iteration.) \
 \
 If our function $f$ is twice continuously differentiable and the Hessian $\nabla^2 f(x)$ is positive definite for all 
@@ -327,7 +327,7 @@ Thus, I will release it now and continuously work on it.)
 ## References:
 
 <span id="citation1"/>[1] Garrigos, G., & Gower, R. M. (2024).
-Handbook of convergence theorems for (stochastic) gradient methods (arXiv Preprint arXiv:2301.11235). <a href="https://arxiv.org/abs/2301.11235" target="_blank">https://arxiv.org/abs/2301.11235</a>
+Handbook of convergence theorems for (stochastic) gradient methods (arXiv Preprint arXiv:2301.11235). <a href="https://arxiv.org/abs/2301.11235" target="_blank">arxiv.org/abs/2301.11235</a>
 
 <span id="citation2"/>[2] Martínez, J. M., & Qi, L. (1995). Inexact Newton methods for solving nonsmooth equations. Journal of Computational and Applied Mathematics, 60(1-2), 127–145. <a href="https://doi.org/10.1016/0377-0427(94)00088-I" target="_blank">doi.org/10.1016/0377-0427(94)00088-I</a>.
 

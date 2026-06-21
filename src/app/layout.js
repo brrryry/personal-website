@@ -21,7 +21,7 @@ export default async function RootLayout({ children, hideFooter = false }) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body className={`${inter.className} max-w-6xl items-center mx-auto`}>
-        <ThemeProvider>
+        <ThemeProvider attribute="class">
           <main className="min-h-screen">
             <Navbar />
             {children}

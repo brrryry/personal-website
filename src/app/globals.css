@@ -4,16 +4,19 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400&display=swap");
 
-/* Theme variables for next-themes (applied to the html[data-theme="..."] element) */
+/* Theme variables for next-themes (applied to the html element) */
 
-/* Dark theme (current styles) */
-html[data-theme="dark"] {
+/* Dark theme */
+html.dark {
   --bg: #1e1e1e;
   --text: #f8f8ff;
   --surface: #333333;
-  --muted: #d8bfd8; /* light purple for headers/emphasis */
-  --link: #9c7bde; /* medium purple links */
-  --primary: #6a0dad; /* primary purple */
+  --muted: #d8bfd8;
+  /* light purple for headers/emphasis */
+  --link: #9c7bde;
+  /* medium purple links */
+  --primary: #6a0dad;
+  /* primary purple */
   --primary-hover: #d8bfd8;
   --border: #d8bfd8;
   --code-bg: #282c34;
@@ -26,13 +29,20 @@ html[data-theme="dark"] {
 }
 
 /* Light theme */
-html[data-theme="light"] {
-  --bg: #f8f8ff; /* off-white background */
-  --text: #1e1e1e; /* dark text */
-  --surface: #f8f8ff; /* header/nav/footer surface */
-  --muted: #6a0dad; /* use primary purple for emphasis */
-  --link: #6a0dad; /* purple links */
-  --primary: #6a0dad; /* primary purple */
+:root,
+html.light {
+  --bg: #f8f8ff;
+  /* off-white background */
+  --text: #1e1e1e;
+  /* dark text */
+  --surface: #f8f8ff;
+  /* header/nav/footer surface */
+  --muted: #6a0dad;
+  /* use primary purple for emphasis */
+  --link: #6a0dad;
+  /* purple links */
+  --primary: #6a0dad;
+  /* primary purple */
   --primary-hover: #000000;
   --border: #6a0dad;
   --code-bg: #f0f0f2;
@@ -51,8 +61,9 @@ html {
 }
 
 body {
-  font-family: "Open Sans", sans-serif;
-  font-size: 1.4em;
+  font-family: inherit;
+  font-size: 1.15em;
+  line-height: 1.6;
   background-color: var(--bg);
   color: var(--text);
   margin: 0;
@@ -102,6 +113,8 @@ h2,
 h3 {
   color: var(--muted);
   font-family: "Montserrat", sans-serif;
+  letter-spacing: -0.03em;
+  font-weight: 800;
 }
 
 h1 {
@@ -190,20 +203,20 @@ code {
 }
 
 /* Optional: custom scrollbar styling for WebKit browsers */
-html[data-theme="dark"]::-webkit-scrollbar,
-html[data-theme="light"]::-webkit-scrollbar {
+html.dark::-webkit-scrollbar,
+html.light::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 
-html[data-theme="dark"]::-webkit-scrollbar-thumb,
-html[data-theme="light"]::-webkit-scrollbar-thumb {
+html.dark::-webkit-scrollbar-thumb,
+html.light::-webkit-scrollbar-thumb {
   background-color: var(--scrollbar-thumb);
   border-radius: 10px;
 }
 
-html[data-theme="dark"]::-webkit-scrollbar-track,
-html[data-theme="light"]::-webkit-scrollbar-track {
+html.dark::-webkit-scrollbar-track,
+html.light::-webkit-scrollbar-track {
   background: var(--scrollbar-track);
 }
 
@@ -343,6 +356,7 @@ hr {
     opacity: 0;
     transform: translateY(24px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -357,15 +371,19 @@ hr {
 .delay-100 {
   animation-delay: 100ms;
 }
+
 .delay-200 {
   animation-delay: 200ms;
 }
+
 .delay-300 {
   animation-delay: 300ms;
 }
+
 .delay-400 {
   animation-delay: 400ms;
 }
+
 .delay-500 {
   animation-delay: 500ms;
 }
@@ -375,6 +393,7 @@ hr {
   100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-8px);
   }
@@ -390,6 +409,7 @@ hr {
     border-color: rgba(168, 85, 247, 0.3);
     box-shadow: 0 0 12px rgba(168, 85, 247, 0.1);
   }
+
   50% {
     border-color: rgba(168, 85, 247, 0.7);
     box-shadow: 0 0 24px rgba(168, 85, 247, 0.25);
@@ -404,15 +424,17 @@ hr {
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
 }
 
-html[data-theme="dark"] .animate-gradient-text {
+html.dark .animate-gradient-text {
   background: linear-gradient(270deg, #c084fc, #e9d5ff, #818cf8, #c084fc);
   background-size: 300% 300%;
   -webkit-background-clip: text;
@@ -420,10 +442,36 @@ html[data-theme="dark"] .animate-gradient-text {
   animation: gradientText 6s ease infinite;
 }
 
-html[data-theme="light"] .animate-gradient-text {
+html.light .animate-gradient-text {
   background: linear-gradient(270deg, #6a0dad, #9c7bde, #4f46e5, #6a0dad);
   background-size: 300% 300%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: gradientText 6s ease infinite;
+}
+
+/* Tables styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  font-size: 0.9em;
+}
+
+th,
+td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+th {
+  background-color: var(--surface);
+  color: var(--muted);
+  font-weight: bold;
+  font-family: "Montserrat", sans-serif;
+}
+
+tr:hover {
+  background-color: rgba(168, 85, 247, 0.05);
 }

@@ -5,12 +5,19 @@ description: "Creating a tool for rhythm detection and spatial inference!"
 tags: ["coding", "math", "ml"]
 ---
 
+<div className="bg-purple-500/10 border border-purple-400/30 rounded-lg p-4 my-6">
+
+**Disclaimer:** While this project was created for fun, it is not intended to replace the human creativity and skill that goes into creating high-quality beatmaps.
+This project is purely an exploration of what is possible with machine learning and deep learning, and it is not intended to be used for any serious purposes.
+
+</div>
+
 I recently had the honor of graduating with my Master's Degree in Data Science at Stevens Institute of Technology, and I'm currently
 waiting to start working. In my free time, I've spent most of my time - honestly - bumming around. However, I wanted to make sure that my technical
 chops were still there. \
 \
 Part of my bumming routing includes playing "osu!" - a rhythm game where you click circles in time with music. I've played it for a few years, and I'm currently
-trying to hit a 5 digit global rank. You can actually find my osu profile <a href="https://osu.ppy.sh/users/11781698">here.</a> I realized that there was
+trying to hit a 5 digit global rank. You can actually find my osu profile <a href="https://osu.ppy.sh/users/11781698" target="_blank">here.</a> I realized that there was
 potential to use the skills I learned to make something interesting - a tool that could generate beatmaps.
 
 <br />
@@ -50,4 +57,30 @@ caption = "A basic model idea using Seq2Seq"
 
 The maps that users download are made by other people, and they are downloaded as an <a href="https://osu.ppy.sh/wiki/en/Client/File_formats/osz_%28file_format%29">.osz</a> file. 
 However, we found out through some research (two google searches) that .osz files are just ZIP files. Extracting from an .osz file reveals the contents of each beatmap
-in the form of an <a href="https://osu.ppy.sh/wiki/en/Client/File_formats/osu_%28file_format%29">.osu</a> file, along with any other assets (images, audio files, etc.) used in the beatmap. 
+in the form of an <a href="https://osu.ppy.sh/wiki/en/Client/File_formats/osu_%28file_format%29">.osu</a> file, along with any other assets (images, audio files, etc.) used in the beatmap. \
+\
+From here, we can take the beatmap's audio file and turn it into structured data - a spectrogram. Our original spectrogram was a constant-Q spectrogram, and we didn't think about the specific
+type of spectrogram that much. We went with default settings - 84 bins, spanning 7 octaves of notes (logarithmic scaling of frequencies to adjust to human perception). \
+\
+From there, supervised learning would be used. We built an Seq2Seq (Encoder/Decoder) model to take in the spectrogram and predict hit objects. The encoder was tasked with
+embedding the spectrogram into a contextualized "hidden state". The decoder 
+
+## Detailed Tensor Shape Directory
+
+<div className="max-w-2xl mx-auto">
+
+| Layer / Stage | Variable | Shape |
+| :--- | :--- | :--- |
+| **Input Audio** | $y$ | $(N_{\text{samples}},)$ |
+| **Acoustic Transform** | $S$ | $(84, T)$ |
+| **Encoder Input** | $x$ | $(B, T, 84)$ |
+| **Encoder Output Sequence** | $\text{encoder\_out}$ | $(B, T, 128)$ |
+| **Encoder Recurrent State** | $\text{encoder\_hc}$ | $(2, B, 64)$ |
+| **Decoder Input (Step)** | $\text{decoder\_input}$ | $(B, 1, 14)$ |
+| **Decoder Recurrent State** | $\text{decoder\_hidden}$ | $(2, B, 64)$ |
+| **Decoder LSTM Output** | $x$ (in $\text{forward\_step}$) | $(B, 1, 64)$ |
+| **Decoder Hidden Layer** | $\text{hidden}$ | $(B, 1, 32)$ |
+| **Decoder Output Layer** | $\text{out}$ (in $\text{forward\_step}$) | $(B, 1, 8)$ |
+| **Accumulated Output** | $\text{decoder\_outputs}$ | $(T_{\text{target}}, 8)$ |
+
+</div>

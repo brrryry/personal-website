@@ -2,6 +2,8 @@ import Navbar from "@/components/Navbar";
 import Tooltip from "@/components/Tooltip";
 import Image from "next/image";
 import { getSortedPostsData } from "@/lib/posts";
+import fs from "fs";
+import path from "path";
 
 export default function Home() {
   const allPostsData = getSortedPostsData("", false);
@@ -11,6 +13,20 @@ export default function Home() {
       ...post.data,
     };
   });
+
+  const projectsPath = path.join(
+    process.cwd(),
+    "src",
+    "lib",
+    "data",
+    "projects.json",
+  );
+  const rawProjects = fs.readFileSync(projectsPath, "utf8");
+  const projects = JSON.parse(rawProjects);
+  const activeProjects = projects.filter(
+    (project) =>
+      project.status !== "complete" && project.status !== "deprecated",
+  );
 
   return (
     <div className="space-y-5 max-w-6xl justify-center mx-auto">
@@ -31,80 +47,6 @@ export default function Home() {
               className="rounded-lg border border-purple-400/40 object-contain max-w-[300px] justify-center mx-auto transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(168,85,247,0.35)]"
               priority
             />
-          </div>
-          <div className="flex justify-center gap-4 mt-2">
-            <a
-              href="mailto:thisisbryanchan@gmail.com"
-              className="inline-flex items-center p-2 rounded hover:bg-white/5 transition-transform duration-200 hover:scale-125 hover:text-purple-400"
-              aria-label="email: thisisbryanchan@gmail.com"
-            >
-              <span className="sr-only">email</span>
-              <Tooltip content="email: thisisbryanchan@gmail.com">
-                <span className="inline-flex" aria-hidden="true">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    className="h-4 w-4"
-                    strokeWidth={1.5}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    role="img"
-                    aria-hidden="true"
-                  >
-                    <path d="M3 8.25v7.5A3 3 0 006 19h12a3 3 0 003-3v-7.5" />
-                    <path d="M21 6.75a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6.75v.75l9 6 9-6v-.75z" />
-                  </svg>
-                </span>
-              </Tooltip>
-            </a>
-
-            <a
-              rel="noopener noreferrer"
-              className="inline-flex items-center p-2 rounded hover:bg-white/5 transition-transform duration-200 hover:scale-125 hover:text-purple-400 cursor-pointer"
-              aria-label="Discord: @brrryry"
-            >
-              <span className="sr-only">discord: @brrryry</span>
-              <Tooltip content="discord: @brrryry">
-                <span className="inline-flex" aria-hidden="true">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 16 16"
-                    fill="currentColor"
-                    className="h-4 w-4"
-                    role="img"
-                    aria-hidden="true"
-                  >
-                    <path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.04.04 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032q.003.022.021.037a13.3 13.3 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019q.463-.63.818-1.329a.05.05 0 0 0-.01-.059l-.018-.011a9 9 0 0 1-1.248-.595.05.05 0 0 1-.02-.066l.015-.019q.127-.095.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007q.121.1.248.195a.05.05 0 0 1-.004.085 8 8 0 0 1-1.249.594.05.05 0 0 0-.03.03.05.05 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.03.03 0 0 0-.02-.019m-8.198 7.307c-.789 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612m5.316 0c-.788 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612" />
-                  </svg>
-                </span>
-              </Tooltip>
-            </a>
-
-            <a
-              href="https://github.com/brrryry"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center p-2 rounded hover:bg-white/5 transition-transform duration-200 hover:scale-125 hover:text-purple-400"
-              aria-label="github profile"
-            >
-              <span className="sr-only">github profile</span>
-              <Tooltip content="github profile">
-                <span className="inline-flex" aria-hidden="true">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 bi bi-github"
-                    fill="currentColor"
-                    viewBox="0 0 16 16"
-                    role="img"
-                    aria-hidden="true"
-                  >
-                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8" />
-                  </svg>
-                </span>
-              </Tooltip>
-            </a>
           </div>
         </div>
 
@@ -137,19 +79,65 @@ export default function Home() {
             out :D
           </p>
           <br />
+          <div className="animate-fade-in-up delay-400">
+            <h2 className="text-2xl font-bold mb-3">Open Project Board</h2>
+            <div className="bg-purple-500/10 border-2 border-purple-500/50 rounded-xl p-5 shadow-lg shadow-purple-500/5 transition-all duration-300 hover:shadow-purple-500/15 hover:border-purple-500">
+              <div className="space-y-4">
+                {activeProjects.map((p) => (
+                  <div
+                    key={p.id}
+                    className="project-item border-b border-purple-400/20 last:border-0 pb-3 last:pb-0"
+                  >
+                    <h3 className="text-xl md:text-2xl font-bold text-purple-900 dark:text-purple-200 flex items-center gap-2">
+                      {p.title}
+                      <span className="text-[0.7rem] px-2 py-0.5 rounded-full font-semibold uppercase bg-purple-100 dark:bg-purple-500/25 text-purple-800 dark:text-purple-200 border border-purple-300 dark:border-purple-500/40">
+                        {p.status}
+                      </span>
+                    </h3>
+                    <p className="text-sm mt-1 text-pretty">{p.description}</p>
+                    {(p.github || p.url) && (
+                      <div className="flex gap-3 mt-2 text-xs">
+                        {p.github && (
+                          <a
+                            href={p.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline text-purple-700 dark:text-purple-400 hover:text-purple-900 dark:hover:text-purple-200 transition-colors"
+                          >
+                            GitHub
+                          </a>
+                        )}
+                        {p.url && (
+                          <a
+                            href={p.url}
+                            target={p.external ? "_blank" : "_self"}
+                            className="underline text-purple-700 dark:text-purple-400 hover:text-purple-900 dark:hover:text-purple-200 transition-colors"
+                          >
+                            Project Link
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
 
           <div className="animate-fade-in-up delay-300">
-            <h2 className="text-2xl font-bold mb-3">Recent News</h2>
-            <div className="space-y-2">
-              <div className="flex highlight-item space-x-10">
-                <div className="left-side min-w-[100px]">
-                  <p>04-2026</p>
-                </div>
-                <div className="right-side">
-                  <p className="text">
+            <h2 className="text-2xl font-bold mb-4">Recent News</h2>
+            <div className="bg-purple-500/10 border-2 border-purple-500/50 rounded-xl p-5 shadow-lg shadow-purple-500/5 transition-all duration-300 hover:shadow-purple-500/15 hover:border-purple-500">
+              <div className="relative border-l border-purple-500/20 dark:border-purple-500/15 ml-3 pl-6 space-y-8 my-2">
+                <div className="relative group">
+                  <span className="absolute -left-[31px] top-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-purple-500 group-hover:scale-125 transition-all duration-300 ring-4 ring-[#f0e8fe] dark:ring-[#2c2434]"></span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-purple-700 dark:text-purple-400 block mb-1">
+                    04-2026
+                  </span>
+                  <p className="text-sm leading-relaxed text-pretty">
                     <a
                       href="https://www.caecommunity.org/symposium-archive/2026-cae-in-cybersecurity-symposium"
                       target="_blank"
+                      className="hover:underline text-purple-900 dark:text-purple-300 font-medium"
                     >
                       A Machine Learning-based Approach to Malicious Document
                       Detection for RAG Chunk Ingestion
@@ -158,6 +146,7 @@ export default function Home() {
                     <a
                       href="https://jindal.utdallas.edu/biz-ai-conference/biz-ai-conference-2026/"
                       target="_blank"
+                      className="hover:underline"
                     >
                       <em>BizAI 2026</em>
                     </a>{" "}
@@ -165,27 +154,26 @@ export default function Home() {
                     <a
                       href="https://www.caecommunity.org/symposium"
                       target="_blank"
+                      className="hover:underline"
                     >
                       <em>CAE Symposium 2026</em>
                     </a>
                     .
                   </p>
                 </div>
-              </div>
 
-              <hr className="border-purple-400/40" />
-
-              <div className="flex highlight-item space-x-10">
-                <div className="left-side min-w-[100px]">
-                  <p>06-2025</p>
-                </div>
-                <div className="right-side">
-                  <p className="text">
+                <div className="relative group">
+                  <span className="absolute -left-[31px] top-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-purple-500 group-hover:scale-125 transition-all duration-300 ring-4 ring-[#f0e8fe] dark:ring-[#2c2434]"></span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-purple-700 dark:text-purple-400 block mb-1">
+                    06-2025
+                  </span>
+                  <p className="text-sm leading-relaxed text-pretty">
                     Started research (AI in Enterprise Data) at Illinois State
                     University under{" "}
                     <a
                       href="https://it.illinoisstate.edu/faculty-staff/profile/?ulid=dzhdano"
                       target="_blank"
+                      className="hover:underline text-purple-900 dark:text-purple-300 font-medium"
                     >
                       Dr. Dmitry Zhdanov
                     </a>{" "}
@@ -193,6 +181,7 @@ export default function Home() {
                     <a
                       href="https://www.caecommunity.org/initiatives/initiative-insure"
                       target="_blank"
+                      className="hover:underline"
                     >
                       INSuRE+E Program
                     </a>
@@ -200,19 +189,17 @@ export default function Home() {
                     2025.
                   </p>
                 </div>
-              </div>
 
-              <hr className="border-purple-400/40" />
-
-              <div className="flex highlight-item space-x-10">
-                <div className="left-side min-w-[100px]">
-                  <p>10-2024</p>
-                </div>
-                <div className="right-side">
-                  <p className="text">
+                <div className="relative group">
+                  <span className="absolute -left-[31px] top-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-purple-500 group-hover:scale-125 transition-all duration-300 ring-4 ring-[#f0e8fe] dark:ring-[#2c2434]"></span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-purple-700 dark:text-purple-400 block mb-1">
+                    10-2024
+                  </span>
+                  <p className="text-sm leading-relaxed text-pretty">
                     <a
                       href="https://131b1d64-a91b-4e72-9201-2d47ce0a189a.filesusr.com/ugd/eeb746_ca1016804fc0441597a22f1d72ae651d.pdf"
                       target="_blank"
+                      className="hover:underline text-purple-900 dark:text-purple-300 font-medium"
                     >
                       A Survey of ROV++: We May Need Another Napkin
                     </a>{" "}
@@ -220,27 +207,26 @@ export default function Home() {
                     <a
                       href="https://www.caecommunity.org/cop-cyber-research/cae-r-research-symposium/2024-cae-r-cop-research-symposium"
                       target="_blank"
+                      className="hover:underline"
                     >
                       <em>2024 CAE Symposium</em>
                     </a>
                     .
                   </p>
                 </div>
-              </div>
 
-              <hr className="border-purple-400/40" />
-
-              <div className="flex highlight-item space-x-10">
-                <div className="left-side min-w-[100px]">
-                  <p>06-2024</p>
-                </div>
-                <div className="right-side">
-                  <p className="text">
+                <div className="relative group">
+                  <span className="absolute -left-[31px] top-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-purple-500 group-hover:scale-125 transition-all duration-300 ring-4 ring-[#f0e8fe] dark:ring-[#2c2434]"></span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-purple-700 dark:text-purple-400 block mb-1">
+                    06-2024
+                  </span>
+                  <p className="text-sm leading-relaxed text-pretty">
                     Started research (BGP Empirical Studies) at Iowa State
                     University under{" "}
                     <a
                       href="https://www.engineering.iastate.edu/people/profile/bgulmez/"
                       target="_blank"
+                      className="hover:underline text-purple-900 dark:text-purple-300 font-medium"
                     >
                       Dr. Burk Gulmezoglu
                     </a>{" "}
@@ -248,26 +234,25 @@ export default function Home() {
                     <a
                       href="https://www.caecommunity.org/initiatives/initiative-insure"
                       target="_blank"
+                      className="hover:underline"
                     >
                       INSuRE+E Program
                     </a>
                     . Poster published in October 2024.
                   </p>
                 </div>
-              </div>
 
-              <hr className="border-purple-400/40" />
-
-              <div className="flex highlight-item space-x-10">
-                <div className="left-side min-w-[100px]">
-                  <p>09-2023</p>
-                </div>
-                <div className="right-side">
-                  <p className="text">
+                <div className="relative group">
+                  <span className="absolute -left-[31px] top-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-purple-500 group-hover:scale-125 transition-all duration-300 ring-4 ring-[#f0e8fe] dark:ring-[#2c2434]"></span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-purple-700 dark:text-purple-400 block mb-1">
+                    09-2023
+                  </span>
+                  <p className="text-sm leading-relaxed text-pretty">
                     Began Course Assistantship for{" "}
                     <a
                       href="https://web.stevens.edu/catalog/archive/2021-2022/en/catalog/academic-catalog/courses/cs-computer-science/100/cs-115.html"
                       target="_blank"
+                      className="hover:underline text-purple-900 dark:text-purple-300 font-medium"
                     >
                       <em>CS 115: Introduction to Computer Science</em>
                     </a>{" "}
@@ -275,6 +260,7 @@ export default function Home() {
                     <a
                       href="https://stevens.smartcatalogiq.com/en/2021-2022/academic-catalog/courses/ma-mathematics/300/ma-331"
                       target="_blank"
+                      className="hover:underline"
                     >
                       <em>MA 331: Intermediate Statistics</em>
                     </a>{" "}
@@ -282,22 +268,20 @@ export default function Home() {
                     2025)
                   </p>
                 </div>
-              </div>
 
-              <hr className="border-purple-400/40" />
-
-              <div className="flex highlight-item space-x-10">
-                <div className="left-side min-w-[100px]">
-                  <p>11-2022</p>
-                </div>
-                <div className="right-side">
-                  <p className="text">
+                <div className="relative group">
+                  <span className="absolute -left-[31px] top-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-purple-500 group-hover:scale-125 transition-all duration-300 ring-4 ring-[#f0e8fe] dark:ring-[#2c2434]"></span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-purple-700 dark:text-purple-400 block mb-1">
+                    11-2022
+                  </span>
+                  <p className="text-sm leading-relaxed text-pretty">
                     Started research (
                     <em>Analyzing Collapse of Online Gaming Communities</em>) at
                     Stevens Institute of Technology under{" "}
                     <a
-                      href="https://www.stevens.edu/profile/jsun54"
+                      href="https://www.stevens.edu/profile/jssun54"
                       target="_blank"
+                      className="hover:underline text-purple-900 dark:text-purple-300 font-medium"
                     >
                       Dr. Jingyi Sun
                     </a>
@@ -308,27 +292,24 @@ export default function Home() {
             </div>
           </div>
 
-          <br />
-
-          <div className="animate-fade-in-up delay-400">
-            <h2 className="text-2xl font-bold mb-3">Recent Blog Posts</h2>
+          <div className="animate-fade-in-up delay-500">
+            <h2 className="text-2xl font-bold mb-4">Recent Blog Posts</h2>
 
             {recentPosts.length > 0 && (
-              <div className="space-y-2 text-[1.3rem]">
+              <div className="space-y-3">
                 {recentPosts.map(({ id, date, title }) => (
-                  <div key={id} className="flex highlight-item space-x-10">
-                    <div className="left-side min-w-[120px] shrink-0">
-                      <p>{date}</p>
-                    </div>
-                    <div className="right-side">
-                      <a
-                        href={`/blog/${id}`}
-                        className="text underline hover:text-purple-300 transition-colors duration-200 ease-out"
-                      >
-                        {title}
-                      </a>
-                    </div>
-                  </div>
+                  <a
+                    key={id}
+                    href={`/blog/${id}`}
+                    className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-purple-500/10 hover:border-purple-500/25 bg-purple-500/5 hover:bg-purple-500/10 transition-all duration-300 group shadow-sm hover:shadow-purple-500/5"
+                  >
+                    <span className="font-semibold text-purple-900 dark:text-purple-200 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors">
+                      {title}
+                    </span>
+                    <span className="text-xs text-purple-800 dark:text-purple-300 mt-1 sm:mt-0 font-medium">
+                      {date}
+                    </span>
+                  </a>
                 ))}
               </div>
             )}

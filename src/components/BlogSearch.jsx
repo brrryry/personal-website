@@ -33,13 +33,13 @@ export default function BlogSearch({ posts = [] }) {
     ),
   ).sort();
 
-  tags = tags.filter((tag) => !tag.includes("series"));
+  tags = tags.filter((tag) => !tag.toLowerCase().includes("series"));
 
   // initialize visibleIds to show the initial list with stagger
   useEffect(() => {
     clearAllTimeouts();
     setVisibleIds(new Set());
-    const STAGGER_MS = 120;
+    const STAGGER_MS = 100;
     (displayed || []).forEach((post, i) => {
       const tt = setTimeout(
         () => {
@@ -61,7 +61,6 @@ export default function BlogSearch({ posts = [] }) {
   const filterForTag = (tag) => {
     if (!tag) return posts;
     if (tag === "series") {
-      // match posts that have any "series" indication (we excluded tags with 'series' previously)
       return posts.filter((post) => {
         const seriesTag = post.data?.seriestag || null;
         return seriesTag;
@@ -71,7 +70,7 @@ export default function BlogSearch({ posts = [] }) {
       const raw = post.data?.tags ?? post.tags;
       if (!raw) return false;
       if (Array.isArray(raw)) {
-        if (!tag.includes("-series")) {
+        if (!tag.toLowerCase().includes("-series")) {
           if (raw.some((t) => t.includes("-series"))) {
             return false;
           }
@@ -94,14 +93,12 @@ export default function BlogSearch({ posts = [] }) {
     if (tag === activeTag) return;
     clearAllTimeouts();
 
-    // start fade-out of currently displayed items
     setIsFadingOut(true);
     setShowNoResults(false);
 
-    const FADE_OUT_MS = 300;
-    const STAGGER_MS = 120;
+    const FADE_OUT_MS = 250;
+    const STAGGER_MS = 100;
 
-    // after fade-out, replace list and stagger fade-in
     const t = setTimeout(() => {
       setIsFadingOut(false);
 
@@ -110,14 +107,12 @@ export default function BlogSearch({ posts = [] }) {
       setActiveTag(tag);
 
       if (!filtered || filtered.length === 0) {
-        // show "no posts found" message with a tiny delay to allow transition
         setVisibleIds(new Set());
         const tNo = setTimeout(() => setShowNoResults(true), 20);
         timeouts.current.push(tNo);
         return;
       }
 
-      // prepare to stagger in the new items
       setVisibleIds(new Set());
       filtered.forEach((post, i) => {
         const tt = setTimeout(
@@ -137,7 +132,6 @@ export default function BlogSearch({ posts = [] }) {
     timeouts.current.push(t);
   };
 
-  // read "tag" from the URL query and use selectTag so we keep animations consistent
   useEffect(() => {
     const syncTagFromUrl = () => {
       try {
@@ -154,19 +148,19 @@ export default function BlogSearch({ posts = [] }) {
     return () => window.removeEventListener("popstate", syncTagFromUrl);
   }, []); // run once on mount
 
-  // render helpers for styles
   const itemTransitionStyle = (postId) => {
     const base = {
-      transition: "opacity 300ms ease, transform 300ms ease",
+      transition:
+        "opacity 300ms cubic-bezier(0.16, 1, 0.3, 1), transform 300ms cubic-bezier(0.16, 1, 0.3, 1)",
       opacity: 0,
-      transform: "translateY(6px)",
+      transform: "translateY(12px)",
     };
 
     if (isFadingOut) {
       return {
         ...base,
         opacity: 0,
-        transform: "translateY(-8px)",
+        transform: "translateY(-12px)",
       };
     }
 
@@ -182,61 +176,53 @@ export default function BlogSearch({ posts = [] }) {
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: 12 }}>
-        <a
-          href="/blog"
-          onClick={(e) => {
-            e.preventDefault();
-            selectTag("");
-          }}
+    <div className="space-y-6">
+      {/* Category Pills Menu */}
+      <div className="flex flex-wrap gap-2 mb-6">
+        <button
+          onClick={() => selectTag("")}
+          className={`text-xs md:text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-300 border ${
+            activeTag === ""
+              ? "bg-purple-500/25 text-purple-900 dark:text-purple-200 border-purple-500/35 shadow-sm shadow-purple-500/5"
+              : "bg-purple-500/5 hover:bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/5 hover:text-purple-900 dark:hover:text-white"
+          }`}
           aria-current={activeTag === "" ? "page" : undefined}
-          style={{ fontWeight: activeTag === "" ? "700" : "400" }}
         >
-          all
-        </a>{" "}
-        |{" "}
-        <a
-          href="/blog?tag=series"
-          onClick={(e) => {
-            e.preventDefault();
-            selectTag("series");
-          }}
+          ALL
+        </button>
+
+        <button
+          onClick={() => selectTag("series")}
+          className={`text-xs md:text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-300 border ${
+            activeTag === "series"
+              ? "bg-purple-500/25 text-purple-900 dark:text-purple-200 border-purple-500/35 shadow-sm shadow-purple-500/5"
+              : "bg-purple-500/5 hover:bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/5 hover:text-purple-900 dark:hover:text-white"
+          }`}
           aria-current={activeTag === "series" ? "page" : undefined}
-          style={{
-            marginLeft: 8,
-            marginRight: 8,
-            fontWeight: activeTag === "series" ? "700" : "400",
-          }}
         >
-          series
-        </a>
+          SERIES
+        </button>
+
         {tags.map((tag) => (
-          <span key={tag}>
-            {" | "}
-            <a
-              href={`/blog/tag/${tag}`}
-              onClick={(e) => {
-                e.preventDefault();
-                selectTag(tag);
-              }}
-              aria-current={activeTag === tag ? "page" : undefined}
-              style={{
-                marginLeft: 8,
-                marginRight: 8,
-                fontWeight: activeTag === tag ? "700" : "400",
-              }}
-            >
-              {tag}
-            </a>
-          </span>
+          <button
+            key={tag}
+            onClick={() => selectTag(tag)}
+            className={`text-xs md:text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-300 border ${
+              activeTag === tag
+                ? "bg-purple-500/25 text-purple-900 dark:text-purple-200 border-purple-500/35 shadow-sm shadow-purple-500/5"
+                : "bg-purple-500/5 hover:bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/5 hover:text-purple-900 dark:hover:text-white"
+            }`}
+            aria-current={activeTag === tag ? "page" : undefined}
+          >
+            {tag.toUpperCase()}
+          </button>
         ))}
       </div>
 
       <ul>
-        {/* if there are visible posts, show them with animation */}
         {displayed.length === 0 ? (
           <li
+            className="p-6 rounded-2xl bg-purple-500/5 border border-purple-500/10 text-center text-gray-600 dark:text-gray-400"
             style={{
               transition: "opacity 300ms ease, transform 300ms ease",
               opacity: showNoResults && !isFadingOut ? 1 : 0,
@@ -246,13 +232,9 @@ export default function BlogSearch({ posts = [] }) {
                   : "translateY(6px)",
             }}
           >
-            no posts found for tag {'"'}
-            {activeTag}
-            {'"'}.
+            No posts found for tag &quot;{activeTag}&quot;.
           </li>
         ) : (
-          // animate size changes (height/width) via CSS transitions.
-          // use a conservative maxHeight based on item count so height changes animate smoothly.
           <div
             className="space-y-5"
             style={{
@@ -283,59 +265,53 @@ export default function BlogSearch({ posts = [] }) {
                 return (
                   <li
                     key={post.id}
-                    className="p-4 rounded-lg bg-purple-900/20 border border-purple-500/20 transition-transform duration-200 ease-out hover:scale-[1.02]"
+                    className="p-6 rounded-2xl bg-purple-500/5 border border-purple-500/10 hover:border-purple-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/5 hover:translate-y-[-2px] flex flex-col gap-3"
                     style={itemTransitionStyle(post.id)}
                   >
-                    <p>
-                      <a href={`/blog/${post.id}`}>{post.data?.title}</a> (
-                      {post.data?.date})
-                      <br />
-                      tags: [
-                      {postTags.sort().map((tag, i) => (
-                        <span key={post.id + tag}>
-                          <a
-                            href={`/blog/tag/${tag}`}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              selectTag(tag);
-                            }}
-                            aria-current={
-                              activeTag === tag ? "page" : undefined
+                    <div className="flex flex-wrap gap-2.5 items-center text-xs text-purple-800 dark:text-purple-300">
+                      <span>{post.data?.date}</span>
+                      <span>•</span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {[...postTags]
+                          .sort((a, b) => {
+                            if (activeTag === "series") {
+                              const aHas = a.toLowerCase().includes("-series");
+                              const bHas = b.toLowerCase().includes("-series");
+                              if (aHas && !bHas) return -1;
+                              if (!aHas && bHas) return 1;
                             }
-                            style={{
-                              fontWeight: activeTag === tag ? "700" : "400",
-                            }}
-                          >
-                            {tag}
-                          </a>
-                          {i < postTags.length - 1 && (
-                            <span style={{ color: "white" }}>, </span>
-                          )}
-                        </span>
-                      ))}
-                      ]<br />
-                      {seriesTag && (
-                        <>
-                          series tag:{" "}
-                          <a
-                            href={`/blog?tag=${seriesTag}`}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              selectTag(seriesTag);
-                            }}
-                            aria-current={
-                              activeTag === seriesTag ? "page" : undefined
-                            }
-                            style={{
-                              fontWeight:
-                                activeTag === seriesTag ? "700" : "400",
-                            }}
-                          >
-                            {seriesTag}
-                          </a>
-                          <br />
-                        </>
-                      )}
+                            return a.localeCompare(b);
+                          })
+                          .map((tag) => (
+                            <button
+                              key={post.id + tag}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                selectTag(tag);
+                              }}
+                              className={`px-2 py-0.5 rounded-md text-[0.68rem] font-bold uppercase tracking-wider transition-all border ${
+                                activeTag === "series"
+                                  ? tag.toLowerCase().includes("-series")
+                                    ? "bg-purple-500/25 border-purple-500/40 text-purple-900 dark:text-purple-200"
+                                    : "bg-purple-500/5 border-purple-500/10 text-purple-800 dark:text-purple-300 hover:bg-purple-500/15"
+                                  : activeTag === tag
+                                    ? "bg-purple-500/25 border-purple-500/40 text-purple-900 dark:text-purple-200"
+                                    : "bg-purple-500/5 border-purple-500/10 text-purple-800 dark:text-purple-300 hover:bg-purple-500/15"
+                              }`}
+                            >
+                              {tag}
+                            </button>
+                          ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-xl md:text-2xl font-bold tracking-tight text-purple-900 dark:text-purple-100 hover:text-purple-700 dark:hover:text-purple-300 transition-colors">
+                        <a href={`/blog/${post.id}`}>{post.data?.title}</a>
+                      </h3>
+                    </div>
+
+                    <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed max-w-4xl text-pretty">
                       {post.data?.description}
                     </p>
                   </li>

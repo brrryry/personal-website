@@ -14,7 +14,7 @@ const Providers = ({ children }) => {
     return <>{children}</>;
   }
 
-  return <ThemeProvider>{children}</ThemeProvider>;
+  return <ThemeProvider attribute="class">{children}</ThemeProvider>;
 };
 
 export default Providers;
