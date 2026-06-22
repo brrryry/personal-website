@@ -84,12 +84,19 @@ export default function BlogSearch({ posts = [] }) {
   };
 
   // main transition function used by clicks and URL-sync:
-  const selectTag = (tag) => {
+  const selectTag = (tag, pushHistory = true) => {
     if (tag === activeTag) return;
     clearAllTimeouts();
 
     setIsFadingOut(true);
     setShowNoResults(false);
+
+    if (pushHistory && typeof window !== "undefined") {
+      const newUrl = tag
+        ? `?tag=${encodeURIComponent(tag)}`
+        : window.location.pathname;
+      window.history.pushState({ tag }, "", newUrl);
+    }
 
     const FADE_OUT_MS = 250;
     const STAGGER_MS = 100;
@@ -127,12 +134,15 @@ export default function BlogSearch({ posts = [] }) {
     timeouts.current.push(t);
   };
 
+  const selectTagRef = useRef(selectTag);
+  selectTagRef.current = selectTag;
+
   useEffect(() => {
     const syncTagFromUrl = () => {
       try {
         const params = new URLSearchParams(window.location.search);
         const urlTag = params.get("tag") ?? "";
-        selectTag(urlTag);
+        selectTagRef.current(urlTag, false);
       } catch (e) {
         // ignore
       }
