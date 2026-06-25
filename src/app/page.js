@@ -32,7 +32,9 @@ export default function Home() {
     <div className="space-y-5 max-w-6xl justify-center mx-auto">
       <div className="animate-fade-in-up delay-100">
         <div className="bg-purple-500/20 border border-purple-400/40 rounded-lg p-4 animate-border-glow">
-          <p>Latest News: CAE Symposium 2026!</p>
+          <p>
+            Latest News: <a href="/blog/shallow-roots">Shallow Roots</a>
+          </p>
         </div>
       </div>
 

@@ -12,7 +12,7 @@ This project is purely an exploration of what is possible with machine learning 
 
 </div>
 
-I recently had the honor of graduating with my Master's Degree in Data Science at Stevens Institute of Technology, and I'm currently
+I recently had the honor of graduating with my Master's Degree in Data Science, and I'm currently
 waiting to start working. In my free time, I've spent most of my time - honestly - bumming around. However, I wanted to make sure that my technical
 chops were still there. \
 \
@@ -46,8 +46,8 @@ is provided below. \
 </BlogList>
 <br />
 
-## The Idea & Original Thinking
-This idea was formulated and briefly worked on about a year and a half ago. I recruited one of my friends, and we developed a basic idea.
+## The Idea & Original Thinking (June 2024)
+This idea was formulated and briefly worked on **about two years ago**. I recruited one of my friends, and we developed a basic idea.
 
 <BlogImage
 src = "/blogs/osu-beatmap-generator/basic-idea.png"
@@ -60,12 +60,32 @@ However, we found out through some research (two google searches) that .osz file
 in the form of an <a href="https://osu.ppy.sh/wiki/en/Client/File_formats/osu_%28file_format%29">.osu</a> file, along with any other assets (images, audio files, etc.) used in the beatmap. \
 \
 From here, we can take the beatmap's audio file and turn it into structured data - a spectrogram. Our original spectrogram was a constant-Q spectrogram, and we didn't think about the specific
-type of spectrogram that much. We went with default settings - 84 bins, spanning 7 octaves of notes (logarithmic scaling of frequencies to adjust to human perception). \
+type of spectrogram that much. We went with default settings - 84 bins, spanning 7 octaves of notes (logarithmic scaling of frequencies to adjust to human perception).
+
+<BlogImage
+src = "/blogs/osu-beatmap-generator/cqt-spectrogram-example.png"
+alt = "Example of a Constant-Q spectrogram"
+caption = "An example of a Constant-Q spectrogram"
+/>
+
+Since spectrograms can be represented as 2D matrices, we saved all the spectrograms as .pkl files (this was before the <a href="https://www.infosecurity-magazine.com/news/picklescan-flaws-expose-ai-supply/" target="_blank">picklescan vulnerabilities</a> were found). \
 \
 From there, supervised learning would be used. We built an Seq2Seq (Encoder/Decoder) model to take in the spectrogram and predict hit objects. The encoder was tasked with
-embedding the spectrogram into a contextualized "hidden state". The decoder 
+embedding the spectrogram into a contextualized "hidden state" through a bidirectional LSTM, while the decoder used the hidden state to predict the next hit object with
+a 2-layer unidirectional LSTM. The reason the decoder had to be unidirectional was because it was using teacher forcing (we fed the previous actual hit object into the
+decoder to predict the next hit object).
 
-## Detailed Tensor Shape Directory
+<BlogImage
+src = "/blogs/osu-beatmap-generator/original-model-architecture.png"
+alt = "Our original Seq2Seq model idea"
+caption = "Our original Seq2Seq model idea"
+/>
+
+The more specific aspects of the model (i.e. the layer shapes) can be found in the table below.
+
+### Detailed Tensor Shape Directory
+
+B = 1 (number of songs trained at a time), T = Number of Spectrogram Time Steps
 
 <div className="max-w-2xl mx-auto">
 
@@ -84,3 +104,65 @@ embedding the spectrogram into a contextualized "hidden state". The decoder
 | **Accumulated Output** | $\text{decoder\_outputs}$ | $(T_{\text{target}}, 8)$ |
 
 </div>
+
+The numbers in most of these layers were arbitrarily picked, but let's go over the important numbers. \
+\
+The **input audio** has $N_{samples}$ samples - the number of audio samples in a given audio file. Each spectrogram is "sliced" at certain intervals (in this case, 46ms), and each slice
+is passed through the encoder sequentially. For a song that's about 3 minutes, there's about 4000 time steps. \
+\
+From there, we pass it through a bidirectional LSTM to embed the spectrogram. This is done in the hope that the model will capture the "essence" of the song and compress it
+into some more efficient representation. The reason the LSTM is bidirectional is because we want to capture both past and future information for the sake of continuity in rhythm. \
+\
+The decoder is now tasked with taking this representation and producing hit objects. The **accumulated output** layer has a size of $(T_{\text\{target\}}, 8)$, where $T_{\text\{target\}} = (N_{\text\{samples\}})$ and 8 represents the following variables:
+
+<BlogList>
+    <li>X-Coordinate</li>
+    <li>Y-Coordinate</li>
+    <li>Time</li>
+    <li>Type (Circle, Slider, Spinner)</li>
+    <li>Curve Type (slider exclusive)</li>
+    <li>Curve Points (slider exclusive)</li>
+    <li>Slider Length</li>
+    <li>Slider Duration</li>
+</BlogList>
+
+<br />
+
+While this model seemed okay in theory, it struggled to produce beatmaps because of the way that we encoded our desired output.
+To process an osu beatmap, we couldn't just put the .osu file into our program since each file had multiple parts such as metadata, difficulty settings and hit objects.
+Because of this, we embedded all the hitobjects into a 2D array based on their time values. \
+\
+Every millisecond, we would check if a hit object existed. If so, we would mark its properties. Otherwise, we would fill the columns with 0s. An example is provided below.
+
+<div className="overflow-x-auto my-6">
+
+| Time Step | x | y | time | type | curveType | slides | length | endTime | Description |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| ... | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | Silence / Empty space |
+| 999 ms | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | Silence / Empty space |
+| 1000 ms | 256 | 192 | 1 | 1 | 1 | 0 | 0 | 0 | Hit Circle |
+| 1001 ms | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | Empty space |
+| 1002 ms | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | Empty space |
+| 1003 ms | 100 | 100 | 1 | 2 | 1 | 1 | 120.0 | 0 | Slider |
+| 1004 ms | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | Empty space |
+| 1005 ms | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | Empty space |
+| 1006 ms | 256 | 192 | 1 | 8 | 1 | 0 | 0 | 3000 | Spinner |
+| 1007 ms | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | Empty space |
+| ... | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | Empty space |
+
+</div>
+
+Most of the time steps are - naturally - empty. Because of this, our Seq2Seq model struggled to converge at anything meaningful, as it would
+always predict a 'no object' time step, leading to a loss of 0 (or whatever our baseline loss was) over time. This was simply not an effective
+way to represent the problem. We needed something more efficient. \
+\
+Unfortunately, life got in the way, and we had to stop working on this project for a bit.
+<br />
+## The Present: Decentralization
+Ok, back to the present and bumming around. \
+\
+Looking at this problem again, I wanted to take a different approach. I hypothesized that one of the other reasons for the failure of the original model was its
+monolithic nature. The process of both rhythm detection and spatial placement was done in one model, and I realized that we could decouple this into two separate models.
+
+
+

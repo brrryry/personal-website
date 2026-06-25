@@ -475,3 +475,51 @@ th {
 tr:hover {
   background-color: rgba(168, 85, 247, 0.05);
 }
+
+/* Blockquote styling */
+blockquote {
+  border-left: 4px solid var(--link);
+  background-color: rgba(106, 13, 173, 0.03);
+  padding: 1.25rem 1.5rem;
+  margin: 1.75rem 0;
+  border-radius: 0 8px 8px 0;
+  font-size: 1.05em;
+  line-height: 1.75;
+}
+
+html.dark blockquote {
+  background-color: rgba(156, 123, 222, 0.05);
+}
+
+blockquote p {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+blockquote ul,
+blockquote ol {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding-left: 1.5rem;
+}
+
+blockquote ul {
+  list-style-type: disc;
+}
+
+blockquote ol {
+  list-style-type: decimal;
+}
+
+blockquote li {
+  margin-bottom: 0.375rem;
+  font-size: 0.95em;
+}
+
+blockquote li:last-child {
+  margin-bottom: 0;
+}

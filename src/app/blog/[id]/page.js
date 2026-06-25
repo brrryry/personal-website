@@ -12,6 +12,7 @@ import { LatexWrapper } from "@/components/LatexWrapper";
 import { BlogImage } from "@/components/BlogImage";
 import { BlogList } from "@/components/BlogList";
 import { BlogCode } from "@/components/BlogCode";
+import { AudioPlayer } from "@/components/AudioPlayer";
 
 import NotFound from "@/app/[...not_found]/page";
 
@@ -126,6 +127,7 @@ export default async function BlogPost({ params }) {
               BlogImage,
               BlogList,
               BlogCode,
+              AudioPlayer,
               table: (props) => (
                 <div className="overflow-x-auto max-w-full">
                   <table {...props} />
