@@ -158,7 +158,7 @@ export default function Home() {
                   target="_blank"
                   className="hover:underline"
                 >
-                  <em>CAE Symposium 2026</em>
+                  <em>2026 CAE Symposium</em>
                 </a>
                 .
               </p>
