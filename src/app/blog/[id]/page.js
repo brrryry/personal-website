@@ -21,17 +21,40 @@ import "@/../public/styles/atom-one-dark.css";
 
 export async function generateMetadata({ params }) {
   const { data } = await getPostFromId(params.id);
+  const siteUrl = "https://bryanchan.org";
 
   if (!data) {
     return {
-      title: "blog post not found",
-      description: "the blog post you are looking for does not exist.",
+      title: "Blog post not found!",
+      description: "The blog post you are looking for does not exist.",
     };
   }
 
+  const title = data.title;
+  const description = data.description;
+  const postUrl = `${siteUrl}/blog/${params.id}`;
+
   return {
-    title: `bryan blog: ${data.title}`,
-    description: data.description,
+    title,
+    description,
+    alternates: {
+      canonical: postUrl,
+    },
+    openGraph: {
+      title,
+      description,
+      url: postUrl,
+      type: "article",
+      publishedTime: data.date,
+      modifiedTime: data.updated || data.date,
+      authors: ["Bryan Chan"],
+      tags: data.tags,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
   };
 }
 
@@ -57,8 +80,30 @@ export default async function BlogPost({ params }) {
     },
   };
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: data.title,
+    description: data.description,
+    datePublished: data.date,
+    dateModified: data.updated || data.date,
+    author: {
+      "@type": "Person",
+      name: "Bryan Chan",
+      url: "https://bryanchan.org",
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `https://bryanchan.org/blog/${params.id}`,
+    },
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 animate-fade-in-up delay-100">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <article className="min-w-0 max-w-full">
         <div className="space-y-4 mb-6">
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-purple-900 dark:text-purple-100">
