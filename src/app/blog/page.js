@@ -27,9 +27,9 @@ export default async function Blog() {
   return (
     <div className="flex flex-col space-y-5">
       <p className="animate-fade-in-up delay-25">
-        Note: The <span className="text-primary">{"''series''"}</span>
-        tag is special! Posts under this section have a {"''series''"}
-        tag. Clicking on this tag will show you all the blogs in the series.
+        Note: The <span className="text-primary">{'"series"'} </span>
+        tag is special! Posts under this section have a {'"series"'} tag.
+        Clicking on this tag will show you all the blogs in the series.
       </p>
       <BlogSearch posts={plainPosts} />
     </div>
