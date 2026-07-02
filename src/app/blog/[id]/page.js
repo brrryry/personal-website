@@ -147,6 +147,17 @@ export default async function BlogPost({ params }) {
                 Updated on {data.updated}
               </span>
             )}
+            {data.status && (
+              <span
+                className={`px-2 py-0.5 rounded-full font-semibold uppercase text-[0.65rem] border ${
+                  data.status === "in progress"
+                    ? "bg-amber-500/10 border-amber-500/30 text-amber-800 dark:text-amber-300"
+                    : "bg-emerald-500/10 border-emerald-500/30 text-emerald-800 dark:text-emerald-300"
+                }`}
+              >
+                {data.status}
+              </span>
+            )}
           </div>
 
           <div className="flex flex-wrap gap-2 pt-2">

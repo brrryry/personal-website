@@ -1,0 +1,537 @@
+---
+title: "Portfolio Dev (Part 2): CI/CD and Self Hosting"
+date: "2024-12-16"
+description: "I am now self hosting my website. How did I do this?"
+tags: ["coding", "portfolio-dev-series"]
+status: "finished"
+---
+
+Man, I love self hosting. I love having things under my control. \
+I love the idea of having my own website. \
+I love the idea of having my own CI/CD pipeline. \
+I love the idea of having my own everything. \
+\
+That's why...I decided to self host my website. \
+\
+That's right. I sacrificed my sleep schedule (and by proxy, a couple class attendances) to do something completely personal. 
+
+<br />
+## Motivations
+At the time of this endeavor, I was using Vercel. Vercel is great, and it's free. However... \
+\
+I was in the middle of deploying my Secret Santa website (blog <a href="/blog/bbb-1-secretsanta">here</a>), 
+and I realized something stupid: I was using a JSON database (like, literally just a JSON file), and Vercel did not support that as a dynamic read/write file. \
+\
+This was a problem. I could have used a different database, but I decided to take this as an opportunity to do something
+that I wanted to do for a while - self host. \
+\
+This would also give me the opportunity to learn about how websites are hosted, how to use a reverse proxy, and how to use Docker. \
+What could go wrong? 
+<br />
+
+## Game Plan
+In order to host both of these websites, I needed to use a reverse proxy.
+I decided to use <a href="https://nginx.org/" target="_blank">Nginx</a> for this. \
+\
+First of all, I had to learn what a reverse proxy was. I had a vague idea, but I needed to know the specifics. \
+\
+A reverse proxy (with my understanding) is a server that sits between the client and the website(s). It takes the client's request
+and then forwards it to the right place. It's literally the reverse of a "proxy" - instead of many acting as one, one acts as many. \
+\
+With this in mind, I wanted to dockerize my websites. This way, I could easily deploy them and keep them portable.
+
+<BlogImage
+    src="/blogs/pdev-ep2-cicd/architecture.png"
+    alt="The basic architecture plan"
+    caption="The architecture plan for self hosting (+ a lot of unnecessary writing)"
+/>
+
+At the moment, my server is a <a href="https://www.ugreen.com/pages/ugreen-nasync-series" target="_blank">Ugreen NAS</a>. They were released recently, so they're not half bad.
+Currently, it's a small server that I use for file storage and other things. \
+\
+I decided to put this server on a separate VLAN network so that it would be isolated from the rest of my network. \
+\
+In order to fulfill this...drawing, I used Docker. Below is the architecture I used for this endeavor:
+
+<BlogCode title="file structure" language="plaintext" copy="false">
+{`
+- portfolio --> NextJS project
+    - Dockerfile
+    - package.json
+    - ...
+- secretsanta --> NextJS project
+    - Dockerfile
+    - package.json
+    - ...
+- nginx
+    - Dockerfile
+    - nginx.conf
+    - ...
+- certbot (will be covered later)
+    - Dockerfile
+    - www/ --> where the certificates are stored
+    - conf/ --> where the configuration files are stored
+    - ...
+- docker-compose.yml
+
+
+`}
+</BlogCode>
+
+I made a Nginx Docker container that would listen on port 80.
+I then made a configuration file that would forward requests to the right place. 
+
+<BlogCode title="nginx/nginx.conf" language="nginx" copy="false">
+{`
+server {
+    listen 80;
+    listen [::]:80;
+
+    location / {
+        proxy_pass http://portfolio:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+
+    location /secretsanta/ {
+        proxy_pass http://secretsanta:3001;  # Proxy to the app without additional paths
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+`}
+</BlogCode>
+
+At the moment, I had two websites: my portfolio and the Secret Santa website for my friends (blog <a href="/blog/bbb-1-secretsanta">here</a> :3). \
+\
+Each of these websites had their own Docker container and their own port. They also had their own Docker files. 
+In order to make sure that the Secret Santa website was functional, I had to adjust the NextJS configuration for that app (specifically the base URL). 
+
+<BlogCode title="portfolio/Dockerfile" language="dockerfile" copy="false">
+{`
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY . .
+
+RUN apk add --no-cache --virtual builds-deps build-base python3
+
+RUN npm install -g pnpm
+
+RUN pnpm install
+
+RUN pnpm run build && pnpm prune --production
+
+EXPOSE 3000
+
+CMD ["npm", "start"]
+`}
+</BlogCode>
+
+After this, I made a Docker Compose file that would run all of these containers.
+
+<BlogCode title="docker-compose.yml" language="yaml" copy="false">
+{`
+services:
+  portfolio:
+    image: portfolio
+    build:
+      context: ./portfolio
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+  secretsanta:
+    image: secretsanta
+    build:
+      context: ./secretsanta
+    ports:
+      - "3001:3001"
+    networks:
+      - app-network
+
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - portfolio
+      - secretsanta
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+`}
+</BlogCode>
+
+All of these containers are run on the same network so that they can communicate with each other. 
+Simply running ``docker compose up`` would start all of these containers seamlessly. \
+\
+So far, this was fine. I could run the containers on my local machine, and the websites would be reachable on localhost.
+But...I wanted to make this accessible to the world.  
+
+<br />
+
+## The Domain
+
+The domain of this website (as of right now, bryanchan.org) has been a domain that I have owned for a while.
+When I deployed my portfolio website on Vercel, I just changed my DNS records to point to Vercel's servers.
+However, I wanted to self host. \
+\
+This meant that I had to learn about how DNS records worked. I had to learn about how to set up an A record, a CNAME record, and a TXT record. \
+Here's what I learned! \
+\
+DNS is a system that translates domain names to IP addresses. This is done through a series of servers that are connected to each other.
+These servers are usually owned by companies and are located all around the world in data centers. When you type in a domain name, your computer
+uses its DNS resolver to send a request to DNS root name servers (configured on your computer). From there, the request reaches 
+the authoritative name servers, which are the servers that are responsible for the domain. The authoritative name servers then return the IP address
+of the domain. 
+
+<BlogImage
+    src="https://cf-assets.www.cloudflare.com/slt3lc6tev37/3NOmAzkfPG8FTA8zLc7Li8/8efda230b212c0de2d3bbcb408507b1e/dns_record_request_sequence_recursive_resolver.png"
+    alt="DNS request sequence"
+    caption="Example DNS request sequence"
+    source="https://www.cloudflare.com/learning/dns/what-is-dns/"
+/>
+
+In order to set up a domain, I had to set up an A record. An A record is a thing that points a domain to an IP address.
+I simply pointed my domain to my network's IP address. \
+\
+My network uses UniFi (a router system), so I had to set up a port forwarding rule. This rule would forward all traffic on port 80 to my server's IP address. \
+\
+After this, it was just a matter of waiting for the DNS records to propagate. Now, my website is accessible to the world! That's pretty cool. 
+
+<br />
+
+## Okay, But What About CI/CD?
+Oh right, I almost forgot about that.
+
+I wanted to make sure that my website was always up to date. I wanted to make sure that I could deploy my website with a single command. \
+\
+This is where CI/CD comes in. CI/CD stands for Continuous Integration and Continuous Deployment. It refers to 
+the practice of automating code integration and delivery. \
+\
+In other words, I wanted to be able to update my website automatically whenever I made changes to the code. \
+\
+At the moment, all of my source code is stored on GitHub. It would be nice if I could just push to GitHub and have my website update on my server. 
+Thankfully, GitHub Actions exists. \
+\
+GitHub Actions is a feature of GitHub that allows you to automate workflows. I used this to automate the deployment of my website.
+I made a short script that would SSH into my server and pull the latest changes from GitHub and rebuild the portfolio container. \
+\
+By extension, this also meant that I had to port forward a port on my server to SSH. This was a bit of a security risk, but I was willing to take it (at least for now).
+
+<BlogCode title="deploy/build-and-deploy.sh" language="sh" copy="false">
+{`
+#!/bin/bash
+
+set -e  # Exit immediately if a command exits with a non-zero status
+
+DOCKER_IMAGE_NAME="portfolio:latest"
+DOCKER_IMAGE_TAR="image.tar"
+
+# Ensure required environment variables are set
+if [ -z "$SSH_PRIVATE_KEY" ]; then
+  echo "Error: SSH_PRIVATE_KEY is not set"
+  exit 1
+fi
+
+# Step 1: Integrate identity file
+echo "Integrating identity file..."
+echo "$SSH_PRIVATE_KEY" | tee $DEPLOY_KEY_PATH
+chmod -R 600 $DEPLOY_KEY_PATH
+
+eval \`ssh-agent\`
+ssh-add -k $DEPLOY_KEY_PATH
+
+# Step 2: SSH into the server
+echo "Connecting to the server..."
+ssh -o StrictHostKeyChecking=no -tt -i $DEPLOY_KEY_PATH -p $REMOTE_PORT $REMOTE_USER@$REMOTE_HOST << EOF
+  cd $REMOTE_PATH
+  git pull
+  docker compose up --build portfolio -d
+  exit
+EOF
+
+
+
+# Clean up the key after use
+rm -f $DEPLOY_KEY_PATH
+
+echo "Deployment completed successfully!"
+`}
+</BlogCode>
+
+I then made a GitHub Action that would run this script whenever I pushed to the main branch.
+The reason I used a script was because I did not want to test the script by repeatedly pushing to GitHub (this would be quite a hassle).
+I made a separate script so that I could test it locally before running it online.
+
+<BlogCode title=".github/workflows/deploy.yml" language="yaml" copy="false">
+{`
+name: Deploy Portfolio
+
+on:
+  push:
+    branches:
+      - main # Adjust branch name as needed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up SSH agent for deployment
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: \${{ secrets.SSH_PRIVATE_KEY }}
+
+      # Execute deployment script
+      - name: Run Deployment Script
+        env:
+          REMOTE_USER: \${{ secrets.REMOTE_USER }}
+          REMOTE_HOST: \${{ secrets.REMOTE_HOST }}
+          REMOTE_PORT: \${{ secrets.REMOTE_PORT }}
+          REMOTE_PATH: \${{ secrets.REMOTE_PATH }}
+          SSH_PRIVATE_KEY: \${{ secrets.SSH_PRIVATE_KEY }}
+          DEPLOY_KEY_PATH: \${{ secrets.DEPLOY_KEY_PATH }}
+        run: |
+          chmod +x ./deploy/build-and-deploy.sh
+          ./deploy/build-and-deploy.sh
+`}
+</BlogCode>
+
+The secrets were stored in the GitHub repository's secrets (Settings > Secrets and variables > Actions). This way, I could keep the secrets out of the code. \
+\
+Of course, if any changes were made to the more private parts of the website (like environment variables), I would have to 
+update that manually. \
+\
+I was really excited when I saw my website update automatically for the first time. It was like magic.
+
+<BlogImage
+    src="/blogs/pdev-ep2-cicd/githubactions.png"
+    alt="GitHub Actions working"
+    caption="GitHub Actions works!!!" />
+
+With all of this set up, I was able to self host my website. I was able to update it with a single push to GitHub.
+There was only one problem... 
+
+<BlogImage
+    src="/blogs/pdev-ep2-cicd/sslnotworking.png"
+    alt="No SSL :("
+    caption="No SSL, not secure :(" />
+
+<br />
+
+## SSL Certificates
+<a href="https://www.youtube.com/watch?v=pwTzHbIXSlI" target="_blank">AAAAAUUUUUUUGGGHHHHHH</a>. I forgot about SSL certificates. \
+\
+To give a brief rundown, Secure Socket Layer (SSL) certificates are certificates that encrypt the connection between the client and the server. 
+It is also used to verify the identity of the server. 
+Without SSL, the connection between the client and the server is not secure and can be intercepted. For example, if you use 
+a public WiFi network and log into a website without SSL, your login information can be stolen. This is...really bad. \
+\
+In the context of my website, my Secret Santa website has a login system. Without SSL, someone could intercept someone's login info. \
+I really didn't want that. \
+\
+Thankfully, there is a service called <a href="https://letsencrypt.org/" target="_blank">Let's Encrypt</a> that provides free SSL certificates.
+I used a Docker container called <a href="https://hub.docker.com/r/certbot/certbot" target="_blank">Certbot</a> to get these certificates. \
+\
+First, I added a new service to my Docker Compose file. This service would run the Certbot container.
+
+<BlogCode title="new docker-compose.yml" language="yaml" copy="false">
+{`
+services:
+  portfolio:
+    image: portfolio
+    build:
+      context: ./portfolio
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+  secretsanta:
+    image: secretsanta
+    build:
+      context: ./secretsanta
+    ports:
+      - "3001:3001"
+    networks:
+      - app-network
+
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/letsencrypt/:ro
+    depends_on:
+      - portfolio
+      - secretsanta
+    networks:
+      - app-network
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+    networks:
+      - app-network
+
+
+networks:
+  app-network:
+    driver: bridge
+`}
+</BlogCode>
+
+The Certbot container and the Nginx container share a few volumes. This is so that the Certbot container can write the 
+certificates for the Nginx container to read and use. \
+\
+After this, I had to edit the Nginx configuration file so that I could obtain the certificates. 
+
+<BlogCode title="temp nginx/nginx.conf" language="nginx" copy="false">
+{`
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name bryanchan.org www.bryanchan.org;
+
+    location / {
+      return 301 https://$host$request_uri;
+    }
+
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+}
+`}
+</BlogCode>
+
+This configuration file completely removed the proxy pass to my portfolio (for now). \
+\
+After this, I had to restart my other containers and run a command on the Certbot container
+in order to get my certificates.
+
+<BlogCode title="obtaining certificates" language="sh">
+{`
+docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ -d [domain]
+`}
+</BlogCode>
+
+In this case, ``[domain]`` would be bryanchan.org. This took a couple tries, since I didn't know that Nginx had to be restarted and running. 
+However, in the end, I was able to generate my first certificate. \
+\
+Finally, I edited the Nginx configuration file to use the certificates.
+
+<BlogCode title="final nginx/nginx.conf" language="nginx" copy="false">
+{`
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name bryanchan.org www.bryanchan.org;
+
+    location / {
+      return 301 https://$host$request_uri;
+    }
+
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+}
+
+server {
+    listen 443 default_server ssl http2;
+    listen [::]:443 ssl http2;
+    server_name bryanchan.org www.bryanchan.org;
+
+    ssl_certificate /etc/letsencrypt/live/bryanchan.org/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/bryanchan.org/privkey.pem;
+
+    location / {
+        proxy_pass http://portfolio:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+
+    location /secretsanta/ {
+        proxy_pass http://secretsanta:3001;  # Proxy to the app without additional paths
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # Handle requests to /secretsanta directly
+    location = /secretsanta {
+        proxy_pass http://secretsanta:3001;  # This ensures /secretsanta loads correctly
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+`}
+</BlogCode>
+
+After this, I restarted the Nginx container and...it worked! I had SSL certificates on my website. \
+\
+Look at that beautiful lock.
+
+<BlogImage
+    src="/blogs/pdev-ep2-cicd/sslworking.png"
+    alt="SSL working"
+    caption="SSL works!!! Look at that lock!!!" 
+    style={{ border: "0.5rem white solid" }} />
+
+
+And...that's where we are now!
+
+## Conclusion
+I am now self hosting my website.\
+I have a CI/CD pipeline set up. \
+I have my own SSL certificates. \
+I am now in control of my website. \
+To you - the user, nothing has changed. The website still looks the same. Heck, the website might even take longer to load since 
+there's no CDN. However, I am happy. I am proud that I was able to do this. \
+\
+To the future!
+
+<BlogImage
+    src="/blogs/pdev-ep2-cicd/fin.png"
+    alt="Me blabbering on Discord"
+    caption="The end" 
+ />

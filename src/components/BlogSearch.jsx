@@ -276,6 +276,20 @@ export default function BlogSearch({ posts = [] }) {
                     <div className="flex flex-wrap gap-2.5 items-center text-xs text-purple-800 dark:text-purple-300">
                       <span>{post.data?.date}</span>
                       <span>•</span>
+                      {post.data?.status && (
+                        <>
+                          <span
+                            className={`px-2 py-0.5 rounded-full font-semibold uppercase text-[0.65rem] border ${
+                              post.data.status === "in progress"
+                                ? "bg-amber-500/10 border-amber-500/30 text-amber-800 dark:text-amber-300"
+                                : "bg-emerald-500/10 border-emerald-500/30 text-emerald-800 dark:text-emerald-300"
+                            }`}
+                          >
+                            {post.data.status}
+                          </span>
+                          <span>•</span>
+                        </>
+                      )}
                       <div className="flex flex-wrap gap-1.5">
                         {[...postTags]
                           .sort((a, b) => {

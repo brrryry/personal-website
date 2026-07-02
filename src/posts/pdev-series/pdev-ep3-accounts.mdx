@@ -1,0 +1,331 @@
+---
+title: "Portfolio Dev EP3: Accounts and Comments"
+date: "2025-07-09"
+description: "I want feedback on my blogs. Therefore..."
+tags: ["coding", "portfolio-dev-series"]
+status: "finished"
+---
+
+Not gonna lie, I had this one in the works for quite a bit of time. This blog was originally created on January 23, 2025. \
+\
+I thought it would be really funny to have friends and possible spectators see what other people think of my blogs, so...I made a public forum for comments. 
+All in all, this took about 2 partial days (I would say about 8-10 good hours) to complete. \
+\
+If you want to make an account, you can do so [here](/register).
+
+<br />
+
+## Design 
+First off, let's make a schema. 
+
+<BlogCode language="plaintext" copy="false" title="Schema for accounts and comments">
+{`
+USERS
+- userID: string non-null
+- username: string non-null
+- password: string non-null
+
+SESSIONS
+- sessionID: string non-null
+- userID: string non-null
+- dateCreated: date non-null
+
+COMMENTS
+- commentID: string non-null
+- userID: string non-null
+- blogID: string non-null
+- dateCreated: date non-null
+- content: string non-null
+`}
+</BlogCode>
+
+...Good enough.
+
+<br />
+
+Next, I had to find a database. After (not) a lot of thinking, I decided to use MongoDB. It is a database that I am familiar with, and it isn't too difficult to set up. 
+Using my knowledge from my web programming class, I started creating stuff.
+
+<BlogCode language="javascript" copy="false" title="mongoConnection.js">
+{`
+import { MongoClient } from 'mongodb';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+let _connection = undefined;
+let _db = undefined;
+
+const env = process.env.NODE_ENV || 'development';
+
+
+const mongoConfig = {
+  serverUrl: (env === "production") ? process.env.MONGO_SERVER_URL : process.env.MONGO_SERVER_URL_DEV,
+  database: (env === "production") ? process.env.MONGO_DB_NAME : process.env.MONGO_DB_NAME_DEV,
+}
+
+const dbConnection = async () => {
+  if (!_connection) {
+    _connection = await MongoClient.connect(mongoConfig.serverUrl);
+    _db = _connection.db(mongoConfig.database);
+  }
+
+  return _db;
+};
+
+const closeConnection = async () => {
+  await _connection.close();
+};
+
+export { dbConnection, closeConnection };
+`}
+</BlogCode>
+
+It should be noted that this is a general implementation of a MongoDB connection. Because of its 
+template-like structure, it can be used in just about any Node project that uses MongoDB. There is 
+also a difference between the production and development database. I don't want to mix up my stuff!
+The development database is spun up locally on my computer, while the production database uses a Mongo 
+Atlas cluster. I don't want to pay for a server, and thankfully, I don't have to. Thanks Mongo!! \
+\
+Now, we make our collections. There were three collections that I had in mind (as shown in the schema above).
+
+<BlogCode language="javascript" copy="false" title="mongoCollections.js">
+{`
+import { dbConnection } from './mongoConnection.js';
+
+const getCollectionFn = (collection) => {
+  let _col = undefined;
+
+  return async () => {
+    if (!_col) {
+      const db = await dbConnection();
+      _col = await db.collection(collection);
+    }
+
+    return _col;
+  };
+};
+
+export const accounts = getCollectionFn('accounts');
+export const comments = getCollectionFn('comments');
+export const sessions = getCollectionFn('sessions');
+`}
+</BlogCode>
+
+The cool thing (that is not used in this project) is that MongoDB does not require strictly defined schemas.
+This can be useful - especially when you want to add new fields to a collection without having to worry about migrations. \
+\
+Now, we have to make data functions. These functions will be used in the server side to interact with the database.
+I'm not going to show the code for all of them, as that is quite annoying to read. You can always check my 
+<a href="https://github.com/brrryry/personal-website" target="_blank">GitHub</a> for the code. All in all, I made 
+two files: `accounts.js` for account and session functions, and `comments.js` for comment functions. 
+
+<br />
+<BlogList>
+<li>Create/delete accounts</li>
+<li>Login/logout/session check</li>
+<li>Create/delete comments</li>
+<li>Get comments for a blog</li>
+<li>Get comments for a user</li>
+</BlogList>
+<br />
+
+After I made these functions, I had to start actually throwing it all together in the client side.
+
+## Session Management
+In order to manage sessions, I used cookies. These cookies - for security purposes - would have to be validated
+on the server side. In order to do this, I made a hook that would check if the user is logged in. It also had
+login and logout functions. This hook is used in every necessary client component.
+
+<BlogCode language="javascript" copy="false" title="SessionContext.js">
+{`
+// components/SessionContext.js
+'use client';
+
+import { createContext, useContext, useState, useEffect } from 'react';
+
+const SessionContext = createContext();
+
+export function SessionProvider({children}) {
+  const [session, setSession] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const sessionid = document.cookie.split('; ').find(row => row.startsWith('sessionid='))?.split('=')[1];
+    const fetchSession = async (sessionid) => {
+      try {
+        //post request to /api/account/session
+        const response = await fetch('/api/account/session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ sessionId: sessionid }),
+        });
+        const data = await response.json();
+        setSession(data);
+      } catch (error) {
+        console.error('error fetching session:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSession(sessionid);
+  }, []);
+
+  const login = async (username, password) => {...}
+
+  const logout = async () => {...};
+
+  return (
+    <SessionContext.Provider value={{ session, loading, login, logout }}>
+      {children}
+    </SessionContext.Provider>
+  );
+}
+
+export function useSession() {
+  const context = useContext(SessionContext);
+  if (!context) {
+    throw new Error('useSession must be used within a SessionProvider');
+  }
+  return context;
+}
+`}
+</BlogCode>
+
+Some examples of where this would be used would be...
+
+<br />
+<BlogList>
+<li>The login page - if you are logged in, redirect out!!</li>
+<li>The navbar component - show the login/logout button</li>
+<li>The blog comments component - show the comment form if logged in</li>
+</BlogList>
+<br />
+
+So...yeah, now we have an accurate way to tell on the client side if a user is logged in or not. Awesome!
+
+## The Comments
+Since the blog itself is a server side rendered page, it was easy to stick on a blog comment component in the client side.
+Of course, in order to have the client interact with the server, I had to make a few API routes.
+
+<br />
+<BlogList>
+<li>GET /api/comments/:blogid - get all comments for a blog</li>
+<li>POST /api/comments/:blogid - create a comment for a blog</li>
+<li>DELETE /api/comments/:commentid - delete a comment</li>
+<li>PUT /api/comments/:commentid - update a comment</li>
+<li>GET /api/account/:userid - get all comments for a user (I bundled this with profile because I'm lazy)</li>
+</BlogList>
+<br />
+
+Alright, so now we have a way to comment and stuff. To recap... \
+\
+User logs in -> session is created, user is logged in \
+User comments -> makes POST request -> API calls create comment function -> comment is added to database \
+\
+Cool. \
+\
+Now, I hate frontend work (as you can tell by the style of this website). Thus, I vibe-coded everything and just
+hoped it worked. Because of this, you may see some "accidentally" capitalized words. Whoops. \
+\
+It was also quite a bit of code, so again I'm not gonna paste it all here. You can check it out on my GitHub. In 
+particular, making the edit button was a bit of a pain. Holy moly. It also has a small span that shows
+the relative time of the comment and the most recent edit.
+
+<BlogImage
+src="/blogs/pdev-ep3-accounts/sux.png"
+alt="Comment aesthetics"
+caption="Meh, looks aesthetic enough"
+style={{border: "1px solid white"}}
+/>
+
+## The Profile Page
+Oh yeah, I also made a profile page so that everyone can see their comment history.
+It looks like this!
+
+<BlogImage
+src="/blogs/pdev-ep3-accounts/profile.png"
+alt="Profile page"
+caption="Look at the cool lines!!"
+style={{border: "1px solid white"}}
+/>
+
+Once I figured out how to get this stuff working in the comment component, it was really easy to just paste
+it into the profile page. Looks pretty cool. \
+\
+Also, when you click on a comment, it will take you to blog page that the comment is on. It will also
+scroll to the comments section! How did I do this? \
+\
+Simple. Add a hash.
+
+<BlogCode language="javascript" copy="false" title="/profile/[id]/page.js">
+{`
+return (
+        <div className="flex justify-center items-center p-4">
+            <div className="rounded shadow-md p-4 max-w-4xl">
+                {error && <p className="text-red-500 mb-4">{error}</p>}
+                <div className="mb-4">
+                    <h3 className="block mb-2">username: {username}</h3>
+                </div>
+
+                <div className="mb-4 max-w-4xl">
+                    <h3 className="block mb-2">comments</h3>
+                    {comments.length > 0 ? (
+                        <ul>
+                            {comments.map(comment => (
+                                <li key={comment._id} className="border-b py-2">
+                                    <a href={\`/blog/\${comment.blogId}#comments-section\`} className="text-[#d8bfd8] hover:underline">
+                                        {comment.blogId}
+                                    </a> - {comment.content} {" "}
+                                    <span className="text-sm">({new Date(comment.createdAt).toLocaleDateString()})</span>
+                                    <span className="text-sm"> - {comment.updatedAt ? \`Updated: \${new Date(comment.updatedAt).toLocaleDateString()}\` : "Not updated"}</span>
+                                    <br />
+                                </li>
+                            ))}
+                        </ul>
+...
+`}
+</BlogCode>
+
+The important part is the `#comments-section` at the end of the link. This will scroll to the comments section of the blog page.
+This works because I stuck some useEffect code in the blog comments page. Hehehe >:3
+
+<BlogCode language="javascript" copy="false" title="blogComments.jsx">
+{`
+useEffect(() => {
+        ... //other code
+
+        // Wait for comments to render before scrolling
+        const hash = window.location.hash;
+        if (hash === "#comments-section") {
+            setTimeout(() => {
+            const commentsSection = document.querySelector(".comments-section");
+            if (commentsSection) {
+                commentsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+            }, 100); // slight delay to ensure DOM is ready
+        }
+    }, [blogId]);
+`}
+</BlogCode>
+
+## Conclusion
+So now we have comments. That's cool. \
+\
+I could have definitely spent this time doing something else (like...job applications...or something), but I thought this would be fun. It wouldn't take too much time,
+and I think the investment might be worth it (for fun, of course). Thanks for reading, and I look forward to hearing back from you guys. \
+\
+For now, I will probably keep working on RAG (see my other [blog](/blog/insure-2025)). Please feel free to let me know if there is anything super buggy in the frontend...I haven't fully tested it yet ahahaaaaa \
+\
+Oh also I have admin perms obviously, so I can delete comments from the DB itself lol \
+\
+One more thing: I really want to start posting music. Maybe a blog will be made on that soon.
+
+<br />
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cEpA7zDDPig?si=-mcnK1YoQn_7D87n" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen={true}></iframe>
+
+<br />

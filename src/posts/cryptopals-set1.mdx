@@ -1,0 +1,256 @@
+---
+title: "Cryptopals Set 1: The Basics"
+date: "2026-07-01"
+description: "My writeup for Set 1 of the Cryptopals crypto challenges, covering hexadecimal, binary, and base64 conversions."
+tags: ["cryptopals-series", "coding", "cryptography"]
+status: "in progress"
+draft: true
+---
+
+<br />
+
+## Challenge 1: Hex to Base64
+A very famous problem! Here is the example that is provided:
+
+> **The string:**
+> <code className="break-all whitespace-pre-wrap" style={{ wordBreak: 'break-all', whiteSpace: 'pre-wrap' }}>49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d</code>
+> 
+> **Should produce:**
+> <code className="break-all whitespace-pre-wrap" style={{ wordBreak: 'break-all', whiteSpace: 'pre-wrap' }}>SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t</code>
+
+Cool! How do we do this? We need to understand how each system works.
+
+Hexadecimal (Hex) is a computing notation that uses a base-16 number system. For comparison, the normal number system that we use ($1, 2, 3\dots 9, 10, 11, \dots$) uses base-10 (there are *10* digits, 0-9). The digits in hexadecimal consist of 0-9 as well as A-F, making a total of 16 possible digits. Counting is similar:
+
+$$0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F, 10, 11, 12, \dots, 19, 1A, \dots, 1F, 20, \text{etc.}$$
+
+Another example (which will become relevant very soon) is binary. You may have heard about this number notation a lot when talking about computers. Binary is in base-2, so there are only *2* digits: 0 and 1.
+
+$$\text{Binary: } 0, 1, 10, 11, 100, 101, 110, 111, \text{etc.}$$
+$$\text{Decimal: } 0, 1, 2, 3, 4, 5, 6, 7, \text{etc.}$$
+
+Now here's a cool observation: with 1 binary digit, we can represent 2 numbers (0 and 1). With 2 binary digits, we can represent 4 numbers (00, 01, 10, 11). With 3 digits, we can represent 8 numbers (000, 001, 010, 011, 100, 101, 110, 111). The generalization becomes clear — with $n$ digits, we can represent $2^n$ numbers.
+
+Hexadecimal digits (there are 16 of them) can be represented using 4 binary digits. We can have a direct conversion!
+
+$$0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F$$
+$$0000, 0001, 0010, 0011, 0100, 0101, 0110, 0111, 1000, 1001, 1010, 1011, 1100, 1101, 1110, 1111$$
+
+*(I'm sorry if the counting in binary does not make much sense — it is not something that I will go over in this blog. However, there are many resources that teach you how to count in binary if you cannot figure it out explicitly here.)*
+
+Base64 — as the name suggests — uses a base-64 number system. This means that there are 64 "digits". These "digits" are not just conventional numbers — they actually cover A-Z (26), a-z (26), 0-9 (10) and + / / (2). $26 + 26 + 10 + 2 = 64$.
+
+<br />
+
+<BlogImage
+  src="/blogs/cryptopals-series/cryptopals-set1/base64-table.png"
+  alt="Base64 Encoding Table"
+  caption="The Base64 Index Table"
+  source="https://mike-diaz006.medium.com/what-i-learned-at-work-this-week-base64-encoding-faea53126581"
+  width={600}
+/>
+
+<br />
+
+In order to represent 64 digits in binary, we need *6* digits ($2^6 = 64$). Thus, we have some sort of pipeline:
+
+$$\text{Hex} \longrightarrow \text{Binary} \longrightarrow \text{Base64}$$
+
+We convert the incoming $n$ hex strings into $4n$ binary digits. From there, we turn the binary digits into $\frac{4}{6}n$ base64 characters (we divide by 6 because we need 6 digits to represent a base64 character).
+
+We have an idea of what to do. Now we need to code it.
+
+To start, I create a function `int hex_to_num(char hex)`. This will take in a hex character (0-9 + A-F) and turn it into its integer counterpart.
+
+<BlogCode language="c">
+{`
+int hex_to_num(char hex) {
+        if(hex >= '0' && hex <= '9') return hex - '0'; //using character subtraction
+        else if(hex >= 'A' && hex <= 'F') return hex - 'A' + 10;
+        else if(hex >= 'a' && hex <='f') return hex - 'a' + 10;
+        else return -1;
+}
+`}
+</BlogCode>
+
+Now that we have that, let's start with the hex character.
+
+In my main function (I am putting most of my code in the main function for simplicity), I first take in the input size (max 128 characters).
+
+<BlogCode language="c">
+{`
+int input_size = 128;
+
+char input[input_size];
+
+printf("What is your hex string?\\n");
+
+int res_input = scanf("%s", input);
+`}
+</BlogCode>
+
+*(NOTE: `scanf` is not inherently safe against buffer overflow. While this is not included in the code block above for simplicity, a preventative measure should be implemented.)*
+
+I then find the size of the actual hex string by looking for a null terminating character `\0`.
+
+<BlogCode language="c">
+{`
+int hex_size = 0;
+
+for(int i = 0; i < input_size; i++) {
+        if(input[i] == '\\0') break;
+        hex_size++;
+}
+`}
+</BlogCode>
+
+Now that I have the hex size, I know how big the output string (in base64) should be: `hex_size` * 2/3. Remember, 1 hex digit = 4 binary digits and 6 binary digits = 1 base64 digit.
+
+<BlogCode language="c">
+{`
+int output_size = hex_size * 2 / 3;
+char output[output_size + 1];
+`}
+</BlogCode>
+
+I create a digit array of all possible characters in base64. This is so that I can reference each digit by simply getting its decimal (i.e. `base64_chars[0]` is 'A', `base64_chars[1]` is 'B', etc.)
+
+<BlogCode language="c">
+{`
+char base64_chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+`}
+</BlogCode>
+
+Here comes the fun part: actual conversion.
+
+I will parse the hex string 3 digits at a time. This is because we have a direct conversion: 3 hex digits = 12 binary digits = 2 base64 digits. 12 is the least common multiple of our conversion numbers (4 and 6).
+
+<BlogCode language="c">
+{`
+for(int i = 0; i < hex_size; i += 3) {
+        int hex1 = hex_to_num(input[i]);
+        int hex2 = hex_to_num(input[i+1]);
+        int hex3 = hex_to_num(input[i+2]);
+
+        // turn 3 hex (12 bits) into 2 base64 chars (12 bits)
+        int b64_1 = (hex1 << 2) | (hex2 >> 2);
+        int b64_2 = ((hex2 & 0x03) << 4) | (hex3);
+
+        output[output_index++] = base64_chars[b64_1];
+        output[output_index++] = base64_chars[b64_2];
+}
+`}
+</BlogCode>
+
+When considering our 12 binary digits, they look like:
+
+<div className="my-6 p-4 rounded-2xl bg-purple-500/5 border border-purple-500/10">
+  <div className="space-y-4">
+    {/* Step 1: Input Layout */}
+    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 bg-purple-500/10 dark:bg-purple-900/10 p-3 rounded-xl">
+      <div>
+        <div className="text-xs font-bold uppercase tracking-wide text-purple-900 dark:text-purple-300">12-Bit Input (3 × 4-bit Hex Digits)</div>
+        <div className="text-[11px] text-gray-500 dark:text-gray-400">Example digits: D (13), B (11), 7 (7)</div>
+      </div>
+      <div className="flex items-center gap-1 font-mono text-xs font-bold">
+        {/* hex1 */}
+        <span className="bg-purple-500/20 text-purple-800 dark:text-purple-200 px-2 py-1 rounded border border-purple-500/30" title="hex1 = D">1101</span>
+        <span className="text-gray-400 font-sans text-[10px]">+</span>
+        {/* hex2 */}
+        <span className="bg-pink-500/20 text-pink-800 dark:text-pink-200 px-2 py-1 rounded border border-pink-500/30" title="hex2 = B">1011</span>
+        <span className="text-gray-400 font-sans text-[10px]">+</span>
+        {/* hex3 */}
+        <span className="bg-blue-500/20 text-blue-800 dark:text-blue-200 px-2 py-1 rounded border border-blue-500/30" title="hex3 = 7">0111</span>
+      </div>
+    </div>
+
+    {/* Step 2: Side-by-Side Operations */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* b64_1 */}
+      <div className="bg-white dark:bg-zinc-900/40 p-3 rounded-xl border border-purple-500/5 space-y-3">
+        <div className="text-xs font-bold text-purple-900 dark:text-purple-200 flex justify-between items-center">
+          <span>First Character (b64_1)</span>
+          <code className="bg-purple-500/10 px-1.5 py-0.5 rounded text-[10px] font-semibold">(hex1 &lt;&lt; 2) | (hex2 &gt;&gt; 2)</code>
+        </div>
+        <div className="space-y-1 font-mono text-[11px] leading-relaxed">
+          <div className="flex justify-between">
+            <span className="text-gray-400">hex1 &lt;&lt; 2:</span>
+            <span className="text-purple-700 dark:text-purple-300">1101<span className="text-gray-300 dark:text-zinc-700">00</span></span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-400">hex2 &gt;&gt; 2:</span>
+            <span className="text-pink-700 dark:text-pink-300"><span className="text-gray-300 dark:text-zinc-700">0000</span>10</span>
+          </div>
+          <div className="flex justify-between border-t border-dashed border-gray-200 dark:border-zinc-800 pt-1 font-bold text-xs">
+            <span className="text-purple-800 dark:text-purple-300">b64_1 (OR):</span>
+            <span>
+              <span className="text-purple-700 dark:text-purple-300">1101</span>
+              <span className="text-pink-700 dark:text-pink-300">10</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* b64_2 */}
+      <div className="bg-white dark:bg-zinc-900/40 p-3 rounded-xl border border-purple-500/5 space-y-3">
+        <div className="text-xs font-bold text-purple-900 dark:text-purple-200 flex justify-between items-center">
+          <span>Second Character (b64_2)</span>
+          <code className="bg-purple-500/10 px-1.5 py-0.5 rounded text-[10px] font-semibold">((hex2 &amp; 0x03) &lt;&lt; 4) | hex3</code>
+        </div>
+        <div className="space-y-1 font-mono text-[11px] leading-relaxed">
+          <div className="flex justify-between">
+            <span className="text-gray-400">hex2 &amp; 0x03:</span>
+            <span className="text-pink-700 dark:text-pink-300">0011</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-400">shifted &lt;&lt; 4:</span>
+            <span className="text-pink-700 dark:text-pink-300">11<span className="text-gray-300 dark:text-zinc-700">0000</span></span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-400">hex3 (direct):</span>
+            <span className="text-blue-700 dark:text-blue-300"><span className="text-gray-300 dark:text-zinc-700">00</span>0111</span>
+          </div>
+          <div className="flex justify-between border-t border-dashed border-gray-200 dark:border-zinc-800 pt-1 font-bold text-xs">
+            <span className="text-purple-800 dark:text-purple-300">b64_2 (OR):</span>
+            <span>
+              <span className="text-pink-700 dark:text-pink-300">11</span>
+              <span className="text-blue-700 dark:text-blue-300">0111</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+That's how we do the conversion! As seen in the code above, we do this iteratively.
+
+Now that we have the base64 binary digits (`b64_1`, `b64_2`), we use the previously mentioned array `base64_chars` to easily find the right character for any binary number. The binary representation of a number and the decimal representation of a number do not matter to the C language — as long as we have an `int` type, we are okay.
+
+That's it! We iterate through our output array of characters and keep adding as we convert. Finally, all that's left is to add the null character at the end and print the result.
+
+<BlogCode language="c">
+{`
+output[output_index] = '\\0';
+
+fprintf(stdout, "%s\\n", output);
+
+return 0;
+`}
+</BlogCode>
+
+There we go! We now have a program that can convert hex to base64. If padding is needed (i.e. there are 4 hex characters = 16 binary digits, not evenly divisible by 6), we can also write logic to add `"="` signs to the end (you will commonly see this if you try converting stuff to base64).
+
+<br />
+
+<BlogImage
+  src="/blogs/cryptopals-series/cryptopals-set1/screenshot.png"
+  alt="Program Output Screenshot"
+  caption="Converting hex to base64 successfully!"
+  width={600}
+/>
+
+<br />
+
+## Challenge 2: Fixed XOR
+Now that we know how hex works,
