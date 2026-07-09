@@ -28,7 +28,7 @@ export function BlogCode({
   children,
   title,
   language,
-  copy = "true",
+  copy = "false",
   ...props
 }) {
   const [code, setCode] = useState("");
