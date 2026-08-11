@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier -w -l .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "spotify-token": "node scripts/get-spotify-token.js"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.0.1",
