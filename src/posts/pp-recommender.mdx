@@ -1,0 +1,308 @@
+---
+title: "'Osu! PP Recommender': Autoencoded Map Similarity for Beatmap Recommendations"
+date: "2026-08-12"
+updated: "2026-08-12"
+description: "Many osu! skillset analyzers exist, but what if we built an axis-free one?"
+tags: ["ml"]
+status: "in progress"
+draft: true
+---
+
+Project Link: <a href="https://pp.bryanchan.org" target="_blank">pp.bryanchan.org</a>\
+(Brief showcase comes first, then we get into the technicalities.)\
+\
+Yeah...recruiters are gonna love this title. \
+\
+I recently hit a 5-digit rank in osu, and I still haven't been able to deploy a full coding project despite my idea bank being filled to the brim.
+The idea that I got the farthest with was the Osu! Beatmap Generator, but I found out that this has already been done a lot.
+Since I was out of ideas, I decided to just...play more osu.
+
+<BlogImage
+src="/blogs/pp-recommender/fivedigit.png"
+alt="5 digit rank!"
+caption="New milestone achieved! :D"
+/>
+
+While doing this, I used a few different websites to help me get better at the game. One that stood out to me was the 
+<a href="https://osu-skillset-analyzer.vercel.app/" target="_blank">osu! skillset analyzer</a> made by user <a href="https://osu.ppy.sh/users/23777414" target="_blank">Kumokoni</a>.
+This website scans your top 200 plays, pinned scores, recent plays, and your favorite maps. Then, it calculates a 12-axis user skill portfolio. 
+
+<BlogImage
+src="/blogs/pp-recommender/portfolio.png"
+alt="My portfolio!"
+caption="My skillset analyzer result."
+source="https://osu-skillset-analyzer.vercel.app/player/YouLikeCats?mode=osu"
+/>
+
+This website is fantastic, and I have no complaints. It has a very slick UI, and the portfolio is explained EXTREMELY well.
+It inspired me to look a little bit deeper. What if we could try to recommend maps, but based on axis-free embeddings? \
+\
+When I talk about "axis-free", I'm referring the removal of the 12-axis classification.
+After scrolling through quite a few forums, I found that different people have different ideas of what defines an "axis" of skill. Some examples may include:
+
+<BlogList>
+<li>Aim Control</li>
+<li>Stamina</li>
+<li>Reading Slow/Fast Approach Rates</li>
+<li>Finger Control</li>
+<li>Complex Pattern Reading</li>
+<li>Precision</li>
+<li>The list goes on...</li>
+</BlogList>
+
+So, what if we didn't use any axes to remove disparity? That's what this project aims to do.
+Without further ado...
+
+---
+
+# PP Recommender
+
+<BlogImage
+src="/blogs/pp-recommender/recommender.png"
+alt="PP Recommender Showcase"
+caption="A brief showcase"
+source="https://pp.bryanchan.org"
+/>
+
+This website takes username inputs and fetches some top/recent osu replays. 
+Using these replays, it will recommend maps for the user to play.
+ \
+\
+By defintion, it's hard to show the user **why** a certain map is recommended. Since we don't have explicit skill tags, we can't really say "map X has high aim difficulty" or "map Y has high stream difficulty." 
+Instead, we rely on the map's properties like star rating, accuracy, length, etc. as a proxy for difficulty. This model "learns" the difficulty of the map. \
+\
+What we CAN do is show the user which maps have similar embeddings to the maps they've played.
+
+<BlogImage
+src="/blogs/pp-recommender/examplerec.png"
+alt="Example Recommendation"
+caption="Example of a map recommendation."
+/>
+
+While there is the obvious con of not being able to explain why a map is recommended, there are a few pros to this approach:
+<br />
+<BlogList>
+<li>
+    <b>Reduced Ambiguity</b>: No need to define or worry about "hidden" axes (like readability, technicality, or streaming speed) that might be interpreted differently by different people. The embedding handles this implicitly.
+</li>
+<li>
+    <b>Simpler Architecture</b>: We can use a simpler, "axis-free" autoencoder architecture (like the Denoising Autoencoder) instead of a more complex model with multiple decoders for each skill axis (e.g., a stacker autoencoder).
+</li>
+<li>
+    <b>Data Flexibility</b>: Since we are not relying on pre-defined axis labels, we can train the model on various datasets (e.g., user replays, map characteristics) without needing to map them to specific axes first.
+</li>
+<li>
+    <b>Strong Foundation</b>: A subsequent axis model can be added on TOP of this model, allowing us to still get the explainability while using the vector embeddings as a base for the model.
+</li>
+<li>
+    <b>Modded Compatability</b>: This model can learn which maps are likely to have certain mods based on their structure, something that is difficult to do with explicit axes. It can also recommend maps with mods that the user hasn't played before.
+</li>
+</BlogList>
+
+<BlogImage
+src="/blogs/pp-recommender/moddedexample.png"
+alt="Modded Map Recommendation Example"
+caption="Example of a modded map recommendation for mrekk. Since the influential maps are modded, the model recommends other maps (in modded settings). "
+/>
+
+In a way, this kind of model has higher potential for better recommendations since we don't rely on multiple subjective axis definitions. \
+\
+Additionally, the website allows you to view the replays that are being used to calculate your recommendations.
+
+<BlogImage
+src="/blogs/pp-recommender/replays.png"
+alt="Replay list"
+caption="Example of the replay list"
+/>
+
+This is a really simple website, but there's a lot of room for expansion. Some ideas I had include:
+
+<BlogList>
+<li>**Multiplayer Graphs**: Letting players compare their replays with their friends. This would require creating a "player fingerprint" - something that isn't too difficult with the already embedded maps.</li>
+<li>**Anomolous Map Finder**: Find maps with low similarity scores - this could be used to find maps that are "outside of your playstyle" or maps that are generally difficult for most players.</li>
+<li>**Map Structure Validation**: Allowing mappers to compare sections of their map to a benchmark of other maps.</li>
+<li>**Beatmap Generator**: Again, one of my original ideas. If we simply reverse-engineer our autoencoder, we can generate new maps.</li>
+</BlogList>
+
+<br />
+
+There's also a lot of bugs at the moment that need to be fixed. To be honest, I vibe-coded a lot of the frontend, and the backend
+can still be improved in terms of efficiency. That being said, I wanted to deploy a MVP as fast as possible to get it into the hands of
+other players and get their feedback. \
+\
+That's really it for the showcase. If you don't want to read my yap on the technical details,
+the blog basically ends here. 
+
+---
+
+# The Technicals
+
+Oh boy. There's a bunch of stuff to unpack here. Before we start, here's a brief idea of the topic list:
+
+<BlogList>
+<li>CNN/LSTM models</li>
+<li>Autoencoders and VAEs</li>
+<li>K/L Divergence and Constrastive Learning</li>
+<li>ALS Factorization and Embedding</li>
+<li>Caching and Rate Limiting</li>
+</BlogList>
+
+<br />
+
+## Precursor: Skill Axes
+When I first started building this, I actually wanted to identify some common axes.
+To do this, I did a really brief pilot study on various metrics. Some examples of this were:
+
+<br />
+
+<BlogList>
+<li>Note Density</li>
+<li>Velocity (95th and 99th percentile)</li>
+<li>Note count</li>
+<li>BPM</li>
+<li>Length</li>
+</BlogList>
+
+<br />
+
+There were a few more features. Anyways, I built this correlation matrix.
+
+<BlogImage
+src="/blogs/pp-recommender/correlationmatrix.png"
+alt="Correlation Matrix"
+caption="My correlation matrix (y'know, the usual. )"
+/>
+
+I actually ended up scrapping this idea since I found a few websites that already used skill axes. (My bad for stealing your idea, by the way...) 
+
+<br />
+
+## The Variational Autoencoder (VAE)
+The variational autoencoder is a model that was introduced around 2013 by Diedrik P. Kingma and Max Welling. The paper can be found <a href="https://arxiv.org/abs/1312.6114" target="_blank">here</a>. \
+\
+Standard autoencoders have two parts: an encoder, and a decoder. 
+The encoder turns an input vector (list of numbers) into a compressed vector (basically shrinking the input vector in size, i.e. dimensions).
+The decoder tries to reconstruct the original input from this compressed vector.
+An easy way to think about it is trying to compress a file into a zip file, and then decompressing the zip file. 
+(Note: This is not actually how zip files work, but it's a good analogy.)
+
+<BlogImage
+src="/blogs/pp-recommender/autoencoder.webp"
+alt="Autoencoder Diagram"
+caption="A diagram of an autoencoder from GeeksforGeeks."
+source="https://www.geeksforgeeks.org/deep-learning/types-of-autoencoders/"
+/>
+
+In most cases, both the encoder and decoder are defined as multilayer perceptrons (fancy term for a type of neural network).
+Let's use a more mathematical approach (this will make it easier to compare VAEs later). 
+
+---
+### Mathematical Formulation of Autoencoders
+
+
+Given an input vector $x \in \mathbb{R}^d$, we create the encoder function $f_\phi$ which maps $x$ to a compressed vector $z \in \mathbb{R}^d$ ($d << D$).
+
+$$
+z = f_\phi(x)
+$$
+
+We use the decoder function $g_\theta$ to reconstruct an estimation of the original vector $\hat{x}$.
+
+$$
+\hat{x} = g_\theta(z) = g_\theta(f_\phi(x))
+$$
+
+Our goal is to learn parameters $\phi$ and $\theta$ such that $\hat{x} \approx x$.
+In the event of continuous output space (like our map features), we can define our reconstruction loss $L_{rec}(\phi, \theta)$ using Mean Squared Error (a typical deterministic loss function for regression tasks):
+
+$$
+L_{rec}(\phi, \theta) = ||x - \hat{x}||^2_2
+$$
+
+Autoencoders can be trained like any other neural network, so gradient descent is typically used.
+
+---
+
+That's how standard autoencoders work, but variational autoencoders are a bit different.
+Variational Autoencoders approach learning with a more probabilistic approach (specifically using Bayesian Inference). 
+
+---
+
+### Maximum Likelihood Estimation - A Primer
+
+Small tangent (I promise it's relevant), but do you know how statistics like sample mean, and sample standard deviation are derived?
+I'm sure you've heard of them before. \
+\
+If you have a normally distributed sample of data, say points $x_1, x_2, \dots, x_n$, we can calculate the sample mean $\bar{x}$ as:
+
+$$
+\bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_i
+$$
+
+This formula is beautifully simple, and it's built on the idea that we can maximize the chance of getting our sample data given a certain distribution.
+As an analogy, think of flipping a coin. If the coin is truly fair (50/50), what's the probability of getting 3 heads in a row? 
+The same idea goes here - if the true population mean is $\mu$, what's the probability of getting our sample data? \
+\
+To figure this out, we use the Maximum Likelihood Estimation (MLE) method - a method for estimating the parameters of a statistical model given an observed dataset. \
+\
+I'll spare the calculus lesson (do you know how to take a derivative?), but let's go through an example. 
+\
+We will make an estimation of the population mean $\hat{\mu}$ (mu-hat). \
+\
+We look at the likelihood of observing our data given the mean (the chance that we get this data if the mean is $\hat{\mu}$). 
+
+The unboxed part uses the definition of the normal distribution, but the boxed part is the template of the likelihood function.
+
+$$ 
+\boxed{L(\hat{\mu}) = P(X | \hat{\mu})} = \prod_{i=1}^{n} \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x_i - \mu)^2}{2\sigma^2}}
+$$
+
+Typically, we use log-likelihood (taking the logarithm) to make computations easier.
+
+$$
+\begin{align}
+l(\hat{\mu}) &= log(\prod_{i=1}^{n} \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x_i - \mu)^2}{2\sigma^2}}) \\
+&= \sum_{i=1}^{n} log(\frac{1}{\sqrt{2\pi\sigma^2}}) + log(e^{-\frac{(x_i - \mu)^2}{2\sigma^2}}) \\
+&= \sum_{i=1}^{n} -log(\sqrt{2\pi\sigma^2}) - \frac{(x_i - \mu)^2}{2\sigma^2}
+\end{align}
+$$
+
+Now, how do we maximize $l(\hat{\mu})$? We find the **critical point** (calculus 1)! 
+Since we know that the function is concave (just take my word on this one, please), the critical point is guaranteed to be the maximum. \
+\
+By differentiating the log-likelihood function with respect to $\hat{\mu}$, we get:
+
+$$
+\begin{align}
+\frac{d}{d\hat{\mu}} [l(\hat{\mu})] &= \frac{d}{d\hat{\mu}} \left[ \sum_{i=1}^{n} -log(\sqrt{2\pi\sigma^2}) - \frac{(x_i - \hat{\mu})^2}{2\sigma^2} \right] \\
+&= \sum_{i=1}^{n} \frac{d}{d\hat{\mu}} [-log(\sqrt{2\pi\sigma^2})] - \frac{d}{d\hat{\mu}} \left[ \frac{(x_i - \hat{\mu})^2}{2\sigma^2} \right] \\
+&= 0 - \frac{1}{2\sigma^2} \sum_{i=1}^{n} 2(x_i - \hat{\mu})(-1) \\
+&= \frac{1}{\sigma^2} \sum_{i=1}^{n} (x_i - \hat{\mu})
+\end{align}
+$$
+
+And by setting it to 0...
+
+$$
+\begin{gathered}
+\frac{1}{\sigma^2} \sum_{i=1}^{n} (x_i - \hat{\mu}) = 0 \\
+\sum_{i=1}^{n} (x_i - \hat{\mu}) = 0 \\
+\sum_{i=1}^{n} x_i - \sum_{i=1}^{n} \hat{\mu} = 0 \\
+\sum_{i=1}^{n} x_i = n \hat{\mu} \\
+\hat{\mu} = \frac{1}{n} \sum_{i=1}^{n} x_i = \bar{x}
+\end{gathered}
+$$
+
+Therefore, our best estimation for the population mean is $\bar{x}$, commonly known as the **sample mean**! \
+\
+I wish I learned how these formulas were derived back when I first took statistics...it's honestly fascinating. \
+Anyways, back to the topic at hand.
+
+---
+
+### VAEs and Bayesian Inference
+
+To understand VAEs, we must first understand how Bayesian Inference works in the context of statistics.
+
+
+
