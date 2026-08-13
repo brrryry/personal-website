@@ -8,13 +8,24 @@ status: "in progress"
 draft: true
 ---
 
-Project Link: <a href="https://pp.bryanchan.org" target="_blank">pp.bryanchan.org</a>\
-(Brief showcase comes first, then we get into the technicalities.)\
-\
-Yeah...recruiters are gonna love this title. \
+Project Link: <a href="https://pp.bryanchan.org" target="_blank">pp.bryanchan.org</a>
+
+<br />
+
+<div class="table-of-contents">
+    
+    <p><strong>Table of Contents</strong></p>
+    <p><a href="#showcase">1. Showcase</a></p>
+    <p><a href="#technicals">2. Model Math \& Reasoning</a></p>
+    <p><a href="#design">3. System Design \& Architecture</a></p>
+</div>
+
+<br />
+
+Yeah...this title is gas. \
 \
 I recently hit a 5-digit rank in osu, and I still haven't been able to deploy a full coding project despite my idea bank being filled to the brim.
-The idea that I got the farthest with was the Osu! Beatmap Generator, but I found out that this has already been done a lot.
+The idea that I got the farthest with was the Osu! Beatmap Generator, but I found out that this has already been done.
 Since I was out of ideas, I decided to just...play more osu.
 
 <BlogImage
@@ -24,7 +35,7 @@ caption="New milestone achieved! :D"
 />
 
 While doing this, I used a few different websites to help me get better at the game. One that stood out to me was the 
-<a href="https://osu-skillset-analyzer.vercel.app/" target="_blank">osu! skillset analyzer</a> made by user <a href="https://osu.ppy.sh/users/23777414" target="_blank">Kumokoni</a>.
+<a href="https://osu-skillset-analyzer.vercel.app/" target="_blank">osu! skillset analyzer</a> <sub>[\[1\]](#citation1)</sub> made by user <a href="https://osu.ppy.sh/users/23777414" target="_blank">Kumokoni</a> <sub>[\[2\]](#citation2)</sub>.
 This website scans your top 200 plays, pinned scores, recent plays, and your favorite maps. Then, it calculates a 12-axis user skill portfolio. 
 
 <BlogImage
@@ -54,6 +65,8 @@ So, what if we didn't use any axes to remove disparity? That's what this project
 Without further ado...
 
 ---
+
+<span id="showcase"></span>
 
 # PP Recommender
 
@@ -131,54 +144,72 @@ can still be improved in terms of efficiency. That being said, I wanted to deplo
 other players and get their feedback. \
 \
 That's really it for the showcase. If you don't want to read my yap on the technical details,
-the blog basically ends here. 
+the blog basically ends here. Thank you for checking in :)
 
 ---
 
-# The Technicals
+<span id="technicals"/>
+# The Models
 
-Oh boy. There's a bunch of stuff to unpack here. Before we start, here's a brief idea of the topic list:
+Oh boy. There's a bunch of math-heavy stuff to unpack here, and it may be hard to read in one sitting (because I can't write concisely). \
+\
+I'd recommend having a background in linear algebra, calculus, and probability to fully understand this section. \
+\
+Here's a brief idea of the topic list:
 
 <BlogList>
 <li>CNN/LSTM models</li>
 <li>Autoencoders and VAEs</li>
 <li>K/L Divergence and Constrastive Learning</li>
 <li>ALS Factorization and Embedding</li>
-<li>Caching and Rate Limiting</li>
 </BlogList>
 
-<br />
-
-## Precursor: Skill Axes
-When I first started building this, I actually wanted to identify some common axes.
-To do this, I did a really brief pilot study on various metrics. Some examples of this were:
+To start, let's talk about how I inputted my data.
 
 <br />
+
+## Data Processing
+Osu! beatmap files (.osu files) have a specific format. From them, you can extract all the hit objects (circles, sliders and spinners).
+You can also get all the timing points (determines bpm, offset, slider velocity, etc.). \
+\
+To put this data into a nice list of numbers, I did the following:
 
 <BlogList>
-<li>Note Density</li>
-<li>Velocity (95th and 99th percentile)</li>
-<li>Note count</li>
-<li>BPM</li>
-<li>Length</li>
+<li>For each object, get the position and time.</li>
+<li>Find the differences in position and time between consecutive objects. Now we have $\Delta x$ and $\Delta y$ values.</li>
+<li>Get the type of object and its details.</li>
+<li>Also put in the overall map stats (e.g. OD, AR, HP, CS).</li>
 </BlogList>
 
 <br />
+All in all, I had a 13-dimensional vector. 
+<br />
+<BlogList>
+<li>$\Delta x$ - change in x position</li>
+<li>$\Delta y$ - change in y position</li>
+<li>$\Delta t$ - change in time</li>
+<li>is_circle - 1 if circle, 0 otherwise</li>
+<li>is_slider - 1 if slider, 0 otherwise</li>
+<li>is_spinner - 1 if spinner, 0 otherwise</li>
+<li>slider_velocity - slider velocity</li>
+<li>slider_linearity - slider linearity</li>
+<li>slider_bezier - slider bezier</li>
+<li>OD - overall difficulty</li>
+<li>AR - approach rate</li>
+<li>HP - health drain</li>
+<li>CS - circle size</li>
+</BlogList>
+<br />
 
-There were a few more features. Anyways, I built this correlation matrix.
+I took a maximum of 2000 objects per map to keep the padding and training time reasonable. Thus, our input is a matrix of size 2000x13.
 
-<BlogImage
-src="/blogs/pp-recommender/correlationmatrix.png"
-alt="Correlation Matrix"
-caption="My correlation matrix (y'know, the usual. )"
-/>
-
-I actually ended up scrapping this idea since I found a few websites that already used skill axes. (My bad for stealing your idea, by the way...) 
 
 <br />
 
-## The Variational Autoencoder (VAE)
-The variational autoencoder is a model that was introduced around 2013 by Diedrik P. Kingma and Max Welling. The paper can be found <a href="https://arxiv.org/abs/1312.6114" target="_blank">here</a>. \
+## The <a href="https://en.wikipedia.org/wiki/Variational_autoencoder" target="_blank">Variational Autoencoder (VAE) Math</a> <sub>[\[3\]](#citation3)</sub>
+If you want to skip all the math, click <a href="#vae-model">here</a>.\
+\
+The variational autoencoder is a model that was introduced around 2013 by Diedrik P. Kingma and Max Welling. The paper can be found <a href="https://arxiv.org/abs/1312.6114" target="_blank">here</a> <sub>[\[4\]](#citation4)</sub>. \
 \
 Standard autoencoders have two parts: an encoder, and a decoder. 
 The encoder turns an input vector (list of numbers) into a compressed vector (basically shrinking the input vector in size, i.e. dimensions).
@@ -189,18 +220,21 @@ An easy way to think about it is trying to compress a file into a zip file, and 
 <BlogImage
 src="/blogs/pp-recommender/autoencoder.webp"
 alt="Autoencoder Diagram"
-caption="A diagram of an autoencoder from GeeksforGeeks."
+caption="A diagram of an autoencoder (NOT A VAE) from GeeksforGeeks [5]."
 source="https://www.geeksforgeeks.org/deep-learning/types-of-autoencoders/"
 />
 
 In most cases, both the encoder and decoder are defined as multilayer perceptrons (fancy term for a type of neural network).
 Let's use a more mathematical approach (this will make it easier to compare VAEs later). 
 
----
+<br />
+
 ### Mathematical Formulation of Autoencoders
 
 
-Given an input vector $x \in \mathbb{R}^d$, we create the encoder function $f_\phi$ which maps $x$ to a compressed vector $z \in \mathbb{R}^d$ ($d << D$).
+Given an input vector $x \in \mathbb{R}^d$, we create the encoder function $f_\phi$ which maps $x$ to a compressed vector $z \in \mathbb{R}^d$ ($d << D$). \
+\
+(The notation $f_\phi$ means that we have a function $f$ that depends on parameters $\phi$. In this case, $\phi$ represents the weights and biases of the neural network.)
 
 $$
 z = f_\phi(x)
@@ -221,88 +255,378 @@ $$
 
 Autoencoders can be trained like any other neural network, so gradient descent is typically used.
 
----
+<br />
 
 That's how standard autoencoders work, but variational autoencoders are a bit different.
-Variational Autoencoders approach learning with a more probabilistic approach (specifically using Bayesian Inference). 
+Variational Autoencoders approach learning with a more probabilistic approach (specifically using <a href="https://en.wikipedia.org/wiki/Bayesian_inference" target="_blank">Bayesian Inference</a> <sub>[\[6\]](#citation6)</sub>). 
+
+<br />
+- - - 
+
+### <a href="https://en.wikipedia.org/wiki/Maximum_likelihood_estimation" target="_blank">Maximum Likelihood Estimation</a> <sub>[\[7\]](#citation7)</sub> - A Primer
+
+<details className="bg-purple-500/5 dark:bg-purple-500/10 border border-purple-500/10 rounded-xl p-4 my-6 cursor-pointer">
+  <summary className="font-semibold text-purple-800 dark:text-purple-200 select-none">📊 Click here for more info!</summary>
+
+  Small tangent (I promise it's relevant), but do you know how statistics like sample mean and sample standard deviation are derived?
+  I'm sure you've heard of them before. \
+  \
+  If you have a <b><i><a href="https://en.wikipedia.org/wiki/Independent_and_identically_distributed_random_variables" target="_blank">i.i.d</a></i></b> <sub>[\[12\]](#citation12)</sub> normally distributed random sample of data, say points $x_1, x_2, \dots, x_n$, we can calculate the sample mean $\bar{x}$ as:
+
+  $$
+  \bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_i
+  $$
+
+  This formula is beautifully simple, and it's built on the idea that we can maximize the chance of getting our sample data given a certain distribution. \
+  \
+  As an analogy, think of flipping a coin. If the coin is truly fair (50/50), what's the probability of getting 3 heads in a row? 
+  The same idea goes here - if the true population mean is $\mu$, what's the probability of getting our sample data? We want to choose a $\mu$ that maximizes this probability. \
+  \
+  To figure this out, we use the Maximum Likelihood Estimation (MLE) method - a method for estimating the parameters of a statistical model given an observed dataset. \
+  \
+  I'll spare the calculus lesson (do you know derivatives/integrals?), but let's go through an example. \
+  \
+  We will make an estimation of the population mean $\mu$. We will call our estimate $\hat{\mu}$ (mu-hat). \
+  \
+  We look at the likelihood of observing our data given the parameter $\mu$ (the chance that we get this data if the mean is $\mu$). 
+  If each data point is sampled independently, then the likelihood of observing all of our data is the product of the likelihoods of observing each data point.
+  $$ 
+  L(\mu) = P(X | \mu) = \prod_{i=1}^{n} \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x_i - \mu)^2}{2\sigma^2}}
+  $$
+
+  The formula above looks ridiculous, and it looks like I pulled it out of thin air, but it's the normal probabilty density function.
+  Now that I'm writing this, I realize that there's a lot to explain...oof... \
+  \
+  Typically, we use log-likelihood (taking the logarithm) to make computations easier.
+
+  $$
+  \begin{align}
+  l(\mu) &= log(\prod_{i=1}^{n} \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x_i - \mu)^2}{2\sigma^2}}) \\
+  &= \sum_{i=1}^{n} log(\frac{1}{\sqrt{2\pi\sigma^2}}) + log(e^{-\frac{(x_i - \mu)^2}{2\sigma^2}}) \\
+  &= \sum_{i=1}^{n} -log(\sqrt{2\pi\sigma^2}) - \frac{(x_i - \mu)^2}{2\sigma^2}
+  \end{align}
+  $$
+
+  Now, how do we maximize $l(\mu)$? We find the **critical point** (calculus 1)! 
+  Since we know that the function is concave (you can verify this by taking the Hessian of the function, but just take my word for it...), the critical point is guaranteed to be the maximum. \
+  \
+  By differentiating the log-likelihood function with respect to $\mu$, we get:
+
+  $$
+  \begin{align}
+  \frac{d}{d\mu} [l(\mu)] &= \frac{d}{d\mu} \left[ \sum_{i=1}^{n} -log(\sqrt{2\pi\sigma^2}) - \frac{(x_i - \mu)^2}{2\sigma^2} \right] \\
+  &= \sum_{i=1}^{n} \frac{d}{d\mu} [-log(\sqrt{2\pi\sigma^2})] - \frac{d}{d\mu} \left[ \frac{(x_i - \mu)^2}{2\sigma^2} \right] \\
+  &= 0 - \frac{1}{2\sigma^2} \sum_{i=1}^{n} 2(x_i - \mu)(-1) \\
+  &= \frac{1}{\sigma^2} \sum_{i=1}^{n} (x_i - \mu)
+  \end{align}
+  $$
+
+  And by setting it to 0, we solve for our estimator $\hat{\mu}$:
+
+  $$
+  \begin{gathered}
+  \frac{1}{\sigma^2} \sum_{i=1}^{n} (x_i - \hat{\mu}) = 0 \\
+  \sum_{i=1}^{n} (x_i - \hat{\mu}) = 0 \\
+  \sum_{i=1}^{n} x_i - \sum_{i=1}^{n} \hat{\mu} = 0 \\
+  \sum_{i=1}^{n} x_i = n \hat{\mu} \\
+  \hat{\mu} = \frac{1}{n} \sum_{i=1}^{n} x_i = \bar{x}
+  \end{gathered}
+  $$
+
+  Therefore, our best estimation for the population mean is $\bar{x}$, commonly known as the **sample mean**! \
+  \
+  I wish I learned how these formulas were derived back when I first took statistics...it's honestly fascinating. 
+</details>
 
 ---
 
-### Maximum Likelihood Estimation - A Primer
+### <a href="https://en.wikipedia.org/wiki/Bayesian_inference" target="_blank">Bayesian Inference</a> <sub>[\[6\]](#citation6)</sub> - Another Primer
 
-Small tangent (I promise it's relevant), but do you know how statistics like sample mean, and sample standard deviation are derived?
-I'm sure you've heard of them before. \
-\
-If you have a normally distributed sample of data, say points $x_1, x_2, \dots, x_n$, we can calculate the sample mean $\bar{x}$ as:
+<details className="bg-purple-500/5 dark:bg-purple-500/10 border border-purple-500/10 rounded-xl p-4 my-6 cursor-pointer">
+  <summary className="font-semibold text-purple-800 dark:text-purple-200 select-none">🔮 Click here for more info!</summary>
 
-$$
-\bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_i
-$$
+  To understand VAEs, we must first understand how <a href="https://en.wikipedia.org/wiki/Bayesian_inference" target="_blank">Bayesian Inference</a> <sub>[\[6\]](#citation6)</sub> works in the context of statistics. \
+  \
+  This technique involves using a prior belief (a hypothesis $H$), and using new evidence (data $D$) to update our beliefs (the posterior probability $P(H|D)$). \
+  \
+  We begin with <a href="https://en.wikipedia.org/wiki/Bayes%27_theorem" target="_blank">Bayes' Theorem</a> <sub>[\[8\]](#citation8)</sub> - a way to calculate posterior probabilities. 
+  Bayes' Theorem is defined as:
 
-This formula is beautifully simple, and it's built on the idea that we can maximize the chance of getting our sample data given a certain distribution.
-As an analogy, think of flipping a coin. If the coin is truly fair (50/50), what's the probability of getting 3 heads in a row? 
-The same idea goes here - if the true population mean is $\mu$, what's the probability of getting our sample data? \
-\
-To figure this out, we use the Maximum Likelihood Estimation (MLE) method - a method for estimating the parameters of a statistical model given an observed dataset. \
-\
-I'll spare the calculus lesson (do you know how to take a derivative?), but let's go through an example. 
-\
-We will make an estimation of the population mean $\hat{\mu}$ (mu-hat). \
-\
-We look at the likelihood of observing our data given the mean (the chance that we get this data if the mean is $\hat{\mu}$). 
+  $$
+   P(H|D) = \frac{P(D|H)P(H)}{P(D)} 
+  $$
 
-The unboxed part uses the definition of the normal distribution, but the boxed part is the template of the likelihood function.
+  Where:
+
+  - $H$: Hypothesis - A statement or proposition about the world
+  - $D$: Data - The observed evidence
+  - $P(H|D)$: Posterior Probability - The probability of the hypothesis being true given the data
+  - $P(D|H)$: Likelihood - The probability of the observed data given the hypothesis
+  - $P(H)$: Prior Probability - The probability of the hypothesis being true before observing the data
+  - $P(D)$: Evidence - The probability of the observed data
+
+  <br />
+
+  In MLE, we treated the hypothesis (or parameters) as fixed, unknown constants, and our goal was to find the single value that maximized the likelihood $P(D|H)$ of our observed data (for example, finding the MLE of $\mu$ - a CONSTANT). \
+  \
+  In the Bayesian framework, however, we treat the hypothesis (i.e. $\mu$) itself as a random variable. We assign it a **prior** probability distribution $P(\mu)$ (representing our beliefs before seeing any data). For instance, maybe we think that coin flips are usually fair, so we assign a prior probability distribution that is peaked around $\mu = 0.5$ (we do not say that $\mu$ IS 0.5 - this is the difference). 
+
+  <br />
+
+  We then update our beliefs by multiplying the prior by the likelihood $P(D|\mu)$ to get the **posterior** probability distribution $P(\mu|D)$ using Bayes' Theorem. \
+  \
+  Here's an interesting way to think about it: **MLE is basically Bayes' rule with a uniform prior distribution ($P(H)$ = 1 for all H).**
+
+</details>
+
+---
+
+### Primers Over!
+
+We apply the Bayesian framework to infer the posterior probability distribution $P(z|x)$: 
 
 $$ 
-\boxed{L(\hat{\mu}) = P(X | \hat{\mu})} = \prod_{i=1}^{n} \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x_i - \mu)^2}{2\sigma^2}}
+P(z|x) = \frac{P(x|z)P(z)}{P(x)} 
 $$
 
-Typically, we use log-likelihood (taking the logarithm) to make computations easier.
+Where:
 
-$$
-\begin{align}
-l(\hat{\mu}) &= log(\prod_{i=1}^{n} \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x_i - \mu)^2}{2\sigma^2}}) \\
-&= \sum_{i=1}^{n} log(\frac{1}{\sqrt{2\pi\sigma^2}}) + log(e^{-\frac{(x_i - \mu)^2}{2\sigma^2}}) \\
-&= \sum_{i=1}^{n} -log(\sqrt{2\pi\sigma^2}) - \frac{(x_i - \mu)^2}{2\sigma^2}
-\end{align}
-$$
+- $P(z|x)$: Posterior Probability - The probability of the latent variable given the observed data
+- $P(x|z)$: Likelihood - The probability of the observed data given the latent variable
+- $P(z)$: Prior Probability - The probability of the latent variable before observing the data
+- $P(x)$: Evidence - The probability of the observed data
 
-Now, how do we maximize $l(\hat{\mu})$? We find the **critical point** (calculus 1)! 
-Since we know that the function is concave (just take my word on this one, please), the critical point is guaranteed to be the maximum. \
+<br />
+
+At the same time, we want to infer the posterior distribution $P(z|x)$ to find the latent representation $z$ for any given data point $x$. \
 \
-By differentiating the log-likelihood function with respect to $\hat{\mu}$, we get:
-
-$$
-\begin{align}
-\frac{d}{d\hat{\mu}} [l(\hat{\mu})] &= \frac{d}{d\hat{\mu}} \left[ \sum_{i=1}^{n} -log(\sqrt{2\pi\sigma^2}) - \frac{(x_i - \hat{\mu})^2}{2\sigma^2} \right] \\
-&= \sum_{i=1}^{n} \frac{d}{d\hat{\mu}} [-log(\sqrt{2\pi\sigma^2})] - \frac{d}{d\hat{\mu}} \left[ \frac{(x_i - \hat{\mu})^2}{2\sigma^2} \right] \\
-&= 0 - \frac{1}{2\sigma^2} \sum_{i=1}^{n} 2(x_i - \hat{\mu})(-1) \\
-&= \frac{1}{\sigma^2} \sum_{i=1}^{n} (x_i - \hat{\mu})
-\end{align}
-$$
-
-And by setting it to 0...
-
-$$
-\begin{gathered}
-\frac{1}{\sigma^2} \sum_{i=1}^{n} (x_i - \hat{\mu}) = 0 \\
-\sum_{i=1}^{n} (x_i - \hat{\mu}) = 0 \\
-\sum_{i=1}^{n} x_i - \sum_{i=1}^{n} \hat{\mu} = 0 \\
-\sum_{i=1}^{n} x_i = n \hat{\mu} \\
-\hat{\mu} = \frac{1}{n} \sum_{i=1}^{n} x_i = \bar{x}
-\end{gathered}
-$$
-
-Therefore, our best estimation for the population mean is $\bar{x}$, commonly known as the **sample mean**! \
+(TLDR: we want to maximize the likelihood of our vector $x$ while finding a compressed form $z$ that captures the most important features in $x$.)\
 \
-I wish I learned how these formulas were derived back when I first took statistics...it's honestly fascinating. \
-Anyways, back to the topic at hand.
+To apply this to our autoencoder, we parameterize the generative model (the decoder) with parameters $\theta$. Thus, our model's likelihood is $P_\theta(x|z)$ and the joint distribution is $P_\theta(x, z) = P_\theta(x|z)P(z)$ (assuming a fixed prior $P(z)$). \
+\
+As mentioned earlier, the denominator, $P_\theta(x)$, is the model **evidence**. It represents the probability of generating our observed data under all possible latent configurations:
+
+$$
+P_\theta(x) = \int P_\theta(x, z) dz = \int P_\theta(x|z) P(z) dz
+$$
+
+The problem is that computing this integral is ridiculously hard to do for complex, high-dimensional datasets. The reason for this is that we would have to search over the entire infinite space of possible latent variables $z$ to compute the integral.
+If our $z$ was 1-dimensional, computation wouldn't be hard. However, compressed vectors are often 128 or 256 dimensional, making the integral impossible to compute. \
+\
+You could try to differentiate the log-likelihood with respect to the parameters $\theta$ directly, but computing that gradient requires taking an expectation over the true posterior $P_\theta(z|x)$—which is the very thing we are trying to infer in the first place (catch 22)! \
+\
+Because we cannot calculate $P_\theta(x)$, we cannot compute the true model posterior $P_\theta(z|x)$ directly using Bayes' Theorem. \
+\
+How do we find $z$ (our compressed vector) AND $\theta$ (our decoder parameters) then?? 
 
 ---
 
-### VAEs and Bayesian Inference
+### <a href="https://en.wikipedia.org/wiki/Variational_inference" target="_blank">Variational Inference</a> <sub>[\[9\]](#citation9)</sub>: Approximating the Unknowable
 
-To understand VAEs, we must first understand how Bayesian Inference works in the context of statistics.
+Since we can't calculate the true model posterior $P_\theta(z|x)$, we have to approximate it.
+We use a technique called **Variational Inference** to approximate this intractable posterior distribution (the crazy integral from before). \
+\
+We do this by introducing a new, simpler distribution $q_\phi(z|x)$ (called the **variational posterior** or the **recognition model**), which is parameterized by weights $\phi$. In practice, this distribution is parameterized by our **encoder network**. \
+\
+We want to make $q_\phi(z|x)$ as close as possible to the true model posterior $P_\theta(z|x)$. In probability theory, we measure the difference (or divergence) between two probability distributions using the <a href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence" target="_blank">**Kullback-Leibler (KL) Divergence**</a> <sub>[\[10\]](#citation10)</sub>. \
+\
+On a surface level, we are trying to find the difference between our approximation of the posterior distribution and the REAL posterior distribution.
+We do this by integrating over our simpler distribution and multiplying it by the ratio of the two distributions (inside a log). Optimally, if the two distributions are identical, the KL divergence becomes $log(1) = 0$.
+$$
+D_{KL}(q_\phi(z|x) \parallel P_\theta(z|x)) = \int q_\phi(z|x) \log \left( \frac{q_\phi(z|x)}{P_\theta(z|x)} \right) dz
+$$
 
+The KL divergence is always greater than or equal to 0 ($D_{KL} \geq 0$). If you'd like to know more about why, check the wiki article (I don't want to explain it LOL). \
+\
+Our goal is now to minimize this divergence. It can serve as our loss function! But...\
+\
+Hollup. The equation for KL divergence still contains the intractable true posterior $P_\theta(z|x)$ inside the log. That was the whole problem...so how do we minimize it? \
+\
+Well...we don't. Instead, we rearrange the equation to isolate the evidence $P_\theta(x)$ (which is equivalent to $P_\phi(x)$ for our purposes).
 
+---
 
+### The Pivot: <a href="https://en.wikipedia.org/wiki/Evidence_lower_bound" target="_blank">Evidence Lower Bound (ELBO)</a> <sub>[\[11\]](#citation11)</sub>
+
+Haha, ELBO. Pronounced like elbow. Like, pivot...elbow...\
+\
+ok. anyways. \
+\
+Given the parameters of our encoder ($\phi$) and decoder ($\theta$), we can use the following formula:
+
+$$
+\mathrm{ELBO}(\theta, \phi; x) = \mathbb{E}_{q_\phi(z|x)} \left[ \log P_\theta(x, z) - \log q_\phi(z|x) \right]
+$$
+
+The ELBO is a lower bound on the model evidence $\log P_\theta(x)$ (and thus also a lower bound on the KL divergence).
+
+<details className="bg-purple-500/5 dark:bg-purple-500/10 border border-purple-500/10 rounded-xl p-4 my-6 cursor-pointer">
+  <summary className="font-semibold text-purple-800 dark:text-purple-200 select-none">📐 Show the math derivation!</summary>
+
+  Let's expand the logarithm of the ratio inside the KL divergence:
+
+  $$
+  \log \left( \frac{q_\phi(z|x)}{P_\theta(z|x)} \right) = \log q_\phi(z|x) - \log P_\theta(z|x)
+  $$
+
+  Now, using Bayes' Theorem, we can write $\log P_\theta(z|x)$ as:
+
+  $$
+  \log P_\theta(z|x) = \log \left( \frac{P_\theta(x, z)}{P_\theta(x)} \right) = \log P_\theta(x, z) - \log P_\theta(x)
+  $$
+
+  Substituting this back into the log ratio:
+
+  $$
+  \log q_\phi(z|x) - \log P_\theta(z|x) = \log q_\phi(z|x) - \log P_\theta(x, z) + \log P_\theta(x)
+  $$
+
+  Now, let's plug this back into the KL divergence formula (expressing it as an expectation):
+
+  $$
+  D_{KL}(q_\phi(z|x) \parallel P_\theta(z|x)) = \mathbb{E}_{q_\phi(z|x)} \left[ \log q_\phi(z|x) - \log P_\theta(x, z) + \log P_\theta(x) \right]
+  $$
+
+  Since the expectation is with respect to $z$, and $\log P_\theta(x)$ does not depend on $z$ (it is a constant relative to $z$), we can pull $\log P_\theta(x)$ out of the expectation:
+
+  $$
+  D_{KL}(q_\phi(z|x) \parallel P_\theta(z|x)) = \mathbb{E}_{q_\phi(z|x)} \left[ \log q_\phi(z|x) - \log P_\theta(x, z) \right] + \log P_\theta(x)
+  $$
+
+  Let's rearrange this equation to solve for the log-evidence $\log P_\theta(x)$:
+
+  $$
+  \log P_\theta(x) = \mathbb{E}_{q_\phi(z|x)} \left[ \log P_\theta(x, z) - \log q_\phi(z|x) \right] + D_{KL}(q_\phi(z|x) \parallel P_\theta(z|x))
+  $$
+
+  Because the KL divergence is always non-negative ($D_{KL} \geq 0$), the expectation term on the left acts as a lower bound on the log-evidence. We call this the **Evidence Lower Bound**, or **ELBO**:
+
+  $$
+  \mathrm{ELBO}(\theta, \phi; x) = \mathbb{E}_{q_\phi(z|x)} \left[ \log P_\theta(x, z) - \log q_\phi(z|x) \right]
+  $$
+
+</details>
+
+The core relationship between our true log-likelihood and the ELBO is:
+
+$$
+\log P_\theta(x) \geq \mathrm{ELBO}(\theta, \phi; x)
+$$
+
+This is a beautiful mathematical trick. By maximizing the ELBO:
+
+<BlogList>
+  <li>We maximize the log-likelihood of our model generating real data $\log P_\theta(x)$.</li>
+  <li>We implicitly minimize the KL divergence $D_{KL}(q_\phi(z|x) \parallel P_\theta(z|x))$, forcing our approximate posterior to converge to the true posterior.</li>
+</BlogList>
+
+<br />
+
+### A Brief TLDR (this is a lot)
+If this feels a bit detached from the MLE primer we went through earlier, here is the connection: our high-level objective in training the VAE (specifically the decoder) is to find parameters $\theta$ that maximize the likelihood of the training data:
+
+$$
+\max_\theta \log P_\theta(x)
+$$
+
+This is exactly **Maximum Likelihood Estimation**! 
+Because we cannot optimize $\log P_\theta(x)$ directly due to the intractable integration over $z$, we use the ELBO as a proxy goal (that's what the last few sections were about). 
+When we maximize the ELBO with respect to $\theta$ and $\phi$, we are performing approximate MLE on our neural network parameters.
+
+<br />
+
+### OK we back: ELBO Loss Analysis
+
+Let's expand the joint probability $P_\theta(x, z) = P_\theta(x|z) P(z)$ inside the ELBO definition to see how it maps to an autoencoder structure:
+
+$$
+\begin{align}
+\mathrm{ELBO}(\theta, \phi; x) &= \mathbb{E}_{q_\phi(z|x)} \left[ \log \left( P_\theta(x|z) P(z) \right) - \log q_\phi(z|x) \right] \\
+&= \mathbb{E}_{q_\phi(z|x)} \left[ \log P_\theta(x|z) + \log P(z) - \log q_\phi(z|x) \right] \\
+&= \mathbb{E}_{q_\phi(z|x)} \left[ \log P_\theta(x|z) \right] - \mathbb{E}_{q_\phi(z|x)} \left[ \log q_\phi(z|x) - \log P(z) \right] \\
+&= \mathbb{E}_{q_\phi(z|x)} \left[ \log P_\theta(x|z) \right] - D_{KL}(q_\phi(z|x) \parallel P(z))
+\end{align}
+$$
+
+When training a neural network, we usually minimize a loss function, so we define the VAE loss as the negative ELBO:
+
+$$
+L_{\mathrm{VAE}}(\theta, \phi; x) = - \mathbb{E}_{q_\phi(z|x)} \left[ \log P_\theta(x|z) \right] + D_{KL}(q_\phi(z|x) \parallel P(z))
+$$
+
+Let's dissect these two distinct terms:
+
+<BlogList>
+<li>
+  <b>Reconstruction Term</b>: $- \mathbb{E}_{q_\phi(z|x)} \left[ \log P_\theta(x|z) \right]$ <br />
+  This term measures how well the decoder ($P_\theta(x|z)$) reconstructs the original input $x$ from a latent vector $z$ sampled from the encoder ($q_\phi(z|x)$). Under a Gaussian assumption for continuous inputs, this expectation is equivalent to Mean Squared Error (MSE) - the distance formula.
+</li>
+<li>
+  <b>KL Regularization Term</b>: $D_{KL}(q_\phi(z|x) \parallel P(z))$ <br />
+  This term measures how much our approximate posterior $q_\phi(z|x)$ deviates from the prior distribution $P(z)$. By choosing a simple standard normal prior, $P(z) = \mathcal{N}(0, I)$, we force the encoder to map inputs to a smooth, continuous, and centered region of the latent space, preventing overfitting.
+</li>
+</BlogList>
+
+<br />
+
+The difference between these two terms represents a trade-off. If we minimize the reconstruction term, the model will prioritize accurate reconstruction, potentially ignoring the regularization term and leading to overfitting.
+On the other hand, if we minimize the regularization term, the model will prioritize a smooth latent space, potentially sacrificing reconstruction accuracy.
+
+---
+
+### The Reparameterization Trick
+
+OK, but there's another obstacle. To train the encoder and decoder end-to-end, gradients must flow backwards through the network: from the reconstruction loss, through the latent code $z$, and into the encoder. \
+\
+But $z$ is sampled stochastically from our simplified posterior: $z \sim q_\phi(z|x)$. \
+\
+Because sampling is a random process, it is not differentiable...so you can't get a gradient from it. 
+That means backpropagation cannot calculate how a small change in the encoder's parameters ($\phi$) affects the sample $z$.\
+\
+To solve this, Kingma and Welling introduced the **Reparameterization Trick**. 
+
+Instead of sampling directly from $\mathcal{N}(\mu, \sigma^2)$, we sample a noise variable $\epsilon$ from a standard normal distribution:
+
+$$
+\epsilon \sim \mathcal{N}(0, I)
+$$
+
+Then, we calculate $z$ (our compressed vector) using a deterministic, differentiable formula:
+
+$$
+z = \mu + \sigma \odot \epsilon
+$$
+
+Where $\odot$ represents element-wise multiplication. By shifting the randomness to $\epsilon$ (which doesn't depend on the encoder's parameters), the pathway from the encoder's outputs ($\mu$ and $\sigma$) to $z$ becomes fully differentiable!
+
+---
+<span id="vae-model"/>
+## The Variational Autoencoder (VAE) Model
+
+---
+
+## References
+
+<span id="citation1"/>[1] Kumokoni. *osu! skillset analyzer*. https://osu-skillset-analyzer.vercel.app/
+
+<span id="citation2"/>[2] Kumokoni. *osu! User Profile*. https://osu.ppy.sh/users/23777414
+
+<span id="citation3"/>[3] Wikipedia contributors. (2026). *Variational autoencoder*. In Wikipedia, The Free Encyclopedia. https://en.wikipedia.org/wiki/Variational_autoencoder
+
+<span id="citation4"/>[4] Kingma, D. P., & Welling, M. (2013). *Auto-encoding variational Bayes*. arXiv preprint arXiv:1312.6114. https://arxiv.org/abs/1312.6114
+
+<span id="citation5"/>[5] GeeksforGeeks. (2024). *Types of Autoencoders in Deep Learning*. https://www.geeksforgeeks.org/deep-learning/types-of-autoencoders/
+
+<span id="citation6"/>[6] Wikipedia contributors. (2026). *Bayesian inference*. In Wikipedia, The Free Encyclopedia. https://en.wikipedia.org/wiki/Bayesian_inference
+
+<span id="citation7"/>[7] Wikipedia contributors. (2026). *Maximum likelihood estimation*. In Wikipedia, The Free Encyclopedia. https://en.wikipedia.org/wiki/Maximum_likelihood_estimation
+
+<span id="citation8"/>[8] Wikipedia contributors. (2026). *Bayes' theorem*. In Wikipedia, The Free Encyclopedia. https://en.wikipedia.org/wiki/Bayes%27_theorem
+
+<span id="citation9"/>[9] Wikipedia contributors. (2026). *Variational inference*. In Wikipedia, The Free Encyclopedia. https://en.wikipedia.org/wiki/Variational_inference
+
+<span id="citation10"/>[10] Wikipedia contributors. (2026). *Kullback–Leibler divergence*. In Wikipedia, The Free Encyclopedia. https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence
+
+<span id="citation11"/>[11] Wikipedia contributors. (2026). *Evidence lower bound*. In Wikipedia, The Free Encyclopedia. https://en.wikipedia.org/wiki/Evidence_lower_bound
+
+<span id="citation12"/>[12] Wikipedia contributors. (2026). *Independent and identically distributed random variables*. In Wikipedia, The Free Encyclopedia. https://en.wikipedia.org/wiki/Independent_and_identically_distributed_random_variables
