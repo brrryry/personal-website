@@ -1070,9 +1070,7 @@ Instead of iterating through every target map one-by-one, we compute this in a s
 
 Congratulations! You now know how the models work under the hood.
 
-Now, let's talk about the system that runs these models in production. Building a real-time machine learning web app for an active gaming community comes with distinct engineering challenges—especially when dealing with external API limits, heavy matrix computations, and asynchronous data ingestion.
-
-Here is how I designed the backend system to handle these challenges cleanly.
+Now, let's talk about the system that runs these models in production. This section should be shorter since I'm not yapping as much about theory and whatnot.
 
 <br />
 
@@ -1181,7 +1179,9 @@ These objects are stacked on top of each other to form the system architecture.
 
 Fetching multiple plays for a user involves multiple HTTP requests to the osu! API, parsing binary `.osr` replay files, computing hit object statistics, and running model inference. \
 \
-If we executed all of this synchronously inside a FastAPI endpoint request, the HTTP thread would block for several seconds—causing browser timeouts and a terrible user experience. Furthermore, unthrottled requests to `osu.ppy.sh` would risk exceeding strict API rate limits and getting our application IP banned.\
+If we executed all of this synchronously inside a FastAPI endpoint request, the HTTP thread would block for several seconds, causing browser 
+timeouts and a terrible user experience. The even BIGGER problem would be that unthrottled requests to `osu.ppy.sh` would risk exceeding strict API rate limits and getting our 
+application IP banned.\
 \
 (To be honest, I did get rate limited a couple times during initial testing. Sorry peppy.) \
 \
@@ -1191,7 +1191,8 @@ To solve both throughput and API rate limiting, I built an asynchronous worker p
 
 <BlogList>
   <li>
-    <b>Non-Blocking Job Enqueueing (Redis Queue)</b>: When a player requests recommendations or recalibration, FastAPI enqueues a job via <b>Redis Queue (RQ)</b> and returns a unique `job_id` in ~2ms. Background workers parse replays and compute vectors out-of-band while the frontend polls `/jobs?job_id=...`. 
+    <b>Non-Blocking Job Enqueueing (Redis Queue)</b>: When a player requests recommendations or recalibration, FastAPI enqueues a job via <b>Redis Queue (RQ)</b> and returns a unique `job_id`. 
+    Background workers parse replays and compute vectors out-of-band while the frontend polls `/jobs?job_id=...` for status updates. 
   </li>
   <li>
     <b>OAuth Token Caching</b>: Client Credentials access tokens are requested once and cached in memory until near-expiration.
@@ -1203,7 +1204,7 @@ To solve both throughput and API rate limiting, I built an asynchronous worker p
     <b>Active Job Deduplication</b>: If a user is already being ingested, duplicate requests check Redis for an active job key (`active_job:topreplay:{uid}`). Subsequent requests attach to the existing `job_id` instead of spawning duplicate API fetches.
   </li>
   <li>
-    <b>Replay Threshold Guard</b>: If a player already has $\ge 25$ replays cached in our local database, `/user/replays` immediately serves local data without hitting osu! servers.
+    <b>Replay Threshold Guard</b>: If a player already has more than 25 replays cached in our local database, `/user/replays` immediately serves local data without hitting osu! servers.
   </li>
   <li>
     <b>Redis Payload Caching</b>: Final recommendation payloads are cached in Redis with a 15-minute Time-To-Live (TTL), turning repeat visits into sub-millisecond cache hits. 
@@ -1267,7 +1268,10 @@ To solve both throughput and API rate limiting, I built an asynchronous worker p
 
 Computing recommendations involves matrix operations ($\mathbf{S} = \mathbf{T} \cdot \mathbf{P}^\top$), solving user preference vectors ($\mathbf{x}_u \in \mathbb{R}^{64}$), and extracting top-3 influential play attributions for every candidate map. \
 \
-While running vectorized NumPy operations takes under $\approx 5\text{ms}$ in memory, re-computing these scores on every page navigation or UI filter tweak is completely wasteful. I implemented a multi-tiered caching architecture to maximize efficiency:
+While running vectorized NumPy operations is super fast in memory, re-computing these scores on every page navigation or UI filter tweak is not needed. Also,
+if I ever change the recommendation method for better accuracy, the algorithm could be much slower. \
+\
+I implemented a caching system - this time, for efficiency.
 
 <br />
 
@@ -1275,7 +1279,7 @@ While running vectorized NumPy operations takes under $\approx 5\text{ms}$ in me
 <br />
 <BlogList>
   <li>
-    <b>15-Minute Redis Payload Caching</b>: The final serialized recommendation JSON payload (map metadata, similarity scores, and play attributions) is cached in Redis under `cache:endpoint:recs:{uid}:{mods}:{version}` with a 15-minute Time-To-Live (TTL). Repeat visits or page refreshes return sub-millisecond (\&lt;1ms) cache hits directly from Redis without touching Python ML code.
+    <b>15-Minute Redis Payload Caching</b>: The final serialized recommendation JSON payload (map metadata, similarity scores, and play attributions) is cached in Redis under `cache:endpoint:recs:{uid}:{mods}:{version}` with a 15-minute Time-To-Live (TTL). Repeat visits or page refreshes return cached recommendations directly from Redis without touching Python ML code.
   </li>
   <li>
     <b>User Latent Vector Persistence</b>: Once solved via Ridge Regression, a player's latent vector $\mathbf{x}_u \in \mathbb{R}^{64}$ is stored in Redis under `cache:recs:user_vector:{uid}`. Subsequent recommendation calls reuse this pre-computed vector instantly unless the user explicitly triggers a "Recalibrate" action.
@@ -1316,9 +1320,7 @@ While running vectorized NumPy operations takes under $\approx 5\text{ms}$ in me
 <span id="docker-setup"/>
 ### 3.4 Containerized Infrastructure & Docker Setup
 
-To ensure seamless deployment, reproducible environments, and single-command local setup, the backend is containerized using **Docker** and orchestrated via **Docker Compose**.
-
-Decoupling the application into isolated containers prevents dependency conflicts between machine learning packages (e.g., PyTorch, Implicit, SciPy, NumPy) and the async web layer while allowing scaling of background worker tasks.
+To ensure easy deployment, the backend is containerized using **Docker** and managed via **Docker Compose**.
 
 <br />
 
