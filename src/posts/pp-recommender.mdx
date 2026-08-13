@@ -1,23 +1,39 @@
 ---
-title: "'Osu! PP Recommender': Autoencoded Map Similarity for Beatmap Recommendations"
+title: "'The PP Recommender': Autoencoded Osu! Beatmap Recommendations"
 date: "2026-08-12"
 updated: "2026-08-12"
 description: "Many osu! skillset analyzers exist, but what if we built an axis-free one?"
 tags: ["ml"]
 status: "in progress"
-draft: true
 ---
 
-Project Link: <a href="https://pp.bryanchan.org" target="_blank">pp.bryanchan.org</a>
+Project Link: <a href="https://pp.bryanchan.org" target="_blank">pp.bryanchan.org</a> \
+(Some) source code: <a href="https://github.com/brrryry/pp" target="_blank">github.com/brrryry/pp</a> \
+(I really need to add more visuals for my math stuff...)
 
 <br />
 
 <div class="table-of-contents">
-    
-    <p><strong>Table of Contents</strong></p>
-    <p><a href="#showcase">1. Showcase</a></p>
-    <p><a href="#technicals">2. Model Math \& Reasoning</a></p>
-    <p><a href="#design">3. System Design \& Architecture</a></p>
+    <h3><strong>Table of Contents</strong></h3>
+    <p><a href="#showcase"><b>1. Showcase</b></a></p>
+    <p><a href="#technicals"><b>2. The Models: Math & Implementation</b></a></p>
+    <ul className="ml-5 my-1 space-y-1 list-none">
+        <li><a href="#data-processing">↳ <b>2.1</b> Data Processing</a></li>
+        <li><a href="#vae-math">↳ <b>2.2</b> Variational Autoencoder (VAE) Math</a></li>
+        <li><a href="#vae-model">↳ <b>2.3</b> VAE Model Architecture</a></li>
+        <li><a href="#als-model">↳ <b>2.4</b> Recommendation Model (Theory)</a></li>
+        <li><a href="#als-implementation">↳ <b>2.5</b> Recommendation Model (Implementation)</a></li>
+    </ul>
+    <p><a href="#system-design"><b>3. System Design & Architecture</b></a></p>
+    <ul className="ml-5 my-1 space-y-1 list-none">
+        <li><a href="#object-abstractions">↳ <b>3.1</b> Modular Object Abstractions</a></li>
+        <li><a href="#redis-queue-api">↳ <b>3.2</b> Asynchronous Queue & API Protection</a></li>
+        <li><a href="#recommendation-caching">↳ <b>3.3</b> Recommendation Caching & Performance</a></li>
+        <li><a href="#docker-setup">↳ <b>3.4</b> Containerized Infrastructure (Docker)</a></li>
+    </ul>
+    <p><a href="#future-works"><b>4. Future Works</b></a></p>
+    <p><a href="#bug-fixes"><b>5. Bug Fixes</b></a></p>
+    <p><a href="#references"><b>6. References</b></a></p>
 </div>
 
 <br />
@@ -48,7 +64,7 @@ source="https://osu-skillset-analyzer.vercel.app/player/YouLikeCats?mode=osu"
 This website is fantastic, and I have no complaints. It has a very slick UI, and the portfolio is explained EXTREMELY well.
 It inspired me to look a little bit deeper. What if we could try to recommend maps, but based on axis-free embeddings? \
 \
-When I talk about "axis-free", I'm referring the removal of the 12-axis classification.
+When I talk about "axis-free", I'm referring to the removal of the 12-axis classification.
 After scrolling through quite a few forums, I found that different people have different ideas of what defines an "axis" of skill. Some examples may include:
 
 <BlogList>
@@ -81,7 +97,7 @@ This website takes username inputs and fetches some top/recent osu replays.
 Using these replays, it will recommend maps for the user to play.
  \
 \
-By defintion, it's hard to show the user **why** a certain map is recommended. Since we don't have explicit skill tags, we can't really say "map X has high aim difficulty" or "map Y has high stream difficulty." 
+By definition, it's hard to show the user **why** a certain map is recommended. Since we don't have explicit skill tags, we can't really say "map X has high aim difficulty" or "map Y has high stream difficulty." 
 Instead, we rely on the map's properties like star rating, accuracy, length, etc. as a proxy for difficulty. This model "learns" the difficulty of the map. \
 \
 What we CAN do is show the user which maps have similar embeddings to the maps they've played.
@@ -140,7 +156,7 @@ This is a really simple website, but there's a lot of room for expansion. Some i
 <br />
 
 There's also a lot of bugs at the moment that need to be fixed. To be honest, I vibe-coded a lot of the frontend, and the backend
-can still be improved in terms of efficiency. That being said, I wanted to deploy a MVP as fast as possible to get it into the hands of
+can still be improved in terms of efficiency. That being said, I wanted to deploy an MVP as fast as possible to get it into the hands of
 other players and get their feedback. \
 \
 That's really it for the showcase. If you don't want to read my yap on the technical details,
@@ -168,7 +184,8 @@ To start, let's talk about how I inputted my data.
 
 <br />
 
-## Data Processing
+<span id="data-processing"/>
+## 1. Data Processing
 Osu! beatmap files (.osu files) have a specific format. From them, you can extract all the hit objects (circles, sliders and spinners).
 You can also get all the timing points (determines bpm, offset, slider velocity, etc.). \
 \
@@ -204,9 +221,10 @@ All in all, I had a 13-dimensional vector.
 I took a maximum of 2000 objects per map to keep the padding and training time reasonable. Thus, our input is a matrix of size 2000x13.
 
 
-<br />
+---
 
-## The <a href="https://en.wikipedia.org/wiki/Variational_autoencoder" target="_blank">Variational Autoencoder (VAE) Math</a> <sub>[\[3\]](#citation3)</sub>
+<span id="vae-math"/>
+## 2. <a href="https://en.wikipedia.org/wiki/Variational_autoencoder" target="_blank">Variational Autoencoder (VAE) Math</a> <sub>[\[3\]](#citation3)</sub>
 If you want to skip all the math, click <a href="#vae-model">here</a>.\
 \
 The variational autoencoder is a model that was introduced around 2013 by Diedrik P. Kingma and Max Welling. The paper can be found <a href="https://arxiv.org/abs/1312.6114" target="_blank">here</a> <sub>[\[4\]](#citation4)</sub>. \
@@ -229,7 +247,7 @@ Let's use a more mathematical approach (this will make it easier to compare VAEs
 
 <br />
 
-### Mathematical Formulation of Autoencoders
+### 1. Mathematical Formulation of Autoencoders
 
 
 Given an input vector $x \in \mathbb{R}^d$, we create the encoder function $f_\phi$ which maps $x$ to a compressed vector $z \in \mathbb{R}^d$ ($d << D$). \
@@ -247,7 +265,7 @@ $$
 $$
 
 Our goal is to learn parameters $\phi$ and $\theta$ such that $\hat{x} \approx x$.
-In the event of continuous output space (like our map features), we can define our reconstruction loss $L_{rec}(\phi, \theta)$ using Mean Squared Error (a typical deterministic loss function for regression tasks):
+In the event of continuous output space (like our map features), we can define our reconstruction loss $L_{rec}(\phi, \theta)$ using Mean Squared Error <sub>[\[20\]](#citation20)</sub> (a typical deterministic loss function for regression tasks):
 
 $$
 L_{rec}(\phi, \theta) = ||x - \hat{x}||^2_2
@@ -261,9 +279,9 @@ That's how standard autoencoders work, but variational autoencoders are a bit di
 Variational Autoencoders approach learning with a more probabilistic approach (specifically using <a href="https://en.wikipedia.org/wiki/Bayesian_inference" target="_blank">Bayesian Inference</a> <sub>[\[6\]](#citation6)</sub>). 
 
 <br />
-- - - 
+<br /> 
 
-### <a href="https://en.wikipedia.org/wiki/Maximum_likelihood_estimation" target="_blank">Maximum Likelihood Estimation</a> <sub>[\[7\]](#citation7)</sub> - A Primer
+### 2. <a href="https://en.wikipedia.org/wiki/Maximum_likelihood_estimation" target="_blank">Maximum Likelihood Estimation</a> <sub>[\[7\]](#citation7)</sub> - A Primer
 
 <details className="bg-purple-500/5 dark:bg-purple-500/10 border border-purple-500/10 rounded-xl p-4 my-6 cursor-pointer">
   <summary className="font-semibold text-purple-800 dark:text-purple-200 select-none">📊 Click here for more info!</summary>
@@ -271,7 +289,7 @@ Variational Autoencoders approach learning with a more probabilistic approach (s
   Small tangent (I promise it's relevant), but do you know how statistics like sample mean and sample standard deviation are derived?
   I'm sure you've heard of them before. \
   \
-  If you have a <b><i><a href="https://en.wikipedia.org/wiki/Independent_and_identically_distributed_random_variables" target="_blank">i.i.d</a></i></b> <sub>[\[12\]](#citation12)</sub> normally distributed random sample of data, say points $x_1, x_2, \dots, x_n$, we can calculate the sample mean $\bar{x}$ as:
+  If you have a <b><i><a href="https://en.wikipedia.org/wiki/Independent_and_identically_distributed_random_variables" target="_blank">i.i.d</a></i></b> <sub>[\[12\]](#citation12)</sub> normally distributed <sub>[\[18\]](#citation18)</sub> random sample of data, say points $x_1, x_2, \dots, x_n$, we can calculate the sample mean $\bar{x}$ as:
 
   $$
   \bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_i
@@ -338,9 +356,9 @@ Variational Autoencoders approach learning with a more probabilistic approach (s
   I wish I learned how these formulas were derived back when I first took statistics...it's honestly fascinating. 
 </details>
 
----
+<br />
 
-### <a href="https://en.wikipedia.org/wiki/Bayesian_inference" target="_blank">Bayesian Inference</a> <sub>[\[6\]](#citation6)</sub> - Another Primer
+### 3. <a href="https://en.wikipedia.org/wiki/Bayesian_inference" target="_blank">Bayesian Inference</a> <sub>[\[6\]](#citation6)</sub> - Another Primer
 
 <details className="bg-purple-500/5 dark:bg-purple-500/10 border border-purple-500/10 rounded-xl p-4 my-6 cursor-pointer">
   <summary className="font-semibold text-purple-800 dark:text-purple-200 select-none">🔮 Click here for more info!</summary>
@@ -379,9 +397,9 @@ Variational Autoencoders approach learning with a more probabilistic approach (s
 
 </details>
 
----
+<br />
 
-### Primers Over!
+### 4. Inferring Posterior Distributions (Primers Over!)
 
 We apply the Bayesian framework to infer the posterior probability distribution $P(z|x)$: 
 
@@ -419,9 +437,9 @@ Because we cannot calculate $P_\theta(x)$, we cannot compute the true model post
 \
 How do we find $z$ (our compressed vector) AND $\theta$ (our decoder parameters) then?? 
 
----
+<br />
 
-### <a href="https://en.wikipedia.org/wiki/Variational_inference" target="_blank">Variational Inference</a> <sub>[\[9\]](#citation9)</sub>: Approximating the Unknowable
+### 5. <a href="https://en.wikipedia.org/wiki/Variational_inference" target="_blank">Variational Inference</a> <sub>[\[9\]](#citation9)</sub>: Approximating the Unknowable
 
 Since we can't calculate the true model posterior $P_\theta(z|x)$, we have to approximate it.
 We use a technique called **Variational Inference** to approximate this intractable posterior distribution (the crazy integral from before). \
@@ -444,9 +462,9 @@ Hollup. The equation for KL divergence still contains the intractable true poste
 \
 Well...we don't. Instead, we rearrange the equation to isolate the evidence $P_\theta(x)$ (which is equivalent to $P_\phi(x)$ for our purposes).
 
----
+<br />
 
-### The Pivot: <a href="https://en.wikipedia.org/wiki/Evidence_lower_bound" target="_blank">Evidence Lower Bound (ELBO)</a> <sub>[\[11\]](#citation11)</sub>
+### 6. The Pivot: <a href="https://en.wikipedia.org/wiki/Evidence_lower_bound" target="_blank">Evidence Lower Bound (ELBO)</a> <sub>[\[11\]](#citation11)</sub>
 
 Haha, ELBO. Pronounced like elbow. Like, pivot...elbow...\
 \
@@ -522,7 +540,7 @@ This is a beautiful mathematical trick. By maximizing the ELBO:
 
 <br />
 
-### A Brief TLDR (this is a lot)
+#### Connecting ELBO Back to MLE
 If this feels a bit detached from the MLE primer we went through earlier, here is the connection: our high-level objective in training the VAE (specifically the decoder) is to find parameters $\theta$ that maximize the likelihood of the training data:
 
 $$
@@ -535,7 +553,7 @@ When we maximize the ELBO with respect to $\theta$ and $\phi$, we are performing
 
 <br />
 
-### OK we back: ELBO Loss Analysis
+### 7. ELBO Loss Analysis
 
 Let's expand the joint probability $P_\theta(x, z) = P_\theta(x|z) P(z)$ inside the ELBO definition to see how it maps to an autoencoder structure:
 
@@ -572,9 +590,9 @@ Let's dissect these two distinct terms:
 The difference between these two terms represents a trade-off. If we minimize the reconstruction term, the model will prioritize accurate reconstruction, potentially ignoring the regularization term and leading to overfitting.
 On the other hand, if we minimize the regularization term, the model will prioritize a smooth latent space, potentially sacrificing reconstruction accuracy.
 
----
+<br />
 
-### The Reparameterization Trick
+### 8. The Reparameterization Trick
 
 OK, but there's another obstacle. To train the encoder and decoder end-to-end, gradients must flow backwards through the network: from the reconstruction loss, through the latent code $z$, and into the encoder. \
 \
@@ -599,34 +617,851 @@ $$
 
 Where $\odot$ represents element-wise multiplication. By shifting the randomness to $\epsilon$ (which doesn't depend on the encoder's parameters), the pathway from the encoder's outputs ($\mu$ and $\sigma$) to $z$ becomes fully differentiable!
 
+<br />
+
+### 9. <a href="https://arxiv.org/abs/2002.05709" target="_blank">Contrastive Learning and InfoNCE Loss</a> <sub>[\[13\]](#citation13)</sub>
+
+OK, we're almost done with the math and theory part of this project. Let's talk about contrastive learning. \
+\
+I actually first learned about this in my <a href="https://web.stevens.edu/catalog/archive/2024-2025/en/catalog/academic-catalog/courses/cs-computer-science/500/cs-560.html" target="_blank">Statistical Machine Learning</a> class. I never thought I'd actually use it... \
+\
+Contrastive learning aims to pull positive pairs (two augmented versions of the same beatmap) closer together in latent space while pushing negative pairs (different beatmaps in the batch) further apart.
+It's a discriminator, but for data. It tries to distinguish positive pairs from negative pairs. This helps prevent a VAE from collapsing (mapping everything to a single point in latent space). \
+\
+First, we need a good augmented beatmap dataset. We apply stochastic data augmentations (such as small spatial/temporal shifts, scaling, and random noise) to create two augmented views per map, going from $N$ to $2N$ samples. 
+<br />
+For a positive pair of normalized latent projections $(\mathbf{z}_i, \mathbf{z}_j)$, the **InfoNCE Loss** is defined as:
+
+$$
+L_{i, j} = - \log \frac{\exp\left( \frac{\mathrm{sim}(\mathbf{z}_i, \mathbf{z}_j)}{\tau} \right)}{\sum_{k=1, k \neq i}^{2N} \exp\left( \frac{\mathrm{sim}(\mathbf{z}_i, \mathbf{z}_k)}{\tau} \right)}
+$$
+
+Where:
+<BlogList>
+  <li><b>Cosine Similarity</b>: $\mathrm{sim}(\mathbf{z}_i, \mathbf{z}_j) = \frac{\mathbf{z}_i^\top \mathbf{z}_j}{\|\mathbf{z}_i\|_2 \|\mathbf{z}_j\|_2}$ measures the directional alignment between vectors in hyperspace. It is a very common function to use in machine learning.</li>
+  <li><b>Temperature ($\tau$)</b>: A hyperparameter that controls the scale of penalties for hard negative pairs. Higher temperatures make the distribution softer, while lower temperatures make it sharper.</li>
+  <li><b>Denominator Sum</b>: Computes similarity against all other $2N - 1$ augmented maps in the batch, treating them as negative pairs. Very contrastive.</li>
+</BlogList>
+
+<br />
+
+By incorporating InfoNCE loss into our total VAE loss:
+
+$$
+L_{\text{total}} = L_{\text{recon}} + \beta \cdot D_{\text{KL}} + \lambda_{\text{contrast}} \cdot L_{\text{InfoNCE}}
+$$
+
+The model learns an embedding space where beatmaps with similar structural rhythms and placement properties naturally cluster together without needing manual skill axis labels!
+
 ---
 <span id="vae-model"/>
-## The Variational Autoencoder (VAE) Model
+## 3. The Variational Autoencoder (VAE) Model
+
+Whew, finally done with the math. Now, let's go into the practical VAE model.
+
+<br />
+
+### 1. Data Representation & Feature Engineering
+
+As a reminder, we have these 13 features for each hit object in a beatmap:
+
+<br />
+
+<BlogList>
+  <li><b>$\Delta x$ (Spatial Delta X)</b>: $x_i - x_{i-1}$ normalized by playfield width ($\frac{\Delta x}{512.0}$).</li>
+  <li><b>$\Delta y$ (Spatial Delta Y)</b>: $y_i - y_{i-1}$ normalized by playfield height ($\frac{\Delta y}{384.0}$).</li>
+  <li><b>$\Delta t$ (Temporal Delta)</b>: Time gap capped at $2000\text{ ms}$ and scaled ($\frac{\min(\Delta t, 2000)}{1000.0}$).</li>
+  <li><b>is_circle</b>: Binary indicator ($1.0$ for hit circle, $0.0$ otherwise).</li>
+  <li><b>is_slider</b>: Binary indicator ($1.0$ for slider, $0.0$ otherwise).</li>
+  <li><b>is_spinner</b>: Binary indicator ($1.0$ for spinner, $0.0$ otherwise).</li>
+  <li><b>slider_velocity</b>: Pixels per millisecond normalized ($\frac{\text{length} / \text{duration}}{2.0}$).</li>
+  <li><b>slider_linearity</b>: Ratio of Euclidean start-to-end distance over path length ($\min(1.0, \frac{d_{\text{beeline}}}{\text{length}})$).</li>
+  <li><b>is_bezier</b>: Binary flag ($1.0$ if slider uses Bézier curve control points).</li>
+  <li><b>circle_size</b>: Normalized Circle Size ($\frac{\text{CS}}{10.0}$).</li>
+  <li><b>approach_rate</b>: Normalized Approach Rate ($\frac{\text{AR}}{10.0}$).</li>
+  <li><b>hp_drain_rate</b>: Normalized HP Drain ($\frac{\text{HP}}{10.0}$).</li>
+  <li><b>overall_difficulty</b>: Normalized Overall Difficulty ($\frac{\text{OD}}{10.0}$).</li>
+</BlogList>
+<br />
+All of these features are min-max scaled to $(0, 1)$ before being fed into the VAE. This is traditional machine learning pipeline stuff, but it's important to mention.
+
+<br />
+
+The maps themselves were taken from an <a href="https://www.kaggle.com/datasets/skihikingkevin/ordr-replay-dump" target="_blank">o!rdr Replay Dump</a> <sub>[\[14\]](#citation14)</sub> on Kaggle, where each beatmap had a few play examples. 
+These play examples will be important later.
+
+<br />
+
+### 2. Model Architecture: 1D CNN Encoder-Decoder
+
+Beatmaps exhibit strong local temporal dependencies (rhythms, streams, spatial jumps). 1D Convolutions allow the model to extract hierarchical patterns along the sequence length $T$.
+
+<div className="my-6 p-4 rounded-xl border border-neutral-700/50 bg-neutral-900/40 backdrop-blur max-w-md mx-auto">
+  <div className="flex flex-col items-center gap-2 text-xs py-2">
+    
+    {/* Input Matrix */}
+    <div className="w-full flex flex-col items-center p-3 rounded-lg border border-cyan-500/30 bg-cyan-500/10 text-cyan-300 text-center">
+      <span className="font-semibold text-xs tracking-wide uppercase">Input Matrix</span>
+      <span className="font-mono text-[11px] mt-1 font-bold">$\mathbf{X} \in \mathbb{R}^{2000 \times 13}$</span>
+      <span className="text-[10px] opacity-75 mt-0.5">Raw Beatmap Sequence</span>
+    </div>
+
+    <div className="text-neutral-400 font-bold my-0.5">
+      <span>↓</span>
+    </div>
+
+    {/* Encoder */}
+    <div className="w-full flex flex-col items-center p-3 rounded-lg border border-purple-500/40 bg-purple-500/10 text-purple-300 text-center">
+      <span className="font-semibold text-xs tracking-wide uppercase">CNN Encoder</span>
+      <span className="font-mono text-[11px] mt-1 font-bold">5× Conv1D Blocks</span>
+      <span className="text-[10px] opacity-75 mt-0.5">$13 \rightarrow 256$ Channels</span>
+    </div>
+
+    <div className="text-neutral-400 font-bold my-0.5">
+      <span>↓</span>
+    </div>
+
+    {/* Latent Bottleneck z */}
+    <div className="w-full flex flex-col items-center p-3 rounded-lg border border-pink-500/50 bg-pink-500/15 text-pink-300 text-center shadow-lg shadow-pink-500/5">
+      <span className="font-semibold text-xs tracking-wide uppercase">Latent Bottleneck</span>
+      <span className="font-mono text-[11px] mt-1 font-bold">$\mathbf{z} \sim \mathcal{N}(\boldsymbol{\mu}, \boldsymbol{\sigma}^2)$</span>
+      <span className="text-[10px] opacity-75 mt-0.5">$\mathbf{z} \in \mathbb{R}^{128}$ Latent Vector</span>
+    </div>
+
+    <div className="text-neutral-400 font-bold my-0.5">
+      <span>↓</span>
+    </div>
+
+    {/* Decoder */}
+    <div className="w-full flex flex-col items-center p-3 rounded-lg border border-indigo-500/40 bg-indigo-500/10 text-indigo-300 text-center">
+      <span className="font-semibold text-xs tracking-wide uppercase">CNN Decoder</span>
+      <span className="font-mono text-[11px] mt-1 font-bold">5× Conv1D + Upsample</span>
+      <span className="text-[10px] opacity-75 mt-0.5">$256 \rightarrow 13$ Channels</span>
+    </div>
+
+    <div className="text-neutral-400 font-bold my-0.5">
+      <span>↓</span>
+    </div>
+
+    {/* Reconstructed Output */}
+    <div className="w-full flex flex-col items-center p-3 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 text-center">
+      <span className="font-semibold text-xs tracking-wide uppercase">Reconstruction</span>
+      <span className="font-mono text-[11px] mt-1 font-bold">$\mathbf{\hat{X}} \in \mathbb{R}^{2000 \times 13}$</span>
+      <span className="text-[10px] opacity-75 mt-0.5">Reconstructed Sequence</span>
+    </div>
+
+  </div>
+</div>
+
+#### Encoder
+The encoder processes input tensors of shape `(batch_size, 13, 2000)` through 5 sequential 1D convolutional blocks. Each block applies a `Conv1d`, `BatchNorm1d`, `LeakyReLU(0.1)`, and `Dropout`:
+<br />
+<BlogList>
+  <li><b>Conv Block 1</b>: 13 $\rightarrow$ 32 channels, kernel 5, stride 2, padding 2</li>
+  <li><b>Conv Block 2</b>: 32 $\rightarrow$ 64 channels, kernel 5, stride 2, padding 2</li>
+  <li><b>Conv Block 3</b>: 64 $\rightarrow$ 128 channels, kernel 5, stride 2, padding 2</li>
+  <li><b>Conv Block 4</b>: 128 $\rightarrow$ 256 channels, kernel 5, stride 2, padding 2</li>
+  <li><b>Conv Block 5</b>: 256 $\rightarrow$ 256 channels, kernel 5, stride 5, padding 0</li>
+</BlogList>
+<br />
+
+We use dynamic sequence masking to ensure that maps that have less than 2000 hit objects are still processed correctly (the model will not train on a bunch of padded zeros).
+After adaptive average pooling (taking the average along the sequence dimension) to pool size 16, 
+two separate linear layers output the Gaussian mean ($\boldsymbol{\mu}$) and log-variance ($\log \boldsymbol{\sigma}^2$) vectors for a **128-dimensional latent space**:
+
+$$
+\boldsymbol{\mu} = W_\mu \cdot \text{Pooled}(\mathbf{H}) + b_\mu, \quad \log \boldsymbol{\sigma}^2 = W_{\sigma^2} \cdot \text{Pooled}(\mathbf{H}) + b_{\sigma^2}
+$$
+
+#### Reparameterization Trick
+Now, we use that trick from the math part.
+Using the predicted $\boldsymbol{\mu}$ and $\log \boldsymbol{\sigma}^2$, the latent vector $\mathbf{z} \in \mathbb{R}^{128}$ is sampled as a continuous function of the input via standard normal noise $\boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$:
+
+$$
+\mathbf{z} = \boldsymbol{\mu} + \exp\left(\frac{1}{2} \log \boldsymbol{\sigma}^2\right) \odot \boldsymbol{\epsilon}
+$$
+
+#### Decoder
+The decoder maps $\mathbf{z}$ back to shape `(batch_size, 13, 2000)` using a linear projection layer followed by 5 upsampling blocks:
+
+<BlogList>
+  <li>Linear projection: $128 \rightarrow 256 \times 16$ tensor</li>
+  <li><b>Upsample Block 1</b>: Linear interpolation to size 125 $\rightarrow$ Conv1d(256 $\rightarrow$ 256)</li>
+  <li><b>Upsample Block 2</b>: Linear interpolation to size 250 $\rightarrow$ Conv1d(256 $\rightarrow$ 128)</li>
+  <li><b>Upsample Block 3</b>: Linear interpolation to size 500 $\rightarrow$ Conv1d(128 $\rightarrow$ 64)</li>
+  <li><b>Upsample Block 4</b>: Linear interpolation to size 1000 $\rightarrow$ Conv1d(64 $\rightarrow$ 32)</li>
+  <li><b>Upsample Block 5</b>: Linear interpolation to size 2000 $\rightarrow$ Conv1d(32 $\rightarrow$ 13)</li>
+</BlogList>
+
+<br />
+The output of the decoder is our reconstruction $\mathbf{\hat{X}}$, which we compare to the original input $\mathbf{X}$ using Mean Squared Error. 
+
+<br />
+
+### 3. Contrastive VAE Loss Function
+
+To enforce clustering of semantically similar beatmap patterns while maintaining smooth latent generation, the network is trained using a composite **Contrastive VAE** objective:
+
+$$
+L_{\text{total}} = L_{\text{MSE}}(\mathbf{X}, \mathbf{\hat{X}}) + \beta \cdot D_{\text{KL}}\!\left(\mathcal{N}(\boldsymbol{\mu}, \boldsymbol{\sigma}^2) \parallel \mathcal{N}(\mathbf{0}, \mathbf{I})\right) + \lambda_{\text{contrast}} \cdot L_{\text{InfoNCE}}(\mathbf{z}_1, \mathbf{z}_2)
+$$
+
+Where:
+<BlogList>
+  <li><b>Reconstruction Loss ($L_{\text{MSE}}$)</b>: Mean Squared Error between the original beatmap feature matrix $\mathbf{X}$ and the decoded matrix $\mathbf{\hat{X}}$.</li>
+  <li><b>KL Divergence ($D_{\text{KL}}$)</b>: Penalizes posterior deviation from the prior $\mathcal{N}(\mathbf{0}, \mathbf{I})$, multiplied by weighting factor $\beta$.</li>
+  <li><b>Contrastive Loss ($L_{\text{InfoNCE}}$)</b>: Measures similarity between augmented view pairs $(\mathbf{z}_1, \mathbf{z}_2)$ generated via spatial/temporal jittering, scaling, and Gaussian noise.</li>
+</BlogList>
+
+<br />
+
+<br />
+
+### 4. Hyperparameter Tuning & Optimal Configuration
+
+Hyperparameter tuning was conducted using **Optuna** Bayesian optimization to maximize reconstruction accuracy while ensuring latent space stability. The best performing hyperparameter configuration yielded a final validation loss of **0.0571**:
+
+| Parameter | Optimized Value | Description |
+| :--- | :--- | :--- |
+| **Embedding Size** | `128` | Latent representation dimension ($d_{\text{embed}}$) |
+| **Learning Rate** | `1.52e-4` | Adam optimizer learning rate |
+| **Dropout Rate** | `0.2036` | Conv block regularization dropout probability |
+| **Weight Decay** | `1.63e-5` | L2 regularization coefficient |
+| **KL Weight ($\beta$)** | `1.3929` | ELBO KL divergence loss scaling multiplier |
+| **Contrastive Weight ($\lambda$)** | `0.0263` | InfoNCE contrastive term scaling multiplier |
+| **Temperature ($\tau$)** | `0.1790` | InfoNCE cosine similarity soft-max scaling |
+| **Final Epochs** | `21` | Training iterations until convergence |
+| **Best Val Loss** | `0.0571` | Evaluated composite loss on validation set |
+
+<br />
+
+While this data is...mostly irrelevant without the code, I did want to share it. I will eventually publish the code once I clean it up. I tried a LOT 
+of different things before settling with a VAE, so...
+
+<br />
+
+### 5. VAE Conclusions
+That's it for the VAE part. I did try quite a few other things, but they didn't work out as well:
+<br />
+
+<BlogList>
+    <li>Standard Autoencoder</li>
+    <li>Denoising Autoencoder</li>
+    <li>An LSTM-based autoencoder</li>
+</BlogList>
+
+<br />
+Regardless, I now have a model that can - at least somewhat - accurately embed beatmaps into a smaller vector space.
+Oh yeah, my friend Dhruv basically built the vanilla LSTM autoencoder for me back when we worked on the beatmap generation idea. Thanks Dhruv. \
+\
+Now, we go into the recommendation algorithm. Huhuhu.
 
 ---
 
-## References
+<span id="als-model"/>
+## 4. Recommendation Model (Theory)
 
-<span id="citation1"/>[1] Kumokoni. *osu! skillset analyzer*. https://osu-skillset-analyzer.vercel.app/
+Again, if you want to skip this, you can click <a href="#als-implementation">here</a>. \
+\
+Now that we have low-dimensional, content-aware VAE beatmap representations ($\mathbf{z}_i$), how do we generate personalized recommendations for an osu! player based on their actual play history?
 
-<span id="citation2"/>[2] Kumokoni. *osu! User Profile*. https://osu.ppy.sh/users/23777414
+Enter **Implicit Alternating Least Squares (iALS)** Matrix Factorization <sub>[\[15\]](#citation15)</sub>.
 
-<span id="citation3"/>[3] Wikipedia contributors. (2026). *Variational autoencoder*. In Wikipedia, The Free Encyclopedia. https://en.wikipedia.org/wiki/Variational_autoencoder
+<br />
 
-<span id="citation4"/>[4] Kingma, D. P., & Welling, M. (2013). *Auto-encoding variational Bayes*. arXiv preprint arXiv:1312.6114. https://arxiv.org/abs/1312.6114
+### 1. Implicit Feedback: Preference vs. Confidence
 
-<span id="citation5"/>[5] GeeksforGeeks. (2024). *Types of Autoencoders in Deep Learning*. https://www.geeksforgeeks.org/deep-learning/types-of-autoencoders/
+In standard recommendation systems (e.g., movie ratings), users provide **explicit feedback**—giving a rating $r_{ui} \in \{1, 2, 3, 4, 5\}$. In osu!, however, players don't explicitly rate beatmaps. We only observe **implicit feedback**: play counts, retry counts, score submissions, and replay mastery scores.\
+\
+We model this by splitting user-map interactions into two concepts:
 
-<span id="citation6"/>[6] Wikipedia contributors. (2026). *Bayesian inference*. In Wikipedia, The Free Encyclopedia. https://en.wikipedia.org/wiki/Bayesian_inference
+<BlogList>
+  <li>
+    <b>Binary Preference ($p_{ui}$)</b>: Indicates whether user $u$ has played beatmap $i$.
+    $$p_{ui} = \begin{cases} 1 & \text{if } r_{ui} > 0 \\ 0 & \text{if } r_{ui} = 0 \end{cases}$$
+  </li>
+  <li>
+    <b>Confidence ($c_{ui}$)</b>: Measures how confident we are in that preference based on interaction magnitude (e.g., mastery score or play weight).
+    $$c_{ui} = 1 + \alpha \cdot \text{mastery}_{ui}$$
+    Unobserved pairs ($r_{ui} = 0$) are assigned $p_{ui} = 0$ with a baseline confidence of $c_{ui} = 1.0$. A higher mastery score increases $c_{ui}$, signaling stronger positive preference.
+  </li>
+</BlogList>
 
-<span id="citation7"/>[7] Wikipedia contributors. (2026). *Maximum likelihood estimation*. In Wikipedia, The Free Encyclopedia. https://en.wikipedia.org/wiki/Maximum_likelihood_estimation
+<br />
 
-<span id="citation8"/>[8] Wikipedia contributors. (2026). *Bayes' theorem*. In Wikipedia, The Free Encyclopedia. https://en.wikipedia.org/wiki/Bayes%27_theorem
+We define the "mastery score" of the osu map arbitrarily, and I may change it in the future. For now, this is what it is:
 
-<span id="citation9"/>[9] Wikipedia contributors. (2026). *Variational inference*. In Wikipedia, The Free Encyclopedia. https://en.wikipedia.org/wiki/Variational_inference
+$$
+\mathrm{mastery}_{ui} = \mathrm{accuracy}^3 * max\left(0, 1 - \frac{\mathrm{misses}}{{\mathrm{total objects}}}\right) * \frac{\mathrm{max combo}}{\mathrm{total objects}}
+$$
 
-<span id="citation10"/>[10] Wikipedia contributors. (2026). *Kullback–Leibler divergence*. In Wikipedia, The Free Encyclopedia. https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence
+<br />
 
-<span id="citation11"/>[11] Wikipedia contributors. (2026). *Evidence lower bound*. In Wikipedia, The Free Encyclopedia. https://en.wikipedia.org/wiki/Evidence_lower_bound
+This implicit data is very valuable!
 
-<span id="citation12"/>[12] Wikipedia contributors. (2026). *Independent and identically distributed random variables*. In Wikipedia, The Free Encyclopedia. https://en.wikipedia.org/wiki/Independent_and_identically_distributed_random_variables
+
+<br />
+
+### 2. The iALS Objective Loss Function & User Vector Projection
+
+We map each user $u$ to a **vector** $\mathbf{x}_u \in \mathbb{R}^f$ and each beatmap $i$ to a **vector** $\mathbf{y}_i \in \mathbb{R}^f$ (with $f = 64$). \
+\
+Originally, the matrices $X$ and $Y$ are random. The steps below are used to optimize these matrices.
+
+<BlogList>
+<li>Keep $Y$ fixed, optimize for $\mathbf{x}_u$ via our loss function.</li>
+<li>Keep $X$ fixed, optimize for $\mathbf{y}_i$ via our loss function.</li>
+<li>Repeat until convergence.</li>
+</BlogList>
+
+Unlike explicit factorization, we optimize the cost function over **all** $N \times M$ user-item pairs (including all unobserved pairs):
+
+$$
+\mathcal{L}(X, Y) = \sum_{u=1}^N \sum_{i=1}^M c_{ui} \left( p_{ui} - \mathbf{x}_u^\top \mathbf{y}_i \right)^2 + \lambda \left( \sum_{u=1}^N \|\mathbf{x}_u\|_2^2 + \sum_{i=1}^M \|\mathbf{y}_i\|_2^2 \right)
+$$
+
+Where $\lambda$ is the L2 regularization <sub>[\[17\]](#citation17)</sub> hyperparameter (traditional ML concept) to prevent overfitting.
+
+<br />
+
+### 3. Alternating Optimization & The Sparse Trick
+
+Now that we have our objective function $\mathcal{L}(X, Y)$, how do we actually find the optimal matrices $X$ and $Y$?
+
+<br />
+
+In matrix factorization <sub>[\[19\]](#citation19)</sub>, we are multiplying two unknown matrix variables together ($\mathbf{x}_u^\top \mathbf{y}_i$). This makes the overall loss function **non-convex** with respect to both $X$ and $Y$ simultaneously. If you try to optimize both at the same time using basic gradient descent, optimization is slow and easily gets stuck in poor local minima. \
+\
+However, notice something special:
+<BlogList>
+  <li>If you <b>freeze the beatmap matrix $Y$</b>, the objective function becomes a simple <b>weighted linear regression</b> for every user vector $\mathbf{x}_u$ (which is convex and has an exact analytical solution!).</li>
+  <li>Similarly, if you <b>freeze the user matrix $X$</b>, solving for every beatmap vector $\mathbf{y}_i$ also becomes a convex linear regression problem!</li>
+</BlogList>
+<br />
+
+This is why it's called **Alternating Least Squares (ALS)**: we alternate back and forth—holding $Y$ fixed to solve for $X$ in closed form, then holding $X$ fixed to solve for $Y$ in closed form—until the loss stabilizes.
+
+  $$
+  \mathbf{x}_u = \left( Y^\top C^u Y + \lambda I \right)^{-1} Y^\top C^u \mathbf{p}_u
+  $$
+  $$
+  \mathbf{y}_i = \left( X^\top C^i X + \lambda I \right)^{-1} X^\top C^i \mathbf{p}_i
+  $$
+
+<br />
+
+Now while the closed-form formula above looks simple, there is a performance issue:\
+\
+$C^u$ is a diagonal matrix of size $M \times M$, where $M$ is the total number of beatmaps in the dataset (tens or hundreds of thousands of maps!). 
+Trying to compute $Y^\top C^u Y$ for every user on every iteration requires $O(f^2 M)$ operations. That's...really slow if you have millions of users. 
+
+<br />
+
+<b>Here's the trick:</b><br />
+Notice that $C^u = I + (C^u - I)$. We can rewrite $Y^\top C^u Y$ as:
+
+$$
+Y^\top C^u Y = Y^\top Y + Y^\top (C^u - I) Y
+$$
+
+Now THIS is a game changer. Why?
+<BlogList>
+  <li>
+    <b>$Y^\top Y$ (Global Baseline)</b>: Does not depend on a user. We can precompute $Y^\top Y$ <i>once per iteration</i> for all $M$ beatmaps in $O(f^2 M)$ time and never touch it again.
+  </li>
+  <li>
+    <b>$Y^\top (C^u - I) Y$ (Sparse User Correction)</b>: For user $u$, $(C^u - I)$ is non-zero <i>only for the maps the user has actually played</i> ($n_u$ maps). Since a typical player has only played a small number of maps (a few hundred out of 100k+, $n_u \ll M$), we only multiply over those $n_u$ played maps!
+  </li>
+</BlogList>
+
+<br />
+
+Substituting this back into the user update formula gives our fast iALS update:
+
+$$
+\mathbf{x}_u = \left( Y^\top Y + Y_{n_u}^\top (C_{n_u}^u - I) Y_{n_u} + \lambda I \right)^{-1} Y^\top C^u \mathbf{p}_u
+$$
+
+This reduces the time complexity per user from $O(f^2 M)$ down to $O(f^3 + f^2 n_u)$. While $f^3$ still sounds slow, $f$ is only 64. Compared to $O(f^2 M)$, this is a huge improvement! 
+
+---
+
+<span id="als-implementation"/>
+## 5. Recommendation Model (Implementation)
+
+Ok, blah blah blah, how does this translate into our backend implementation for serving recommendations?
+
+<br />
+
+### 1. Building the Sparse Matrix & Offline Fitting
+
+First, we query all replay records (`osu_id`, `map_hash`, `mastery_score`) from our SQLite database and convert them into a sparse user-item matrix:
+
+<BlogList>
+  <li>Each user and beatmap is assigned a unique integer index.</li>
+  <li>As mentioned earlier, confidence weights are assigned as $c_{ui} = 1.0 + \alpha \cdot \text{mastery}_{ui}$.</li>
+  <li>We train our global `AlternatingLeastSquares` model with $64$ latent factors over $50$ iterations (with early stopping).</li>
+</BlogList>
+
+<br />
+
+After fitting, the learned beatmap factor matrix $Y \in \mathbb{R}^{M \times 64}$ and integer-to-hash mapping dictionaries are saved to disk.
+
+<br />
+
+### 2. On-the-Fly User Vector Refresh (Real-Time Ingestion)
+
+When a player enters their username on the site, we don't want to wait hours to re-train the entire global model across all users.
+
+Instead, when our replay ingestor fetches the player's top plays, we project the player into the 64-dimensional latent space in **real-time** by executing the closed-form update rule directly in NumPy:
+
+<BlogList>
+  <li>We extract the played map indices and calculate their mastery confidence weights.</li>
+  <li>We compute the sparse correction matrix $Y_{n_u}^\top (C_{n_u}^u - I) Y_{n_u}$ using only the maps the user played.</li>
+  <li>We solve the linear system $(Y^\top Y + Y_{n_u}^\top (C_{n_u}^u - I) Y_{n_u} + \lambda I) \mathbf{x}_u = Y_{n_u}^\top C^u \mathbf{p}_u$.</li>
+</BlogList>
+
+<br />
+
+Assuming we have enough users that are already in the system, there shouldn't be too many cold-start users. \
+\
+Remember the **replay dataset** I was talking about before? Yeah, it came in handy here. \
+\
+Using the replay dataset, I was able to get approximately 300 thousand replays under 30 thousand users. Not bad for a start. \
+\
+Additionally, because $f=64$ is small, this linear system is solved in under **2 milliseconds**, providing an instant user embedding.
+
+<br />
+
+### 3. Generating Recommendations with L2 Cosine Matching
+
+Once we have the user vector $\mathbf{x}_u$, we score all candidate beatmaps in the library. To prevent maps with larger vector magnitudes from dominating recommendations, we compute **L2-normalized Cosine Similarity** <sub>[\[16\]](#citation16)</sub>:
+
+$$
+\text{score}_{ui} = \frac{\mathbf{x}_u}{\|\mathbf{x}_u\|_2} \cdot \left( \frac{\mathbf{y}_i}{\|\mathbf{y}_i\|_2} \right)^\top
+$$
+
+We then apply business filters:
+<BlogList>
+  <li><b>Exclude Played Maps</b>: Remove any map hashes already in the player's replay history.</li>
+  <li><b>Comfort Star Rating Filter</b>: Optionally filter out recommendations whose Star Rating (SR) deviates too far from the player's average comfort level.</li>
+</BlogList>
+
+<br />
+
+It should be noted that the star rating filter seems to be redundant at the moment, as the model seems to be doing a good job at recommending maps that are within the player's comfort range already!
+Of course, if I get feedback that that's not the case, I can simply adjust the sr_tolerance parameter in the frontend to filter out those recommendations.
+
+<br />
+
+### 4. Vectorized "Influential Play" Attribution
+
+One cool feature on the website is showing **which of the player's past plays influenced each recommendation**.
+
+Instead of iterating through every target map one-by-one, we compute this in a single **vectorized batch matrix multiplication** in $\approx 5\text{ms}$:
+- We multiply the matrix of target recommendation vectors against the transpose of the user's played map vectors ($\mathbf{S} = \mathbf{T} \cdot \mathbf{P}^\top$).
+- We weight the similarity by the player's mastery score on each played map.
+- For each recommendation, we return the top 3 most structurally similar played maps to render on the recommendation card!
+
+---
+
+<span id="system-design"/>
+# 3. System Design & Architecture
+
+Congratulations! You now know how the models work under the hood.
+
+Now, let's talk about the system that runs these models in production. Building a real-time machine learning web app for an active gaming community comes with distinct engineering challenges—especially when dealing with external API limits, heavy matrix computations, and asynchronous data ingestion.
+
+Here is how I designed the backend system to handle these challenges cleanly.
+
+<br />
+
+<span id="object-abstractions"/>
+### 3.1 Modular Object Abstractions
+
+To keep the codebase maintainable and decoupled, I separated the system into distinct single-responsibility managers:
+
+<BlogList>
+  <li>
+    <b>DatabaseManager</b>: Abstracts all SQLite and PostgreSQL database connections, user profiles, map metadata, replay storage, and Redis caching layers.
+  </li>
+  <li>
+    <b>ReplayIngestor</b>: Handles all replay file parsing, user top-play fetching, mastery score calculations, and asynchronous background worker task dispatching.
+  </li>
+  <li>
+    <b>BeatmapIngestor</b>: Downloads `.osu` beatmap files, extracts hit object timing/spatial sequences, and passes tensors to our VAE encoder.
+  </li>
+  <li>
+    <b>RecommendationEngine</b>: Encapsulates global iALS model training, on-the-fly user vector updates, L2 cosine matching, and vectorized influential play attribution.
+  </li>
+</BlogList>
+
+<br />
+
+These objects are stacked on top of each other to form the system architecture.
+
+<div className="my-6 p-4 sm:p-6 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/40 space-y-4">
+  <div className="text-center font-bold text-neutral-700 dark:text-neutral-300 text-sm sm:text-base uppercase tracking-wider">
+    Object Dependencies
+  </div>
+
+  {/* Level 1: FastAPI */}
+  <div className="p-3.5 sm:p-4 rounded-xl bg-white dark:bg-neutral-800 border-l-4 border-purple-500 shadow-sm space-y-1">
+    <div className="flex items-center justify-between">
+      <span className="font-mono font-bold text-purple-600 dark:text-purple-400 text-sm sm:text-base">FastAPI Server (main.py)</span>
+      <span className="text-xs font-semibold px-2 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400">REST Controller</span>
+    </div>
+    <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-300">Top-level API entry point. Receives HTTP requests and delegates to domain managers.</p>
+  </div>
+
+  <div className="text-center text-neutral-400 font-bold text-sm">↓ Calls Primary Orchestrators</div>
+
+  {/* Level 2: Primary Managers Grid */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+    <div className="p-3.5 sm:p-4 rounded-xl bg-white dark:bg-neutral-800 border-l-4 border-blue-500 shadow-sm space-y-2">
+      <div className="flex items-center justify-between">
+        <span className="font-mono font-bold text-blue-600 dark:text-blue-400 text-sm sm:text-base">⚡ ReplayIngestor</span>
+        <span className="text-xs font-semibold px-2 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400">Ingestion</span>
+      </div>
+      <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-300">Fetches user replays, computes mastery scores, and dispatches background tasks.</p>
+      <div className="pt-2 border-t border-neutral-100 dark:border-neutral-700/60 text-xs sm:text-sm space-y-1">
+        <div className="font-semibold text-neutral-700 dark:text-neutral-300">Relies On:</div>
+        <div className="text-emerald-600 dark:text-emerald-400 font-medium">➔ BeatmapIngestor <span className="text-neutral-500 font-normal text-xs">(for missing maps)</span></div>
+        <div className="text-purple-600 dark:text-purple-400 font-medium">➔ DatabaseManager <span className="text-neutral-500 font-normal text-xs">(for replay storage)</span></div>
+      </div>
+    </div>
+
+    <div className="p-3.5 sm:p-4 rounded-xl bg-white dark:bg-neutral-800 border-l-4 border-amber-500 shadow-sm space-y-2">
+      <div className="flex items-center justify-between">
+        <span className="font-mono font-bold text-amber-600 dark:text-amber-400 text-sm sm:text-base">🧠 RecommendationEngine</span>
+        <span className="text-xs font-semibold px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400">Inference</span>
+      </div>
+      <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-300">Fits global iALS model, solves user vectors in ~2ms, and matches cosine scores.</p>
+      <div className="pt-2 border-t border-neutral-100 dark:border-neutral-700/60 text-xs sm:text-sm space-y-1">
+        <div className="font-semibold text-neutral-700 dark:text-neutral-300">Relies On:</div>
+        <div className="text-purple-600 dark:text-purple-400 font-medium">➔ DatabaseManager <span className="text-neutral-500 font-normal text-xs">(queries factors & Redis)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div className="text-center text-neutral-400 font-bold text-sm">↓ Sub-Dependency</div>
+
+  {/* Level 3: BeatmapIngestor */}
+  <div className="p-3.5 sm:p-4 rounded-xl bg-white dark:bg-neutral-800 border-l-4 border-emerald-500 shadow-sm space-y-2">
+    <div className="flex items-center justify-between">
+      <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-sm sm:text-base">🎵 BeatmapIngestor</span>
+      <span className="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">Feature Extractor</span>
+    </div>
+    <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-300">Downloads <code className="text-xs">.osu</code> files, extracts hit-object timing/spatial sequences, and generates feature tensors.</p>
+    <div className="pt-2 border-t border-neutral-100 dark:border-neutral-700/60 text-xs sm:text-sm space-y-1">
+      <div className="font-semibold text-neutral-700 dark:text-neutral-300">Relies On:</div>
+      <div className="flex flex-col sm:flex-row gap-2">
+        <div className="text-indigo-600 dark:text-indigo-400 font-medium">➔ MapVAE <span className="text-neutral-500 font-normal text-xs">(VAE encoder model)</span></div>
+        <div className="text-purple-600 dark:text-purple-400 font-medium">➔ DatabaseManager <span className="text-neutral-500 font-normal text-xs">(saves map metadata)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div className="text-center text-neutral-400 font-bold text-sm">↓ Shared Foundation</div>
+
+  {/* Level 4: DatabaseManager */}
+  <div className="p-3.5 sm:p-4 rounded-xl bg-white dark:bg-neutral-800 border-l-4 border-neutral-500 shadow-sm space-y-1 text-center sm:text-left">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+      <span className="font-mono font-bold text-neutral-800 dark:text-neutral-200 text-sm sm:text-base">💾 DatabaseManager (DatabaseManager.py)</span>
+      <span className="text-xs font-semibold px-2 py-0.5 rounded bg-neutral-500/10 text-neutral-600 dark:text-neutral-400 self-start sm:self-auto">Shared Data Infrastructure</span>
+    </div>
+    <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-300">Provides database persistence (SQLite/PostgreSQL), user profiles, map embeddings, and Redis caching.</p>
+  </div>
+</div>
+
+<br />
+
+<span id="redis-queue-api"/>
+### 3.2 Asynchronous Job Queue & API Protection
+
+Fetching multiple plays for a user involves multiple HTTP requests to the osu! API, parsing binary `.osr` replay files, computing hit object statistics, and running model inference. \
+\
+If we executed all of this synchronously inside a FastAPI endpoint request, the HTTP thread would block for several seconds—causing browser timeouts and a terrible user experience. Furthermore, unthrottled requests to `osu.ppy.sh` would risk exceeding strict API rate limits and getting our application IP banned.\
+\
+(To be honest, I did get rate limited a couple times during initial testing. Sorry peppy.) \
+\
+To solve both throughput and API rate limiting, I built an asynchronous worker pipeline paired with a multi-tier defense:
+
+<br />
+
+<BlogList>
+  <li>
+    <b>Non-Blocking Job Enqueueing (Redis Queue)</b>: When a player requests recommendations or recalibration, FastAPI enqueues a job via <b>Redis Queue (RQ)</b> and returns a unique `job_id` in ~2ms. Background workers parse replays and compute vectors out-of-band while the frontend polls `/jobs?job_id=...`. 
+  </li>
+  <li>
+    <b>OAuth Token Caching</b>: Client Credentials access tokens are requested once and cached in memory until near-expiration.
+  </li>
+  <li>
+    <b>Database-First Lookup</b>: Player usernames and beatmap IDs check `DatabaseManager` first, querying external APIs only when records are missing locally.
+  </li>
+  <li>
+    <b>Active Job Deduplication</b>: If a user is already being ingested, duplicate requests check Redis for an active job key (`active_job:topreplay:{uid}`). Subsequent requests attach to the existing `job_id` instead of spawning duplicate API fetches.
+  </li>
+  <li>
+    <b>Replay Threshold Guard</b>: If a player already has $\ge 25$ replays cached in our local database, `/user/replays` immediately serves local data without hitting osu! servers.
+  </li>
+  <li>
+    <b>Redis Payload Caching</b>: Final recommendation payloads are cached in Redis with a 15-minute Time-To-Live (TTL), turning repeat visits into sub-millisecond cache hits. 
+    Osu has a rate limit for each individual endpoint, so we need to be careful.
+  </li>
+</BlogList>
+
+<div className="my-6 p-4 sm:p-5 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/40 space-y-4">
+  <div className="text-center font-bold text-neutral-700 dark:text-neutral-300 text-sm sm:text-base uppercase tracking-wider">
+    Asynchronous Pipeline & API Defense Waterfall
+  </div>
+
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 text-center">
+    <div className="p-2.5 rounded-lg bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 shadow-xs">
+      <div className="text-[10px] text-neutral-400 font-mono">01. Request</div>
+      <div className="font-semibold text-neutral-800 dark:text-neutral-200 text-xs mt-0.5">HTTP GET /user</div>
+    </div>
+    <div className="p-2.5 rounded-lg bg-white dark:bg-neutral-800 border border-purple-500/30 shadow-xs">
+      <div className="text-[10px] text-purple-500 font-mono">02. Enqueue</div>
+      <div className="font-semibold text-purple-600 dark:text-purple-400 text-xs mt-0.5">FastAPI → RQ (~2ms)</div>
+    </div>
+    <div className="p-2.5 rounded-lg bg-white dark:bg-neutral-800 border border-blue-500/30 shadow-xs">
+      <div className="text-[10px] text-blue-500 font-mono">03. Background Work</div>
+      <div className="font-semibold text-blue-600 dark:text-blue-400 text-xs mt-0.5">Worker Replay Ingestion (~3mins)</div>
+    </div>
+    <div className="p-2.5 rounded-lg bg-white dark:bg-neutral-800 border border-emerald-500/30 shadow-xs">
+      <div className="text-[10px] text-emerald-500 font-mono">04. Polled Result</div>
+      <div className="font-semibold text-emerald-600 dark:text-emerald-400 text-xs mt-0.5">Frontend Status Ready</div>
+    </div>
+  </div>
+
+  <div className="pt-2 border-t border-neutral-200 dark:border-neutral-700/60 space-y-1.5 text-xs">
+    <div className="font-bold text-neutral-600 dark:text-neutral-400 uppercase tracking-wider text-[10px]">API Protection Waterfall Checks</div>
+    <div className="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700">
+      <span className="text-neutral-700 dark:text-neutral-300 font-medium">1. Redis Payload Cache</span>
+      <span className="font-mono text-xs text-emerald-600 dark:text-emerald-400 font-semibold">15m TTL (~1ms)</span>
+    </div>
+    <div className="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700">
+      <span className="text-neutral-700 dark:text-neutral-300 font-medium">2. Database-First Lookup</span>
+      <span className="font-mono text-xs text-blue-600 dark:text-blue-400 font-semibold">DB Profile Hit</span>
+    </div>
+    <div className="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700">
+      <span className="text-neutral-700 dark:text-neutral-300 font-medium">3. Active Job Deduplication</span>
+      <span className="font-mono text-xs text-purple-600 dark:text-purple-400 font-semibold">Attaches Active Job</span>
+    </div>
+    <div className="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700">
+      <span className="text-neutral-700 dark:text-neutral-300 font-medium">4. Replay Threshold Guard</span>
+      <span className="font-mono text-xs text-amber-600 dark:text-amber-400 font-semibold">&ge;25 Replays</span>
+    </div>
+    <div className="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700">
+      <span className="text-neutral-700 dark:text-neutral-300 font-medium">5. External osu! API Fetch</span>
+      <span className="font-mono text-xs text-neutral-500 font-semibold">Throttled Call</span>
+    </div>
+  </div>
+</div>
+
+<br />
+
+<span id="recommendation-caching"/>
+### 3.3 Recommendation Caching & Performance Optimization
+
+Computing recommendations involves matrix operations ($\mathbf{S} = \mathbf{T} \cdot \mathbf{P}^\top$), solving user preference vectors ($\mathbf{x}_u \in \mathbb{R}^{64}$), and extracting top-3 influential play attributions for every candidate map. \
+\
+While running vectorized NumPy operations takes under $\approx 5\text{ms}$ in memory, re-computing these scores on every page navigation or UI filter tweak is completely wasteful. I implemented a multi-tiered caching architecture to maximize efficiency:
+
+<br />
+
+<b>Caching Architecture & Optimizations:</b>
+<br />
+<BlogList>
+  <li>
+    <b>15-Minute Redis Payload Caching</b>: The final serialized recommendation JSON payload (map metadata, similarity scores, and play attributions) is cached in Redis under `cache:endpoint:recs:{uid}:{mods}:{version}` with a 15-minute Time-To-Live (TTL). Repeat visits or page refreshes return sub-millisecond (\&lt;1ms) cache hits directly from Redis without touching Python ML code.
+  </li>
+  <li>
+    <b>User Latent Vector Persistence</b>: Once solved via Ridge Regression, a player's latent vector $\mathbf{x}_u \in \mathbb{R}^{64}$ is stored in Redis under `cache:recs:user_vector:{uid}`. Subsequent recommendation calls reuse this pre-computed vector instantly unless the user explicitly triggers a "Recalibrate" action.
+  </li>
+  <li>
+    <b>In-Memory C-Contiguous Matrix Layouts</b>: Item latent factor matrices ($\mathbf{Y} \in \mathbb{R}^{M \times 64}$) and beatmap VAE vectors ($\mathbf{z} \in \mathbb{R}^{128}$) are pre-loaded at server startup into contiguous C-order `float32` NumPy arrays (`item_factors`, `item_norms`). This enables SIMD-accelerated dot products during L2 cosine matching (`item_norms @ user_norm`) with zero disk I/O.
+  </li>
+</BlogList>
+
+<div className="my-6 p-4 sm:p-5 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/40 space-y-4">
+  <div className="text-center font-bold text-neutral-700 dark:text-neutral-300 text-sm sm:text-base uppercase tracking-wider">
+    Multi-Tier Caching & Performance Flow
+  </div>
+
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+    <div className="p-3.5 rounded-xl bg-white dark:bg-neutral-800 border-l-4 border-emerald-500 shadow-sm space-y-1">
+      <div className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-xs sm:text-sm">Payload Cache</div>
+      <div className="text-xs font-semibold text-neutral-700 dark:text-neutral-300">Redis (15m TTL)</div>
+      <p className="text-[11px] text-neutral-500">Skips model calculation entirely; returns JSON payload quickly.</p>
+    </div>
+
+    <div className="p-3.5 rounded-xl bg-white dark:bg-neutral-800 border-l-4 border-purple-500 shadow-sm space-y-1">
+      <div className="font-mono font-bold text-purple-600 dark:text-purple-400 text-xs sm:text-sm">User Vector Cache</div>
+      <div className="text-xs font-semibold text-neutral-700 dark:text-neutral-300">Redis / DB Vector Store</div>
+      <p className="text-[11px] text-neutral-500">Stores solved vector $\mathbf{x}_u$; reuses user profile without re-solving matrices.</p>
+    </div>
+
+    <div className="p-3.5 rounded-xl bg-white dark:bg-neutral-800 border-l-4 border-blue-500 shadow-sm space-y-1">
+      <div className="font-mono font-bold text-blue-600 dark:text-blue-400 text-xs sm:text-sm">In-Memory Tensors</div>
+      <div className="text-xs font-semibold text-neutral-700 dark:text-neutral-300">NumPy C-Contiguous Arrays</div>
+      <p className="text-[11px] text-neutral-500">Item matrices $\mathbf{Y}$ reside in RAM for SIMD cosine dot products (&lt;5ms).</p>
+    </div>
+  </div>
+</div>
+
+<br />
+
+<span id="docker-setup"/>
+### 3.4 Containerized Infrastructure & Docker Setup
+
+To ensure seamless deployment, reproducible environments, and single-command local setup, the backend is containerized using **Docker** and orchestrated via **Docker Compose**.
+
+Decoupling the application into isolated containers prevents dependency conflicts between machine learning packages (e.g., PyTorch, Implicit, SciPy, NumPy) and the async web layer while allowing scaling of background worker tasks.
+
+<br />
+
+<b>Docker Services Architecture:</b>
+<BlogList>
+  <li>
+    <b>FastAPI Container (`web`)</b>: Runs the Uvicorn ASGI server hosting all API routes. Handles lightweight requests, user vector projections, matrix multiplications, and static asset delivery.
+  </li>
+  <li>
+    <b>Redis Container (`redis`)</b>: Serves as the shared message broker for Redis Queue (RQ) and acts as an in-memory cache for 15-minute recommendation payloads and OAuth tokens.
+  </li>
+  <li>
+    <b>RQ Worker Container (`worker`)</b>: Executes background task workers isolated from the main web process. Consumes jobs from Redis to perform heavy binary `.osr` replay parsing, VAE map tensor generation, and database updates.
+  </li>
+  <li>
+    <b>Database Container (`db`)</b>: Houses persistent storage for player profiles, map metadata, and trained latent factor matrices ($X$ and $Y$).
+  </li>
+</BlogList>
+
+<br />
+
+<div className="my-6 p-4 sm:p-6 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/40 space-y-4">
+  <div className="text-center font-bold text-neutral-700 dark:text-neutral-300 text-sm sm:text-base uppercase tracking-wider">
+    Docker Compose Container Network
+  </div>
+
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-center">
+    <div className="p-3.5 rounded-xl bg-white dark:bg-neutral-800 border-l-4 border-purple-500 shadow-sm space-y-1">
+      <div className="font-mono font-bold text-purple-600 dark:text-purple-400 text-xs sm:text-sm">web</div>
+      <div className="text-[11px] font-semibold text-neutral-700 dark:text-neutral-300">FastAPI & Uvicorn</div>
+      <p className="text-[11px] text-neutral-500">Exposes HTTP port 8000 & serves API</p>
+    </div>
+
+    <div className="p-3.5 rounded-xl bg-white dark:bg-neutral-800 border-l-4 border-red-500 shadow-sm space-y-1">
+      <div className="font-mono font-bold text-red-600 dark:text-red-400 text-xs sm:text-sm">redis</div>
+      <div className="text-[11px] font-semibold text-neutral-700 dark:text-neutral-300">In-Memory Broker</div>
+      <p className="text-[11px] text-neutral-500">RQ Message Queue & 15m Cache</p>
+    </div>
+
+    <div className="p-3.5 rounded-xl bg-white dark:bg-neutral-800 border-l-4 border-blue-500 shadow-sm space-y-1">
+      <div className="font-mono font-bold text-blue-600 dark:text-blue-400 text-xs sm:text-sm">worker</div>
+      <div className="text-[11px] font-semibold text-neutral-700 dark:text-neutral-300">RQ Worker Process</div>
+      <p className="text-[11px] text-neutral-500">Parses replays & VAE tensors out-of-band</p>
+    </div>
+
+    <div className="p-3.5 rounded-xl bg-white dark:bg-neutral-800 border-l-4 border-emerald-500 shadow-sm space-y-1">
+      <div className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-xs sm:text-sm">db</div>
+      <div className="text-[11px] font-semibold text-neutral-700 dark:text-neutral-300">Database Storage</div>
+      <p className="text-[11px] text-neutral-500">Persists maps, replays & latent vectors</p>
+    </div>
+  </div>
+
+  <div className="text-center text-xs text-neutral-500 dark:text-neutral-400 pt-2 border-t border-neutral-200 dark:border-neutral-700/60 font-mono">
+    Isolated Bridge Network • Persistent Volume Mounts • Multi-Stage Build
+  </div>
+</div>
+
+<br />
+
+---
+
+<span id="future-works"/>
+# 4. Future Works 
+Most of the stuff that I want to improve right now is design-related.
+<br />
+<BlogList>
+<li>Build a stable CRON job for model retraining</li>
+<li>Find better metrics to track the accuracy of the recommender</li>
+<li>The other features that I mentioned in the showcase</li>
+</BlogList>
+<br />
+But all in all, this is the heaviest recommendation project I've done so far.
+I'm glad that I got to dive into the nitty gritty details. \
+\
+I'll keep a section below for updates and bug fixes. There will be a lot of them.
+I published this project to the web as soon as it was remotely functional, so I'm sure that there are TONS of issues with it right now.
+However, the goal is to build a fully functional product that can be used by others. \
+\
+I think this is also the longest blog I've ever written - probably because I yapped so much about the math. 
+Anyways, thanks for reading. I hope to see you again back here soon :D 
+
+---
+
+<span id="bug-fixes"/>
+# 5. Bug Fixes
+
+<div className="space-y-6">
+<div className="break-words space-y-2">
+
+### (08/12 - Present) Coordinates not working
+The database frequently returns coordinates (0, 0) for maps. I'm unsure as to whether or not the database is simply missing that data or the backend is not properly retrieving it.
+
+</div>
+</div>
+
+---
+
+
+<span id="references"/>
+## 6. References
+
+<div className="break-words space-y-3">
+
+<p><span id="citation1"/>[1] Kumokoni. <i>osu! skillset analyzer</i>. <a href="https://osu-skillset-analyzer.vercel.app/" target="_blank" className="break-all">osu-skillset-analyzer.vercel.app</a></p>
+
+<p><span id="citation2"/>[2] Kumokoni. <i>osu! User Profile</i>. <a href="https://osu.ppy.sh/users/23777414" target="_blank" className="break-all">osu.ppy.sh/users/23777414</a></p>
+
+<p><span id="citation3"/>[3] Wikipedia contributors. (2026). <i>Variational autoencoder</i>. In Wikipedia, The Free Encyclopedia. <a href="https://en.wikipedia.org/wiki/Variational_autoencoder" target="_blank" className="break-all">en.wikipedia.org/wiki/Variational_autoencoder</a></p>
+
+<p><span id="citation4"/>[4] Kingma, D. P., & Welling, M. (2013). <i>Auto-encoding variational Bayes</i>. arXiv preprint arXiv:1312.6114. <a href="https://arxiv.org/abs/1312.6114" target="_blank" className="break-all">arxiv.org/abs/1312.6114</a></p>
+
+<p><span id="citation5"/>[5] GeeksforGeeks. (2024). <i>Types of Autoencoders in Deep Learning</i>. <a href="https://www.geeksforgeeks.org/deep-learning/types-of-autoencoders/" target="_blank" className="break-all">geeksforgeeks.org/deep-learning/types-of-autoencoders</a></p>
+
+<p><span id="citation6"/>[6] Wikipedia contributors. (2026). <i>Bayesian inference</i>. In Wikipedia, The Free Encyclopedia. <a href="https://en.wikipedia.org/wiki/Bayesian_inference" target="_blank" className="break-all">en.wikipedia.org/wiki/Bayesian_inference</a></p>
+
+<p><span id="citation7"/>[7] Wikipedia contributors. (2026). <i>Maximum likelihood estimation</i>. In Wikipedia, The Free Encyclopedia. <a href="https://en.wikipedia.org/wiki/Maximum_likelihood_estimation" target="_blank" className="break-all">en.wikipedia.org/wiki/Maximum_likelihood_estimation</a></p>
+
+<p><span id="citation8"/>[8] Wikipedia contributors. (2026). <i>Bayes' theorem</i>. In Wikipedia, The Free Encyclopedia. <a href="https://en.wikipedia.org/wiki/Bayes%27_theorem" target="_blank" className="break-all">en.wikipedia.org/wiki/Bayes_theorem</a></p>
+
+<p><span id="citation9"/>[9] Wikipedia contributors. (2026). <i>Variational inference</i>. In Wikipedia, The Free Encyclopedia. <a href="https://en.wikipedia.org/wiki/Variational_inference" target="_blank" className="break-all">en.wikipedia.org/wiki/Variational_inference</a></p>
+
+<p><span id="citation10"/>[10] Wikipedia contributors. (2026). <i>Kullback–Leibler divergence</i>. In Wikipedia, The Free Encyclopedia. <a href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence" target="_blank" className="break-all">en.wikipedia.org/wiki/Kullback-Leibler_divergence</a></p>
+
+<p><span id="citation11"/>[11] Wikipedia contributors. (2026). <i>Evidence lower bound</i>. In Wikipedia, The Free Encyclopedia. <a href="https://en.wikipedia.org/wiki/Evidence_lower_bound" target="_blank" className="break-all">en.wikipedia.org/wiki/Evidence_lower_bound</a></p>
+
+<p><span id="citation12"/>[12] Wikipedia contributors. (2026). <i>Independent and identically distributed random variables</i>. In Wikipedia, The Free Encyclopedia. <a href="https://en.wikipedia.org/wiki/Independent_and_identically_distributed_random_variables" target="_blank">en.wikipedia.org/wiki/i.i.d._random_variables</a></p>
+
+<p><span id="citation13"/>[13] Chen, T., Kornblith, S., Norouzi, M., & Hinton, G. (2020). <i>A simple framework for contrastive learning of visual representations</i>. arXiv preprint arXiv:2002.05709. <a href="https://arxiv.org/abs/2002.05709" target="_blank" className="break-all">arxiv.org/abs/2002.05709</a></p>
+
+<p><span id="citation14"/>[14] KP (2022). <i>o!rdr osu standard replay dump</i>. <a href="https://www.kaggle.com/datasets/skihikingkevin/ordr-replay-dump" target="_blank" className="break-all">kaggle.com/datasets/skihikingkevin/ordr-replay-dump</a></p>
+
+<p><span id="citation15"/>[15] Hu, Y., Koren, Y., & Volinsky, C. (2008). <i>Collaborative filtering for implicit feedback datasets</i>. In 2008 Eighth IEEE International Conference on Data Mining (pp. 263-272). IEEE.</p>
+
+<p><span id="citation16"/>[16] Wikipedia contributors. (2026). <i>Cosine similarity</i>. In Wikipedia, The Free Encyclopedia. <a href="https://en.wikipedia.org/wiki/Cosine_similarity" target="_blank" className="break-all">en.wikipedia.org/wiki/Cosine_similarity</a></p>
+
+<p><span id="citation17"/>[17] Wikipedia contributors. (2026). <i>Ridge regression</i>. In Wikipedia, The Free Encyclopedia. <a href="https://en.wikipedia.org/wiki/Ridge_regression" target="_blank" className="break-all">en.wikipedia.org/wiki/Ridge_regression</a></p>
+
+<p><span id="citation18"/>[18] Wikipedia contributors. (2026). <i>Normal distribution</i>. In Wikipedia, The Free Encyclopedia. <a href="https://en.wikipedia.org/wiki/Normal_distribution" target="_blank" className="break-all">en.wikipedia.org/wiki/Normal_distribution</a></p>
+
+<p><span id="citation19"/>[19] Koren, Y., Bell, R., & Volinsky, C. (2009). <i>Matrix factorization techniques for recommender systems</i>. Computer, 42(8), 30-37. <a href="https://doi.org/10.1109/MC.2009.263" target="_blank" className="break-all">doi.org/10.1109/MC.2009.263</a></p>
+
+<p><span id="citation20"/>[20] Wikipedia contributors. (2026). <i>Mean squared error</i>. In Wikipedia, The Free Encyclopedia. <a href="https://en.wikipedia.org/wiki/Mean_squared_error" target="_blank" className="break-all">en.wikipedia.org/wiki/Mean_squared_error</a></p>
+
+</div>
+
+
