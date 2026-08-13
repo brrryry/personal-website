@@ -33,7 +33,7 @@ export default function Home() {
       <div className="animate-fade-in-up delay-100">
         <div className="bg-purple-500/20 border border-purple-400/40 rounded-lg p-4 animate-border-glow">
           <p>
-            Latest News: <a href="/blog/shallow-roots">Shallow Roots</a>
+            Latest News: <a href="/blog/pp-recommender">The PP Recommender</a>
           </p>
         </div>
       </div>
