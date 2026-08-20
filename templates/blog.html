@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Blog - Bryan Chan{% endblock %}
+
+{% block content %}
+<div class="blog-container">
+  <!-- Category Filter — minimal text links -->
+  <div class="blog-filters">
+    <button onclick="selectTag('')" id="tag-btn-all" class="tag-filter-btn active">
+      All
+    </button>
+
+    <button onclick="selectTag('series')" id="tag-btn-series" class="tag-filter-btn">
+      Series
+    </button>
+
+    {% for tag in tags %}
+    <button onclick="selectTag('{{ tag }}')" id="tag-btn-{{ tag }}" class="tag-filter-btn">
+      {{ tag }}
+    </button>
+    {% endfor %}
+  </div>
+
+  <!-- Blog Posts List -->
+  <ul class="blog-list">
+    {% for post in posts %}
+    <li class="blog-card post-item" data-tags="{{ post.tags | join(sep=',') }}"
+      data-series="{% if post.seriestag %}true{% else %}false{% endif %}">
+
+      <!-- Title -->
+      <h3 class="blog-card-title">
+        <a href="/blog/{{ post.id }}">{{ post.title }}</a>
+      </h3>
+
+      <!-- Metadata row: date · status · tags -->
+      <div class="blog-meta">
+        <span class="blog-date">{{ post.date }}</span>
+
+        {% if post.status %}
+        <span
+          class="blog-status {% if post.status == 'in progress' %}status-progress{% else %}status-complete{% endif %}">
+          {{ post.status }}
+        </span>
+        {% endif %}
+
+        <!-- Tags -->
+        <div class="blog-tags">
+          {% for t in post.tags %}
+          <button onclick="selectTag('{{ t }}'); event.preventDefault();" class="post-tag">
+            #{{ t }}
+          </button>
+          {% endfor %}
+          {% if post.seriestag %}
+          <button onclick="selectTag('series'); event.preventDefault();" class="post-tag">
+            #{{ post.seriestag }}
+          </button>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Description -->
+      <p class="blog-desc">
+        {{ post.description }}
+      </p>
+    </li>
+    {% endfor %}
+
+    <!-- No Results Message -->
+    <li id="no-results-msg" class="text-center text-gray-600 dark:text-gray-400 hidden"
+      style="padding: 2rem 0; list-style: none;">
+      No posts found for selected tag.
+    </li>
+  </ul>
+</div>
+
+<script>
+  let activeTag = "";
+
+  function selectTag(tag, pushHistory = true) {
+    activeTag = tag;
+
+    // 1. Update active styling on filter buttons
+    const buttons = document.querySelectorAll('.tag-filter-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+
+    const targetId = tag === "" ? "tag-btn-all" : (tag === "series" ? "tag-btn-series" : "tag-btn-" + tag);
+    const activeBtn = document.getElementById(targetId);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    // 2. Filter post items
+    const postItems = document.querySelectorAll('.post-item');
+    let visibleCount = 0;
+
+    postItems.forEach(item => {
+      const postTagsStr = item.getAttribute('data-tags') || '';
+      const postTags = postTagsStr.split(',').map(s => s.trim()).filter(Boolean);
+      const isSeries = item.getAttribute('data-series') === 'true';
+
+      let show = false;
+      if (tag === "") {
+        show = true;
+      } else if (tag === "series") {
+        show = isSeries;
+      } else {
+        show = postTags.includes(tag);
+      }
+
+      if (show) {
+        item.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        item.classList.add('hidden');
+      }
+    });
+
+    // 3. Show/hide no results msg
+    const noResultsMsg = document.getElementById('no-results-msg');
+    if (visibleCount === 0) {
+      noResultsMsg.classList.remove('hidden');
+    } else {
+      noResultsMsg.classList.add('hidden');
+    }
+
+    // 4. Update History URL query
+    if (pushHistory) {
+      const newUrl = tag ? `?tag=${encodeURIComponent(tag)}` : window.location.pathname;
+      window.history.pushState({ tag }, "", newUrl);
+    }
+  }
+
+  function syncTagFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const urlTag = params.get('tag') || '';
+    selectTag(urlTag, false);
+  }
+
+  window.addEventListener('popstate', syncTagFromUrl);
+  window.addEventListener('DOMContentLoaded', syncTagFromUrl);
+</script>
+{% endblock %}

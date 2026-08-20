@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Cat or Car? - Bryan Chan{% endblock %}
+
+{% block head %}
+<!-- Load TensorFlow.js via CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs" defer></script>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto py-8 space-y-6">
+  <h1 class="text-3xl font-bold tracking-tight text-purple-900 dark:text-purple-100">Cat or Car?</h1>
+  <p class="text-sm text-gray-600 dark:text-gray-400">
+    Upload an image to run a client-side convolutional neural network model directly in your browser.
+  </p>
+
+  <div id="loader-status" class="text-purple-700 dark:text-purple-300 font-semibold">
+    Loading TensorFlow Library and Model...
+  </div>
+
+  <form id="tf-form" class="space-y-4 hidden">
+    <div>
+      <input type="file" id="image-upload" accept="image/*" class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-500/10 file:text-purple-700 hover:file:bg-purple-500/20" required />
+    </div>
+    <button type="submit" class="px-4 py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors">
+      Upload and Predict
+    </button>
+  </form>
+
+  <div id="prediction-result" class="space-y-4 pt-4 border-t border-purple-500/10 hidden">
+    <h3 class="text-lg font-bold text-purple-900 dark:text-purple-200">Prediction Result</h3>
+    <div id="prediction-summary" class="text-sm leading-relaxed"></div>
+    <div class="flex justify-center pt-2">
+      <img id="prediction-preview" class="max-w-[200px] max-h-[200px] object-contain rounded-lg border border-purple-500/10" alt="Preview" />
+    </div>
+  </div>
+</div>
+
+<script>
+  let model = null;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. Wait for TensorFlow to load and then load the model json
+    const checkTfInterval = setInterval(async () => {
+      if (typeof tf !== 'undefined') {
+        clearInterval(checkTfInterval);
+        try {
+          // Loads model from /static/coding/cat-or-car/model.json
+          model = await tf.loadLayersModel('/static/coding/cat-or-car/model.json');
+          document.getElementById('loader-status').classList.add('hidden');
+          document.getElementById('tf-form').classList.remove('hidden');
+        } catch (e) {
+          console.error("Error loading layers model:", e);
+          document.getElementById('loader-status').innerHTML = "Error loading TensorFlow model :(";
+        }
+      }
+    }, 100);
+    
+    // 2. Handle form submit and run prediction
+    const form = document.getElementById('tf-form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!model) return;
+      
+      const fileInput = document.getElementById('image-upload');
+      const file = fileInput.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const previewImg = document.getElementById('prediction-preview');
+        previewImg.src = event.target.result;
+        
+        const tempImg = new Image();
+        tempImg.src = event.target.result;
+        tempImg.onload = async function() {
+          // Preprocess image for the model (resize to 32x32, normalize, expand dims)
+          const tensor = tf.browser.fromPixels(tempImg)
+            .resizeBilinear([32, 32])
+            .expandDims(0);
+          
+          const prediction = model.predict(tensor);
+          const valArray = await prediction.array();
+          const val = valArray[0];
+          
+          // Render outputs
+          const isCat = val[0] >= 0.5;
+          const label = isCat ? "cat" : "car";
+          const score = Math.round((isCat ? val[0] : (1.0 - val[0])) * 10000) / 100;
+          
+          const summary = document.getElementById('prediction-summary');
+          summary.innerHTML = `
+            <p>This is a <b>${label}</b> with <b>${score}%</b> confidence.</p>
+            <p class="text-xs text-gray-500 mt-2">Output Value: ${Math.round(val[0] * 10000) / 10000} (0 is car, 1 is cat)</p>
+          `;
+          
+          document.getElementById('prediction-result').classList.remove('hidden');
+        };
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+</script>
+{% endblock %}

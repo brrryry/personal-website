@@ -1,19 +1,35 @@
-FROM node:20-alpine
+# Builder stage
+FROM rust:1.97-slim AS builder
 
 WORKDIR /app
 
+# Install build dependencies (OpenSSL is required by reqwest, patch is required by libquickjs-sys)
+RUN apt-get update && apt-get install -y pkg-config libssl-dev patch
+
+# Copy project files
 COPY . .
 
-RUN apk add --no-cache git
+# Build release binary
+RUN cargo build --release
 
-RUN npm config set ignore-scripts true
+# Run build step to pre-compile templates and markdown files into /app/dist
+RUN ./target/release/portfolio build
 
-RUN npm install -g pnpm
+FROM debian:bookworm-slim AS runner
+WORKDIR /app
 
-RUN pnpm install
+# Install ca-certificates AND libssl3 (Required for Debian Bookworm)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    libssl3 \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN pnpm run build && pnpm prune --production
+# Copy your compiled production assets
+COPY --from=builder /app/target/release/portfolio /app/portfolio
+COPY --from=builder /app/dist /app/dist
 
 EXPOSE 3000
+ENV PORT=3000
+ENV RUST_LOG=info
 
-CMD ["npm", "start"]
+CMD ["/app/portfolio", "serve"]

@@ -45,7 +45,13 @@ package-lock.json
 
 # secret deployment things :)
 deploy/secret.sh
+deploy/*
 
 archive/*
 git-filter-repo
 
+# Rust
+/target/
+/dist/
+
+legacy-nextjs/
