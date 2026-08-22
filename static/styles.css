@@ -212,6 +212,7 @@ figure {
   font-size: 0.9em;
   justify-content: center;
   align-items: center;
+  margin-inline-start: 0px;
 }
 
 img {
@@ -2042,4 +2043,8 @@ blockquote li:last-child {
 
 #tech-links {
   font-size: 14px;
+}
+
+.copyright {
+  font-size: 16px;
 }

@@ -1,0 +1,69 @@
+---
+title: "Portfolio Dev EP5: Converting NextJS to Rust"
+date: "2026-08-21"
+tags: ["coding", "portfolio-dev-series"]
+description: "The things you can do for a 2ms latency reduction..."
+status: "finished"
+---
+
+Yeah...so there's some changes.
+
+I decided to switch from using NextJS to using Rust.
+In reality, this is overkill for a portfolio website, and you will probably see no difference.
+Let me explain.
+
+### Javascript vs. Rust + WHY?
+These two languages are usually not used for the same purpose.
+
+Javascript is a dynamically typed language that is used for web development. It's relatively easy to pick up,
+and it's versatile in terms of what it can be used for (browsers, servers, mobile/desktop apps, etc.).
+
+Rust, on the other hand, is a statically typed language that is mainly used for systems programming.
+It's a lower-level language that gives more control over system-level details such as memory management.
+
+Now...while I say that I "switched to Rust", I am still using Javascript for my templated HTML files.
+I just replaced the backend (specifically the static site generator and the web server).
+
+**I made this change because I wanted to try using Rust for some kind of real-world project.**
+
+### The New Stack 
+
+I'm using <a href="https://docs.rs/axum/latest/axum/">Axum</a>, a web framework for designing
+web applications and REST APIs. The core of Axum is built on top of <a href="https://tokio.rs/">Tokio</a> - a runtime for building a bunch of asynchronous systems.
+This part of the stack is what handles all the HTTP requests and responses. It's also what handles the routing of the different pages.
+
+The HTML files are all templated using <a href="https://docs.rs/tera/latest/tera/">Tera</a>, a template engine for Rust.
+It boasts features such as Jinja-like syntax and comprehensive debugging information. Together, these two technologies
+can do server-side rendering really quickly.
+
+At build time, Rust parses the markdown files, runs tera scripts, and then dumps the resulting HTML files into a production folder.
+This way, most of the work during runtime is just sending files.
+
+From there, Axum is used for routing. It receives a request and checks if there's a file that matches the request.
+It also has has a fallback (fancy word for "adding a .html to the file name if it doesn't exist").
+
+The only real "dynamic" thing on the page is the spotify text at the footer. That stuff is client side because...well...there isn't a nice way to get around that.
+
+### Minor Frontend Tweaks
+I actually stopped using Tailwind completely (at least for now), so all the styling is just basic CSS.
+
+I was playing around with some fancy visuals (most of which were vibe coded), but I decided to revert back to something more minimalistic.
+Therefore, you might notice a few less gradients and blobby shapes.
+
+Anyways, small blog this time - I decided that I shouldn't really be doing large code breakdowns for EVERYTHING - I have to learn how to 
+present the gist of what I'm doing. After all, if you're interested enough to be reading more, you can easily find my Github.
+
+Toodles.
+
+<BlogImage
+src="/blogs/pdev/5/dokja.jpg"
+alt="Dokja from Omniscient Reader"
+caption="yeah"
+source="https://www.webtoons.com/en/action/omniscient-reader/list?title_no=2154"/>
+
+
+
+
+
+
+
