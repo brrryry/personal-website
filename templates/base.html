@@ -7,8 +7,14 @@
     <title>{% block title %}Bryan Chan{% endblock %}</title>
 
     {% block meta %}
-    <link rel="icon" type="image/x-icon" href="static/favicon.ico">
+    {% block description %}
     <meta name="description" content="A typical computer science portfolio!">
+    {% endblock %}
+
+    {% block favicon %}
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    {% endblock %}
+
     {% endblock %}
 
     <!-- Inline theme script to prevent flash of unstyled theme -->

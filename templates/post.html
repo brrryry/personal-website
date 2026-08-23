@@ -2,6 +2,10 @@
 
 {% block title %}{{ post.title }} - Bryan Chan{% endblock %}
 
+{% block description %}
+<meta name="description" content="{{ post.description }}">
+{% endblock %}
+
 {% block head %}
 <!-- Local KaTeX for math rendering stylesheet only -->
 <link rel="stylesheet" href="/static/katex/katex.min.css">
