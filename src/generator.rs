@@ -52,6 +52,7 @@ pub fn build_site() -> Result<(), Box<dyn std::error::Error>> {
 
     // 2. Ensure dist directories exist
     fs::create_dir_all("dist/static")?;
+    let _ = fs::remove_dir_all("dist/blog");
     fs::create_dir_all("dist/blog")?;
     fs::create_dir_all("dist/projects")?;
 
@@ -81,9 +82,9 @@ pub fn build_site() -> Result<(), Box<dyn std::error::Error>> {
 
             // Parse FrontMatter and Markdown body
             if let Some((fm, body)) = parse_post_content(&content) {
-                // If it is a draft, skip in production (we will compile all posts for simplicity, or check env)
+                // If it is a draft, do not show or compile the blog post
                 if fm.draft.unwrap_or(false) {
-                    // Skip or keep (let's keep for development, but check if we want drafts)
+                    continue;
                 }
 
                 let id = path.file_stem().unwrap().to_string_lossy().into_owned();
