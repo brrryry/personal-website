@@ -53,12 +53,14 @@
         <!-- Post Row Tags -->
         <div class="flex flex-wrap gap-2">
           {% for tag in post.tags %}
+          {% if not post.seriestag or tag != post.seriestag %}
           <a href="/blog?tag={{ tag }}" class="post-tag">
             #{{ tag }}
           </a>
+          {% endif %}
           {% endfor %}
           {% if post.seriestag %}
-          <a href="/blog?tag=series" class="post-tag">
+          <a href="/blog?tag={{ post.seriestag }}" class="post-tag">
             #{{ post.seriestag }}
           </a>
           {% endif %}

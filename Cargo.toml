@@ -21,7 +21,7 @@ lazy_static = "1.4"
 base64 = "0.21"
 notify = { version = "6.1", features = ["macos_kqueue"] }
 shadow-rs = "0.38"
-katex = "0.4"
+katex = { version = "0.4", default-features = false, features = ["duktape"] }
 
 [build-dependencies]
 shadow-rs = "0.38"

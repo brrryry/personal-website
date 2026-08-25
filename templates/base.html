@@ -8,8 +8,13 @@
 
     {% block meta %}
     {% block description %}
-    <meta name="description" content="A typical computer science portfolio!">
+    <meta name="description" content="Bryan Chan – Graduate Researcher & Machine Learning Engineer (M.S. Data Science @ Stevens). Specialized in applied AI, statistical learning, and LLM/RAG security.">
     {% endblock %}
+
+    <meta property="og:title" content="Bryan Chan | Machine Learning & Data Science">
+    <meta property="og:description" content="Explore research publications, featured machine learning projects, and technical writeups.">
+    <meta property="og:url" content="https://bryanchan.org">
+    <meta property="og:type" content="website">
 
     {% block favicon %}
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
@@ -67,6 +72,11 @@
                     </li>
                     <li>
                         <a href="/blog" class="navbar-link">Blog</a>
+                    </li>
+                    <li>
+                        <a href="/static/Chan_Bryan_Resume.pdf" target="_blank" rel="noopener noreferrer" class="navbar-link">
+                            Resume ↗
+                        </a>
                     </li>
                 </ul>
 

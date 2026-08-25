@@ -8,13 +8,10 @@
   <div class="about-intro">
     <h2 class="section-title">About Me</h2>
     <p>
-      This is my about page! Here, you can find more information on my education, experiences and projects.
+      This is my about page! Here, you can find more information on my education, experience, and projects.
     </p>
     <p>
-      My complete professional resume can be viewed 
-      <a href="/static/Chan_Bryan_Resume.pdf" target="_blank">
-        here
-      </a>!
+      My complete professional resume can be viewed or downloaded <a href="/static/Chan_Bryan_Resume.pdf" target="_blank" rel="noopener noreferrer">here (PDF) ↗</a>!
     </p>
   </div>
 
@@ -72,14 +69,26 @@
       {% for exp in experience %}
       <div class="exp-card">
         <div class="card-main">
-          <h3 class="card-title">{{ exp.company }}</h3>
-          <p class="card-subtitle"><em>{{ exp.role }}</em></p>
-          <p class="card-desc">{{ exp.description }}</p>
-        </div>
+          <div class="exp-header-row">
+            <div>
+              <h3 class="card-title">{{ exp.company }}</h3>
+              <p class="card-subtitle"><em>{{ exp.role }}</em></p>
+            </div>
+            <span class="card-date-badge">
+              {{ exp.duration }}
+            </span>
+          </div>
 
-        <span class="card-date-badge">
-          {{ exp.duration }}
-        </span>
+          <p class="card-desc">{{ exp.description }}</p>
+
+          {% if exp.highlights %}
+          <ul class="exp-highlights-list">
+            {% for hl in exp.highlights %}
+            <li>{{ hl }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
       </div>
       {% endfor %}
     </div>
@@ -100,19 +109,27 @@
             {% endif %}
           </div>
           <p class="project-card-desc">{{ p.description }}</p>
+
+          {% if p.technologies %}
+          <div class="project-tech-tags">
+            {% for tech in p.technologies %}
+            <span class="tech-tag">{{ tech }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
         </div>
 
         <!-- Links -->
         {% if p.url or p.github or p.blog %}
         <div class="project-card-links">
           {% if p.url %}
-          <a href="{{ p.url }}" {% if p.external %}target="_blank"{% endif %} class="project-card-link">
-            Visit Project
+          <a href="{{ p.url }}" {% if p.external %}target="_blank" rel="noopener noreferrer"{% endif %} class="project-card-link">
+            {% if p.external %}Project Link ↗{% else %}Interactive Demo ↗{% endif %}
           </a>
           {% endif %}
           {% if p.github %}
           <a href="{{ p.github }}" target="_blank" rel="noopener noreferrer" class="project-card-link">
-            GitHub
+            GitHub ↗
           </a>
           {% endif %}
           {% if p.blog %}
@@ -141,6 +158,16 @@
         </div>
       </div>
 
+      <!-- Frameworks & Libraries -->
+      <div class="skill-row">
+        <h3 class="skill-category">Frameworks & Libraries</h3>
+        <div class="skill-tags">
+          {% for skill in skills.frameworks %}
+          <span class="skill-pill">{{ skill }}</span>
+          {% endfor %}
+        </div>
+      </div>
+
       <!-- Databases -->
       <div class="skill-row">
         <h3 class="skill-category">Databases</h3>
@@ -156,16 +183,6 @@
         <h3 class="skill-category">Software & Tools</h3>
         <div class="skill-tags">
           {% for skill in skills.tools %}
-          <span class="skill-pill">{{ skill }}</span>
-          {% endfor %}
-        </div>
-      </div>
-
-      <!-- Frameworks & Libraries -->
-      <div class="skill-row">
-        <h3 class="skill-category">Frameworks & Libraries</h3>
-        <div class="skill-tags">
-          {% for skill in skills.frameworks %}
           <span class="skill-pill">{{ skill }}</span>
           {% endfor %}
         </div>

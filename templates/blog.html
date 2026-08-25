@@ -25,7 +25,8 @@
   <ul class="blog-list">
     {% for post in posts %}
     <li class="blog-card post-item" data-tags="{{ post.tags | join(sep=',') }}"
-      data-series="{% if post.seriestag %}true{% else %}false{% endif %}">
+      data-series="{% if post.seriestag %}true{% else %}false{% endif %}"
+      data-seriestag="{{ post.seriestag | default(value='') }}">
 
       <!-- Title -->
       <h3 class="blog-card-title">
@@ -46,12 +47,14 @@
         <!-- Tags -->
         <div class="blog-tags">
           {% for t in post.tags %}
+          {% if not post.seriestag or t != post.seriestag %}
           <button onclick="selectTag('{{ t }}'); event.preventDefault();" class="post-tag">
             #{{ t }}
           </button>
+          {% endif %}
           {% endfor %}
           {% if post.seriestag %}
-          <button onclick="selectTag('series'); event.preventDefault();" class="post-tag">
+          <button onclick="selectTag('{{ post.seriestag }}'); event.preventDefault();" class="post-tag">
             #{{ post.seriestag }}
           </button>
           {% endif %}
@@ -85,24 +88,33 @@
 
     const targetId = tag === "" ? "tag-btn-all" : (tag === "series" ? "tag-btn-series" : "tag-btn-" + tag);
     const activeBtn = document.getElementById(targetId);
-    if (activeBtn) activeBtn.classList.add('active');
+    if (activeBtn) {
+      activeBtn.classList.add('active');
+    } else if (tag.toLowerCase().includes('series')) {
+      const seriesBtn = document.getElementById('tag-btn-series');
+      if (seriesBtn) seriesBtn.classList.add('active');
+    }
 
     // 2. Filter post items
     const postItems = document.querySelectorAll('.post-item');
     let visibleCount = 0;
 
     postItems.forEach(item => {
-      const postTagsStr = item.getAttribute('data-tags') || '';
+      const postTagsStr = (item.getAttribute('data-tags') || '').toLowerCase();
       const postTags = postTagsStr.split(',').map(s => s.trim()).filter(Boolean);
       const isSeries = item.getAttribute('data-series') === 'true';
+      const postSeriesTag = (item.getAttribute('data-seriestag') || '').toLowerCase();
 
       let show = false;
-      if (tag === "") {
+      const cleanTag = tag.trim().toLowerCase();
+      if (cleanTag === "") {
         show = true;
-      } else if (tag === "series") {
+      } else if (cleanTag === "series") {
         show = isSeries;
+      } else if (cleanTag === "portfolio-dev" || cleanTag === "portfolio-dev-series") {
+        show = postSeriesTag.includes("portfolio-dev") || postTags.some(t => t.includes("portfolio-dev"));
       } else {
-        show = postTags.includes(tag);
+        show = postTags.includes(cleanTag) || postSeriesTag === cleanTag;
       }
 
       if (show) {

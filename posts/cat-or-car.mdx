@@ -149,10 +149,7 @@ y is the neural network's answer, and yhat is the expected answer.
 
 We then take the average of all of these losses for our training set (**n** items). Let's call that **C**.
 
-<LatexWrapper
-  width="300px"
-  content="C=\frac{1}{n}\sum_{i=1}^{n}{(y_i-\hat{y_i})^2}"
-/>
+<LatexWrapper content="C=\frac{1}{n}\sum_{i=1}^{n}{(y_i-\hat{y_i})^2}" width="300px" />
 
 **Note: this is not the loss function that I used. This will be briefly touched upon in the coding section.**
 
@@ -160,10 +157,7 @@ Using this average loss, we can use **gradients** to find the amount by which we
 The basic objective of the gradient in this topic is to find the **minimum value of C - our loss function**.
 To do this, we will express the change in **C** with respect to each weight using the chain rule.
 
-<LatexWrapper
-  width="400px"
-  content="\frac{\delta{C}}{\delta{w_i}}=\frac{\delta{C}}{\delta{w_i}}*\frac{\delta{\hat{y}}}{\delta{z}}*\frac{\delta{z}}{\delta{w_i}}"
-/>
+<LatexWrapper content="\frac{\delta{C}}{\delta{w_i}}=\frac{\delta{C}}{\delta{w_i}}*\frac{\delta{\hat{y}}}{\delta{z}}*\frac{\delta{z}}{\delta{w_i}}" width="400px" />
 
 Using multivariable calculus, you can solve the three gradients respectively (I am not going through it, but here is a <a href="https://towardsdatascience.com/introduction-to-math-behind-neural-networks-e8b60dbbdeba" target="_blank">cool guide on Medium</a> - it basically explains all of what I should be explaining).
 After getting these three gradients, you simply change the weights and biases by their respective gradients multiplied to a learning rate α.

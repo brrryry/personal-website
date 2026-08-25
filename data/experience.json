@@ -1,26 +1,45 @@
 [
   {
     "company": "INSuRE+E Program (Illinois State University)",
-    "role": "Research - AI in Enterprise Data",
+    "role": "Graduate Researcher — AI & Enterprise Data Security",
     "duration": "Jun 2025 - Present",
-    "description": "Working on research related to mitigation of large language model biases in Retrieval Augmented Generation (RAG) systems."
+    "description": "Leading research on adversarial robustness and bias mitigation in Enterprise Retrieval-Augmented Generation (RAG) pipelines under Dr. Dmitry Zhdanov.",
+    "highlights": [
+      "Designed and evaluated machine learning classifiers to detect malicious injected chunks in RAG ingestion pipelines.",
+      "Co-authored research findings accepted and presented at BizAI 2026 and the 2026 CAE in Cybersecurity National Symposium.",
+      "Collaborated with faculty and government sponsors under the NSA/DHS-affiliated INSuRE+E cybersecurity research consortium."
+    ]
   },
   {
     "company": "INSuRE+E Program (Iowa State University)",
-    "role": "Research - BGP Empirical Studies",
+    "role": "Undergraduate Researcher — BGP & Network Security",
     "duration": "Jun 2024 - Aug 2024",
-    "description": "Created an empirical study on the effectiveness of security measures in Border Gateway Protocol (BGP) using BGPy and NetworkX (Python)."
+    "description": "Investigated Internet-scale routing security protocols through topology graph simulations under Dr. Burk Gulmezoglu.",
+    "highlights": [
+      "Simulated deployment mechanics of ROV++ and RPKI Route Origin Validation using BGPy and NetworkX across real AS topologies.",
+      "Evaluated attack mitigation rates against prefix hijacking and route leak vectors under partial ISP adoption scenarios.",
+      "Published and presented peer-reviewed research poster at the 2024 CAE-R Research Symposium."
+    ]
   },
   {
     "company": "Stevens Institute of Technology",
-    "role": "Course Assistant - Introduction to Computer Science (CS 115), Data Structures (CS 284), Intermediate Statistics (MA 331)",
+    "role": "Head Course Assistant — CS & Mathematics Departments",
     "duration": "Sep 2023 - May 2025",
-    "description": "Conducted duties - included hosting labs, troubleshooting code issues, grading assignments/exams and hosting office hours."
+    "description": "Mentored 300+ students across Computer Science and Mathematics courses.",
+    "highlights": [
+      "Supported instruction for CS 115 (Intro to CS), CS 284 (Data Structures & Algorithms), and MA 331 (Intermediate Statistics).",
+      "Held weekly lab sessions and office hours, providing code reviews, debugging guidance, and algorithmic problem-solving strategies.",
+      "Graded programming assignments, algorithm proofs, and exams with consistent grading rubrics and actionable student feedback."
+    ]
   },
   {
     "company": "Stevens Institute of Technology",
-    "role": "Undergraduate Researcher - Online Collapse of Gaming Communities",
+    "role": "Undergraduate Researcher — Computational Social Science",
     "duration": "Nov 2022 - Aug 2023",
-    "description": "Investigated the dynamics of online gaming communities in \"Eve Online\" using a parallel processing web scraper (Python) and qualitative analysis in R."
+    "description": "Studied longevity and decay dynamics of complex multiplayer game ecosystems under Dr. Jingyi Sun.",
+    "highlights": [
+      "Engineered a parallelized web scraper in Python to extract longitudinal behavioral datasets from Eve Online community forums.",
+      "Conducted statistical and qualitative network analyses in R to model attrition triggers and community collapse patterns."
+    ]
   }
 ]

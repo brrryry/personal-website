@@ -84,11 +84,16 @@ async fn get_access_token() -> Result<String, Box<dyn std::error::Error + Send +
             ("refresh_token", &refresh_token),
         ])
         .send()
-        .await?
-        .json::<TokenResponse>()
         .await?;
 
-    Ok(res.access_token)
+    let status = res.status();
+    if !status.is_success() {
+        let error_body = res.text().await.unwrap_or_default();
+        return Err(format!("Spotify token API returned status {}: {}", status, error_body).into());
+    }
+
+    let token_res = res.json::<TokenResponse>().await?;
+    Ok(token_res.access_token)
 }
 
 pub async fn get_current_song() -> SpotifyResponse {

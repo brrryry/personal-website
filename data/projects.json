@@ -1,57 +1,103 @@
 [
   {
+    "id": "rov-plus-plus-survey",
+    "title": "ROV++ Security Empirical Survey",
+    "url": "https://www.caecommunity.org/_files/ugd/eeb746_ca1016804fc0441597a22f1d72ae651d.pdf",
+    "external": true,
+    "description": "Empirical security evaluation of BGP route leak mitigations and RPKI/ROV deployment scenarios using graph network simulations.",
+    "blog": "/blog/insure-2024",
+    "status": "complete",
+    "featured": true,
+    "technologies": [
+      "Python",
+      "BGPy",
+      "NetworkX"
+    ]
+  },
+  {
+    "id": "pp-recommender",
+    "title": "osu! ML Beatmap Recommender",
+    "description": "Machine learning recommendation engine using autoencoded map embeddings and user performance scoring vectors.",
+    "github": "https://github.com/brrryry/pp",
+    "blog": "/blog/pp-recommender",
+    "status": "building",
+    "featured": true,
+    "technologies": [
+      "PyTorch",
+      "FastAPI",
+      "Redis",
+      "Scikit-Learn"
+    ]
+  },
+  {
     "id": "cat-or-car",
     "title": "Cat or Car?",
     "url": "/projects/cat-or-car",
     "external": false,
-    "description": "A small neural net (personal project) that classifies images as a cat or a car. Built with Tensorflow.",
+    "description": "Convolutional neural network for binary image classification deployed with an interactive browser interface.",
     "blog": "/blog/cat-or-car",
-    "status": "complete"
-  },
-  {
-    "id": "rov-plus-plus-survey",
-    "title": "A Survey of ROV++: We May Need Another Napkin",
-    "url": "https://www.caecommunity.org/cop-cyber-research/cae-r-research-symposium/2024-cae-r-cop-research-symposium",
-    "external": true,
-    "description": "A poster created with the INSuRE+E Program on the security of BGP, RPKI/ROV and ROV++.",
-    "blog": "/blog/insure-2024",
-    "status": "complete"
-  },
-  {
-    "id": "portfolio-website",
-    "title": "bryanchan.org",
-    "description": "My portfolio website (you're looking at it!). Until recently, it used NextJS. Now, it uses a custom static site generator written in Rust.",
-    "github": "https://github.com/brrryry/personal-website",
-    "blog": "/blog?tag=portfolio-dev",
-    "status": "maintained"
-  },
-  {
-    "id": "pp-recommender",
-    "title": "Osu Beatmap Recommender",
-    "description": "A machine learning model that recommends osu beatmaps based on user performance and autoencoded map embeddings. Built with PyTorch.",
-    "github": "https://github.com/brrryry/pp",
-    "blog": "/blog/pp-recommender",
-    "status": "building"
+    "status": "complete",
+    "featured": false,
+    "technologies": [
+      "TensorFlow.js",
+      "Python",
+      "Computer Vision"
+    ]
   },
   {
     "id": "brew-review",
     "title": "Brew Review",
-    "description": "(CS554 final project) A website built with Nextjs and Firebase that allows users to review coffee shops.",
+    "description": "Full-stack web platform for discovering and reviewing local coffee shops with real-time state and Firebase authentication.",
     "github": "https://github.com/Dedicated-RAM/brewreview",
-    "status": "complete"
+    "status": "complete",
+    "featured": false,
+    "technologies": [
+      "Next.js",
+      "Firebase",
+      "React",
+      "Tailwind CSS"
+    ]
+  },
+  {
+    "id": "portfolio-website",
+    "title": "bryanchan.org",
+    "description": "High-performance personal developer portfolio and technical blog powered by a custom static site generator written in Rust.",
+    "github": "https://github.com/brrryry/personal-website",
+    "blog": "/blog?tag=portfolio-dev",
+    "status": "maintained",
+    "featured": false,
+    "technologies": [
+      "Rust",
+      "Tera",
+      "KaTeX",
+      "Axum"
+    ]
   },
   {
     "id": "goodminton",
-    "title": "Goodminton",
+    "title": "Goodminton Club Platform",
     "github": "https://github.com/JasonQiu21/goodminton",
-    "description": "(CS546 final project) A reservation/tournament site for our badminton club. Built with Handlebars.",
-    "status": "complete"
+    "description": "Badminton club tournament management and court reservation system with role-based access control.",
+    "status": "complete",
+    "featured": false,
+    "technologies": [
+      "Node.js",
+      "Express",
+      "MongoDB",
+      "Handlebars"
+    ]
   },
   {
     "id": "discord-bot",
-    "title": "Discord Bot",
+    "title": "Community Automation Bot",
     "github": "https://github.com/brrryry/discord-bot",
-    "description": "A bot made with DiscordJS that has a moderation system, a levelling system, and a mini-Brawlhalla API.",
-    "status": "deprecated"
+    "description": "Automated Discord bot supporting server moderation, custom leveling systems, and game API integrations.",
+    "status": "deprecated",
+    "featured": false,
+    "technologies": [
+      "Node.js",
+      "Discord.js",
+      "REST APIs"
+    ]
   }
 ]

@@ -23,15 +23,16 @@ function askQuestion(query) {
 
 // Helper to open URL in browser
 function openBrowser(url) {
-  const start =
+  console.log(`\nOpening browser for Spotify authorization...\nURL: ${url}\n`);
+  const cmd =
     process.platform === "darwin"
-      ? "open"
+      ? `open "${url}"`
       : process.platform === "win32"
-        ? "start"
-        : "xdg-open";
-  exec(`${start} "${url}"`, (err) => {
+        ? `start "" "${url}"`
+        : `xdg-open "${url}"`;
+  exec(cmd, (err) => {
     if (err) {
-      console.log(`\nPlease open this URL in your browser:\n${url}\n`);
+      console.log(`\nPlease open this URL manually in your browser:\n${url}\n`);
     }
   });
 }

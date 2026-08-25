@@ -2,39 +2,150 @@
 
 {% block content %}
 <div class="home-container">
-  <!-- Latest News Banner -->
-  <a href="/blog/shallow-roots" class="latest-news-badge">
+  <!-- Latest Research Banner (Live Remote Update Support - hidden by default if remote_url is used) -->
+  <a id="latest-news-badge"
+    href="{{ news.url | default(value='#') }}"
+    target="_blank" rel="noopener noreferrer" class="latest-news-badge"
+    data-remote-url="{{ news.remote_url | default(value='') }}"
+    {% if news.remote_url or news.hidden %}style="display: none;"{% endif %}>
     <span class="pulse-dot"></span>
-    <span>Latest News: Shallow Roots</span>
+    <span id="latest-news-text">{{ news.text | default(value='') }}</span>
   </a>
+  <script>
+    (async function checkLiveNews() {
+      const badge = document.getElementById("latest-news-badge");
+      const textSpan = document.getElementById("latest-news-text");
+      if (!badge || !textSpan) return;
+
+      let remoteUrl = badge.getAttribute("data-remote-url");
+      if (!remoteUrl) return;
+
+      // Automatically normalize gist.github.com to direct raw gist.githubusercontent.com
+      if (remoteUrl.includes("gist.github.com") && !remoteUrl.includes("gist.githubusercontent.com")) {
+        remoteUrl = remoteUrl.replace("gist.github.com", "gist.githubusercontent.com");
+      }
+
+      // Add cache buster query to bypass CDN stale cache
+      const cacheBustUrl = remoteUrl + (remoteUrl.includes("?") ? "&" : "?") + "_t=" + Date.now();
+
+      try {
+        const res = await fetch(cacheBustUrl);
+        if (!res.ok) {
+          badge.style.display = "none";
+          return;
+        }
+        const text = await res.text();
+        const data = JSON.parse(text);
+        if (data.hidden || !data.text) {
+          badge.style.display = "none";
+          return;
+        }
+        textSpan.textContent = data.text;
+        if (data.url) badge.href = data.url;
+        badge.style.display = "inline-flex";
+      } catch (e) {
+        badge.style.display = "none";
+      }
+    })();
+  </script>
 
   <!-- Profile & Bio Hero -->
   <div class="home-hero">
     <div class="hero-info">
-      <h2 class="hero-title">
+      <h1 class="hero-title">
         Hi, I'm <span>Bryan</span>.
-      </h2>
+      </h1>
       <p class="hero-text">
-        I'm a graduate student at <a href="https://www.stevens.edu/" target="_blank">Stevens Institute of Technology</a>
-        (M.S. in Data Science). Previously, I graduated from the same school with a B.S. in Computer Science.
+        I hold an M.S. in Data Science and a B.S. in Computer Science from <a href="https://www.stevens.edu/"
+          target="_blank" rel="noopener noreferrer">Stevens Institute of Technology</a>.
       </p>
       <p class="hero-text">
-        I'm passionate about research and development in <strong>statistical learning, artificial
-          intelligence and optimization</strong>. Recently, I have worked on projects involving security of Retrieval
-        Augmented Generation (RAG) systems and trajectory prediction of unmanned aerial vehicles (UAVs) using deep
-        neural nets and cellular network data. You can view my projects <a href="/about#projects">here!</a>
+        I'm passionate about research and engineering in <strong>statistical learning, artificial intelligence, and
+          optimization</strong>. Recently, I've focused on security in Retrieval-Augmented Generation (RAG) systems and
+        deep learning pipelines. You can view my projects <a href="/about#projects">here</a>!
       </p>
       <p class="hero-text">
         In my free time, I like to code new things, play badminton/video games, compose music, and chill out with my
         cat. Feel free to reach out :D
       </p>
+
+      <!-- Minimalist CTAs -->
+      <div class="hero-cta-group">
+        <a href="/static/Chan_Bryan_Resume.pdf" target="_blank" rel="noopener noreferrer" class="btn-primary">
+          Resume ↗
+        </a>
+        <a href="https://github.com/brrryry" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+          GitHub ↗
+        </a>
+        <a href="https://linkedin.com/in/brrryry" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+          LinkedIn ↗
+        </a>
+        <a href="mailto:thisisbryanchan@gmail.com" class="btn-secondary">
+          Email
+        </a>
+      </div>
     </div>
     <div class="hero-avatar">
       <img src="/static/me.jpg" alt="picture of me" />
     </div>
   </div>
 
-  <!-- Open Project Board -->
+  <!-- Featured Projects -->
+  {% if featured_projects %}
+  <div>
+    <div class="section-header-row">
+      <h2 class="section-title">Featured Projects</h2>
+      <a href="/about#projects" class="section-more-link">All Projects →</a>
+    </div>
+    <div class="project-grid">
+      {% for p in featured_projects %}
+      <div class="project-card">
+        <div>
+          <div class="project-card-header">
+            <h3 class="project-card-title">{{ p.title }}</h3>
+            {% if p.status %}
+            <span class="project-card-badge">{{ p.status }}</span>
+            {% endif %}
+          </div>
+          <p class="project-card-desc">{{ p.description }}</p>
+
+          {% if p.technologies %}
+          <div class="project-tech-tags">
+            {% for tech in p.technologies %}
+            <span class="tech-tag">{{ tech }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+
+        {% if p.github or p.url or p.blog %}
+        <div class="project-card-links">
+          {% if p.url %}
+          <a href="{{ p.url }}" {% if p.external %}target="_blank" rel="noopener noreferrer" {% endif %}
+            class="project-card-link">
+            {% if p.external %}Project Link ↗{% else %}Interactive Demo ↗{% endif %}
+          </a>
+          {% endif %}
+          {% if p.github %}
+          <a href="{{ p.github }}" target="_blank" rel="noopener noreferrer" class="project-card-link">
+            GitHub ↗
+          </a>
+          {% endif %}
+          {% if p.blog %}
+          <a href="{{ p.blog }}" class="project-card-link">
+            Blog →
+          </a>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Active / In-Progress Projects -->
+  {% if active_projects %}
   <div>
     <h2 class="section-title">Open Project Board</h2>
     <div class="project-grid">
@@ -46,33 +157,43 @@
             <span class="project-card-badge">{{ p.status }}</span>
           </div>
           <p class="project-card-desc">{{ p.description }}</p>
+
+          {% if p.technologies %}
+          <div class="project-tech-tags">
+            {% for tech in p.technologies %}
+            <span class="tech-tag">{{ tech }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
         </div>
+
         {% if p.github or p.url or p.blog %}
         <div class="project-card-links">
           {% if p.github %}
           <a href="{{ p.github }}" target="_blank" rel="noopener noreferrer" class="project-card-link">
-            GitHub
+            GitHub ↗
           </a>
           {% endif %}
           {% if p.url %}
-          <a href="{{ p.url }}" {% if p.external %}target="_blank" {% endif %} class="project-card-link">
-            Project Link
+          <a href="{{ p.url }}" {% if p.external %}target="_blank" rel="noopener noreferrer" {% endif %}
+            class="project-card-link">
+            Project Link ↗
           </a>
           {% endif %}
           {% if p.blog %}
-          <a href="{{ p.blog }}" {% if p.external %}target="_blank" {% endif %} class="project-card-link">
-            Blog
+          <a href="{{ p.blog }}" class="project-card-link">
+            Blog →
           </a>
           {% endif %}
         </div>
         {% endif %}
-
       </div>
       {% endfor %}
     </div>
   </div>
+  {% endif %}
 
-  <!-- Recent News Timeline -->
+  <!-- Recent News & Research Timeline -->
   <div>
     <h2 class="section-title">Recent News</h2>
     <div class="news-timeline">
@@ -80,11 +201,13 @@
         <span class="timeline-node"></span>
         <span class="timeline-date">04-2026</span>
         <p class="timeline-content">
-          <a href="https://www.caecommunity.org/symposium-archive/2026-cae-in-cybersecurity-symposium" target="_blank">
+          <a href="https://www.caecommunity.org/symposium-archive/2026-cae-in-cybersecurity-symposium" target="_blank"
+            rel="noopener noreferrer">
             A Machine Learning-based Approach to Malicious Document Detection for RAG Chunk Ingestion
           </a> presented at <a href="https://jindal.utdallas.edu/biz-ai-conference/biz-ai-conference-2026/"
-            target="_blank"><em>BizAI 2026</em></a> and <a href="https://www.caecommunity.org/symposium"
-            target="_blank"><em>2026 CAE Symposium</em></a>.
+            target="_blank" rel="noopener noreferrer"><em>BizAI 2026</em></a> and <a
+            href="https://www.caecommunity.org/symposium" target="_blank" rel="noopener noreferrer"><em>2026 CAE
+              Symposium</em></a>.
         </p>
       </div>
 
@@ -93,9 +216,10 @@
         <span class="timeline-date">06-2025</span>
         <p class="timeline-content">
           Started research (AI in Enterprise Data) at Illinois State University under <a
-            href="https://it.illinoisstate.edu/faculty-staff/profile/?ulid=dzhdano" target="_blank">Dr. Dmitry
-            Zhdanov</a> and the <a href="https://www.caecommunity.org/initiatives/initiative-insure"
-            target="_blank">INSuRE+E Program</a>. A poster was presented in a private showcase in December 2025.
+            href="https://it.illinoisstate.edu/faculty-staff/profile/?ulid=dzhdano" target="_blank"
+            rel="noopener noreferrer">Dr. Dmitry
+            Zhdanov</a> and the <a href="https://www.caecommunity.org/initiatives/initiative-insure" target="_blank"
+            rel="noopener noreferrer">INSuRE+E Program</a>.
         </p>
       </div>
 
@@ -104,11 +228,11 @@
         <span class="timeline-date">10-2024</span>
         <p class="timeline-content">
           <a href="https://131b1d64-a91b-4e72-9201-2d47ce0a189a.filesusr.com/ugd/eeb746_ca1016804fc0441597a22f1d72ae651d.pdf"
-            target="_blank">
+            target="_blank" rel="noopener noreferrer">
             A Survey of ROV++: We May Need Another Napkin
           </a> poster presented at <a
             href="https://www.caecommunity.org/cop-cyber-research/cae-r-research-symposium/2024-cae-r-cop-research-symposium"
-            target="_blank"><em>2024 CAE Symposium</em></a>.
+            target="_blank" rel="noopener noreferrer"><em>2024 CAE Symposium</em></a>.
         </p>
       </div>
 
@@ -117,9 +241,11 @@
         <span class="timeline-date">06-2024</span>
         <p class="timeline-content">
           Started research (BGP Empirical Studies) at Iowa State University under <a
-            href="https://www.engineering.iastate.edu/people/profile/bgulmez/" target="_blank">Dr. Burk Gulmezoglu</a>
-          and the <a href="https://www.caecommunity.org/initiatives/initiative-insure" target="_blank">INSuRE+E
-            Program</a>. Poster published in October 2024.
+            href="https://www.engineering.iastate.edu/people/profile/bgulmez/" target="_blank"
+            rel="noopener noreferrer">Dr. Burk Gulmezoglu</a>
+          and the <a href="https://www.caecommunity.org/initiatives/initiative-insure" target="_blank"
+            rel="noopener noreferrer">INSuRE+E
+            Program</a>.
         </p>
       </div>
 
@@ -129,10 +255,12 @@
         <p class="timeline-content">
           Began Course Assistantship for <a
             href="https://web.stevens.edu/catalog/archive/2021-2022/en/catalog/academic-catalog/courses/cs-computer-science/100/cs-115.html"
-            target="_blank"><em>CS 115: Introduction to Computer Science</em></a> and <a
+            target="_blank" rel="noopener noreferrer"><em>CS 115: Intro to Computer Science</em></a>, <a
+            href="https://web.stevens.edu/catalog/archive/2021-2022/en/catalog/academic-catalog/courses/cs-computer-science/200/cs-284.html"
+            target="_blank" rel="noopener noreferrer"><em>CS 284: Data Structures</em></a>, and <a
             href="https://stevens.smartcatalogiq.com/en/2021-2022/academic-catalog/courses/ma-mathematics/300/ma-331"
-            target="_blank"><em>MA 331: Intermediate Statistics</em></a> at Stevens Institute of Technology. (Fall 2023
-          - Spring 2025)
+            target="_blank" rel="noopener noreferrer"><em>MA 331: Intermediate Statistics</em></a> at Stevens Institute
+          of Technology. (Fall 2023 - Spring 2025)
         </p>
       </div>
 
@@ -141,8 +269,8 @@
         <span class="timeline-date">11-2022</span>
         <p class="timeline-content">
           Started research (<em>Analyzing Collapse of Online Gaming Communities</em>) at Stevens Institute of Technology
-          under <a href="https://www.stevens.edu/profile/jssun54" target="_blank">Dr. Jingyi Sun</a>. (Fall 2022 -
-          Summer 2023)
+          under <a href="https://www.stevens.edu/profile/jssun54" target="_blank" rel="noopener noreferrer">Dr. Jingyi
+            Sun</a>. (Fall 2022 - Summer 2023)
         </p>
       </div>
     </div>
@@ -150,7 +278,10 @@
 
   <!-- Recent Blog Posts -->
   <div>
-    <h2 class="section-title">Recent Blog Posts</h2>
+    <div class="section-header-row">
+      <h2 class="section-title">Recent Blog Posts</h2>
+      <a href="/blog" class="section-more-link">All Posts →</a>
+    </div>
     {% if recent_posts %}
     <div class="recent-blog-list">
       {% for post in recent_posts %}

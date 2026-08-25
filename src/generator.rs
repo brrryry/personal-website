@@ -66,6 +66,16 @@ pub fn build_site() -> Result<(), Box<dyn std::error::Error>> {
     let education_raw = fs::read_to_string("data/education.json")?;
     let education_json: JsonValue = serde_json::from_str(&education_raw)?;
 
+    let news_json: JsonValue = fs::read_to_string("data/news.json")
+        .ok()
+        .and_then(|raw| serde_json::from_str(&raw).ok())
+        .unwrap_or_else(|| serde_json::json!({
+            "text": "Latest Research: RAG Document Ingestion Security @ BizAI & CAE 2026 ↗",
+            "url": "https://www.caecommunity.org/symposium-archive/2026-cae-in-cybersecurity-symposium",
+            "remote_url": "",
+            "hidden": false
+        }));
+
     // 4. Parse Blog Posts
     let mut posts = Vec::new();
     let posts_dir = Path::new("posts");
@@ -141,6 +151,10 @@ pub fn build_site() -> Result<(), Box<dyn std::error::Error>> {
                     }
                 });
 
+                let seriestag = fm.seriestag.clone().or_else(|| {
+                    fm.tags.iter().find(|t| t.to_lowercase().contains("series")).cloned()
+                });
+
                 posts.push(BlogPost {
                     id,
                     title: fm.title,
@@ -149,7 +163,7 @@ pub fn build_site() -> Result<(), Box<dyn std::error::Error>> {
                     tags: fm.tags,
                     status,
                     updated: fm.updated,
-                    seriestag: fm.seriestag,
+                    seriestag,
                     html_content,
                 });
             }
@@ -178,11 +192,14 @@ pub fn build_site() -> Result<(), Box<dyn std::error::Error>> {
 
     // 6.1 index.html (Home Page)
     let active_projects = filter_active_projects(&projects_json);
+    let featured_projects = filter_featured_projects(&projects_json);
     let recent_posts: Vec<BlogPost> = posts.iter().take(4).cloned().collect();
 
     let mut index_ctx = Context::new();
     index_ctx.insert("active_projects", &active_projects);
+    index_ctx.insert("featured_projects", &featured_projects);
     index_ctx.insert("recent_posts", &recent_posts);
+    index_ctx.insert("news", &news_json);
     index_ctx.insert("commit_hash", &commit_hash);
     index_ctx.insert("commit_hash_short", &commit_hash_short);
     let index_rendered = tera.render("index.html", &index_ctx)?;
@@ -284,12 +301,25 @@ fn filter_active_projects(projects: &JsonValue) -> Vec<JsonValue> {
     if let Some(arr) = projects.as_array() {
         for p in arr {
             let status = p.get("status").and_then(|s| s.as_str()).unwrap_or("");
-            if status != "complete" && status != "deprecated" {
+            let featured = p.get("featured").and_then(|f| f.as_bool()).unwrap_or(false);
+            if status != "complete" && status != "deprecated" && !featured {
                 active.push(p.clone());
             }
         }
     }
     active
+}
+
+fn filter_featured_projects(projects: &JsonValue) -> Vec<JsonValue> {
+    let mut featured = Vec::new();
+    if let Some(arr) = projects.as_array() {
+        for p in arr {
+            if p.get("featured").and_then(|f| f.as_bool()).unwrap_or(false) {
+                featured.push(p.clone());
+            }
+        }
+    }
+    featured
 }
 
 fn write_output_file(path: &str, content: &str) -> io::Result<()> {
@@ -636,5 +666,16 @@ fn format_citations_list(content: &str) -> String {
     }
 
     result
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_all_posts_compile() {
+        let res = build_site();
+        assert!(res.is_ok(), "build_site failed: {:?}", res.err());
+    }
 }
 
