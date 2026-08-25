@@ -1,7 +1,0 @@
-#!/bin/sh
-
-npm run lint
-npm run format
-
-# Re-add only files that were staged before running the hook
-git diff --cached --name-only -z --diff-filter=ACMRTUXB | xargs -0 git add --

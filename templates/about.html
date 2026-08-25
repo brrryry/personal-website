@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}About Me - Bryan Chan{% endblock %}
+
+{% block content %}
+<div class="about-container">
+  <!-- Intro Header -->
+  <div class="about-intro">
+    <h2 class="section-title">About Me</h2>
+    <p>
+      This is my about page! Here, you can find more information on my education, experiences and projects.
+    </p>
+    <p>
+      My complete professional resume can be viewed 
+      <a href="/static/Chan_Bryan_Resume.pdf" target="_blank">
+        here
+      </a>!
+    </p>
+  </div>
+
+  <!-- Education Section -->
+  <div>
+    <h2 class="section-title">Education</h2>
+    <div class="edu-list">
+      {% for edu in education %}
+      <div class="edu-card">
+        <div class="card-main">
+          <h3 class="card-title">{{ edu.institution }}</h3>
+          <p class="card-subtitle">{{ edu.degree }}</p>
+          <p class="card-meta-text">GPA: {{ edu.gpa }}</p>
+
+          <div class="courses-dropdown">
+            <details>
+              <summary>Relevant Courses</summary>
+              <ul class="courses-grid">
+                {% for course in edu.courses %}
+                <li class="course-item">
+                  {% if course.link %}
+                  <a href="{{ course.link }}" target="_blank" rel="noopener noreferrer">
+                    {% if course.code %}
+                    <span>{{ course.code }} — {{ course.name }}</span>
+                    {% else %}
+                    <span>{{ course.name }}</span>
+                    {% endif %}
+                  </a>
+                  {% else %}
+                    {% if course.code %}
+                    <span>{{ course.code }} — {{ course.name }}</span>
+                    {% else %}
+                    <span>{{ course.name }}</span>
+                    {% endif %}
+                  {% endif %}
+                </li>
+                {% endfor %}
+              </ul>
+            </details>
+          </div>
+        </div>
+
+        <span class="card-date-badge">
+          {{ edu.startDate }} - {{ edu.endDate }}
+        </span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Experience Section -->
+  <div>
+    <h2 class="section-title">Experience</h2>
+    <div class="exp-list">
+      {% for exp in experience %}
+      <div class="exp-card">
+        <div class="card-main">
+          <h3 class="card-title">{{ exp.company }}</h3>
+          <p class="card-subtitle"><em>{{ exp.role }}</em></p>
+          <p class="card-desc">{{ exp.description }}</p>
+        </div>
+
+        <span class="card-date-badge">
+          {{ exp.duration }}
+        </span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Projects Section -->
+  <div>
+    <span id="projects" style="display: block; margin-top: -4rem; padding-top: 4rem;"></span>
+    <h2 class="section-title">Projects</h2>
+    <div class="project-grid">
+      {% for p in projects %}
+      <div class="project-card">
+        <div>
+          <div class="project-card-header">
+            <h3 class="project-card-title">{{ p.title }}</h3>
+            {% if p.status %}
+            <span class="project-card-badge">{{ p.status }}</span>
+            {% endif %}
+          </div>
+          <p class="project-card-desc">{{ p.description }}</p>
+        </div>
+
+        <!-- Links -->
+        {% if p.url or p.github or p.blog %}
+        <div class="project-card-links">
+          {% if p.url %}
+          <a href="{{ p.url }}" {% if p.external %}target="_blank"{% endif %} class="project-card-link">
+            Visit Project
+          </a>
+          {% endif %}
+          {% if p.github %}
+          <a href="{{ p.github }}" target="_blank" rel="noopener noreferrer" class="project-card-link">
+            GitHub
+          </a>
+          {% endif %}
+          {% if p.blog %}
+          <a href="{{ p.blog }}" class="project-card-link">
+            Blog Post
+          </a>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Skills Section -->
+  <div>
+    <h2 class="section-title">Skills</h2>
+    <div class="skills-section">
+      <!-- Programming -->
+      <div class="skill-row">
+        <h3 class="skill-category">Programming</h3>
+        <div class="skill-tags">
+          {% for skill in skills.programming %}
+          <span class="skill-pill">{{ skill }}</span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Databases -->
+      <div class="skill-row">
+        <h3 class="skill-category">Databases</h3>
+        <div class="skill-tags">
+          {% for skill in skills.databases %}
+          <span class="skill-pill">{{ skill }}</span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Software & Tools -->
+      <div class="skill-row">
+        <h3 class="skill-category">Software & Tools</h3>
+        <div class="skill-tags">
+          {% for skill in skills.tools %}
+          <span class="skill-pill">{{ skill }}</span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Frameworks & Libraries -->
+      <div class="skill-row">
+        <h3 class="skill-category">Frameworks & Libraries</h3>
+        <div class="skill-tags">
+          {% for skill in skills.frameworks %}
+          <span class="skill-pill">{{ skill }}</span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Certifications -->
+      <div class="skill-row">
+        <h3 class="skill-category">Certifications</h3>
+        <div class="skill-tags">
+          {% for skill in skills.certifications %}
+          <span class="skill-pill">{{ skill }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
