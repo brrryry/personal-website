@@ -22,9 +22,23 @@
       <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-purple-900 dark:text-purple-100">
         {{ post.title }}
       </h1>
+      <!-- Series Tag (Highlighted on its own line) -->
+      {% if post.seriestag %}
+      <div class="blog-series-line">
+        <a href="/blog?tag={{ post.seriestag }}" class="series-badge" title="View all posts in {{ post.seriestag }}">
+          <svg class="series-badge-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+            <polyline points="2 17 12 22 22 17"/>
+            <polyline points="2 12 12 17 22 12"/>
+          </svg>
+          <span class="series-badge-label">Series:</span>
+          <span class="series-badge-tag">#{{ post.seriestag }}</span>
+        </a>
+      </div>
+      {% endif %}
 
-      <div
-        class="flex flex-wrap gap-x-4 gap-y-2 items-center text-xs md:text-sm text-gray-600 dark:text-gray-400 font-medium">
+      <!-- Post Meta Details -->
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-700 dark:text-gray-300 font-mono">
         <span class="flex items-center gap-1.5">
           <!-- Calendar Icon -->
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -34,7 +48,7 @@
           </svg>
           {{ post.date }}
         </span>
-        <br /> {% if post.updated %} <span class="flex items-center gap-1.5">
+        {% if post.updated %} <span class="flex items-center gap-1.5">
           <!-- Refresh Icon -->
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="icon-svg">
@@ -43,7 +57,6 @@
           </svg>
           Updated: {{ post.updated }}
         </span>
-        <br />
         {% endif %} {% if post.status %} <span
           class="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-purple-500/10 text-purple-800 dark:text-purple-200 border border-purple-500/10 uppercase tracking-wider">
           Status: {{ post.status }}
@@ -53,17 +66,12 @@
         <!-- Post Row Tags -->
         <div class="flex flex-wrap gap-2">
           {% for tag in post.tags %}
-          {% if not post.seriestag or tag != post.seriestag %}
+          {% if tag != post.seriestag and tag != "series" %}
           <a href="/blog?tag={{ tag }}" class="post-tag">
             #{{ tag }}
           </a>
           {% endif %}
           {% endfor %}
-          {% if post.seriestag %}
-          <a href="/blog?tag={{ post.seriestag }}" class="post-tag">
-            #{{ post.seriestag }}
-          </a>
-          {% endif %}
         </div>
       </div>
     </div>

@@ -33,6 +33,18 @@ pub struct BlogPost {
     pub html_content: String,
 }
 
+#[derive(Debug, Serialize, Clone)]
+pub struct BlogSeries {
+    pub tag: String,
+    pub title: String,
+    pub description: String,
+    pub start_date: String,
+    pub end_date: String,
+    pub post_count: usize,
+    pub status: String,
+    pub posts: Vec<BlogPost>,
+}
+
 #[derive(Serialize)]
 struct Skills {
     programming: Vec<&'static str>,
@@ -186,6 +198,9 @@ pub fn build_site() -> Result<(), Box<dyn std::error::Error>> {
     }
     tags.sort();
 
+    // 5.1 Build structured series list
+    let series_list = build_series_list(&posts);
+
     // 6. RENDER PAGES
     let commit_hash = crate::COMMIT_HASH;
     let commit_hash_short = if commit_hash.len() >= 8 { &commit_hash[..8] } else { commit_hash };
@@ -228,6 +243,7 @@ pub fn build_site() -> Result<(), Box<dyn std::error::Error>> {
     let mut blog_ctx = Context::new();
     blog_ctx.insert("posts", &posts);
     blog_ctx.insert("tags", &tags);
+    blog_ctx.insert("series", &series_list);
     blog_ctx.insert("commit_hash", &commit_hash);
     blog_ctx.insert("commit_hash_short", &commit_hash_short);
     let blog_rendered = tera.render("blog.html", &blog_ctx)?;
@@ -666,6 +682,82 @@ fn format_citations_list(content: &str) -> String {
     }
 
     result
+}
+
+fn format_series_title(tag: &str) -> String {
+    match tag {
+        "portfolio-dev-series" => "Portfolio Dev Series".to_string(),
+        "ms-dp100-series" => "The Microsoft DP-100 Experience".to_string(),
+        "math-teasers-series" => "Math Teasers Series".to_string(),
+        "gam-series" => "Gaming & Audio Musings (GAM)".to_string(),
+        "cryptopals-series" => "Cryptopals Crypto Challenges".to_string(),
+        other => {
+            other
+                .split('-')
+                .map(|word| {
+                    let mut chars = word.chars();
+                    match chars.next() {
+                        None => String::new(),
+                        Some(first) => first.to_uppercase().collect::<String>() + chars.as_str(),
+                    }
+                })
+                .collect::<Vec<_>>()
+                .join(" ")
+        }
+    }
+}
+
+fn format_series_description(tag: &str, first_post_desc: &str) -> String {
+    match tag {
+        "portfolio-dev-series" => "A series that follows the development of this website.".to_string(),
+        "ms-dp100-series" => "A collection of notes/summaries of concepts for my MS-DP100 exam.".to_string(),
+        "math-teasers-series" => "A series of math teasers.".to_string(),
+        "gam-series" => "Rambles and breakdowns of interesting music.".to_string(),
+        _ => first_post_desc.to_string(),
+    }
+}
+
+pub fn build_series_list(posts: &[BlogPost]) -> Vec<BlogSeries> {
+    use std::collections::BTreeMap;
+    let mut map: BTreeMap<String, Vec<BlogPost>> = BTreeMap::new();
+
+    for p in posts {
+        if let Some(ref st) = p.seriestag {
+            map.entry(st.clone()).or_default().push(p.clone());
+        }
+    }
+
+    let mut series_list = Vec::new();
+    for (tag, mut series_posts) in map {
+        // Sort chronologically ascending (first episode to last)
+        series_posts.sort_by(|a, b| a.date.cmp(&b.date));
+
+        let start_date = series_posts.first().map(|p| p.date.clone()).unwrap_or_default();
+        let end_date = series_posts.last().map(|p| p.date.clone()).unwrap_or_default();
+        let post_count = series_posts.len();
+        let first_desc = series_posts.first().map(|p| p.description.clone()).unwrap_or_default();
+
+        let title = format_series_title(&tag);
+        let description = format_series_description(&tag, &first_desc);
+        
+        let is_any_progress = series_posts.iter().any(|p| p.status == "in progress");
+        let status = if is_any_progress { "in progress".to_string() } else { "finished".to_string() };
+
+        series_list.push(BlogSeries {
+            tag,
+            title,
+            description,
+            start_date,
+            end_date,
+            post_count,
+            status,
+            posts: series_posts,
+        });
+    }
+
+    // Sort series list by most recent activity (end_date descending)
+    series_list.sort_by(|a, b| b.end_date.cmp(&a.end_date));
+    series_list
 }
 
 #[cfg(test)]
