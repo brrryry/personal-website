@@ -15,6 +15,18 @@
     ]
   },
   {
+    "id": "aster",
+    "title": "aster",
+    "description": "A real-time Ethereum whale watcher with surface-level analysis features. Utilizes a local node to subscribe to the Ethereum mempool and process transactions in real-time. Grafana dashboard TBD.",
+    "status": "building",
+    "featured": false,
+    "technologies": [
+      "Rust",
+      "Svelte 5",
+      "SSE/WebSockets"
+    ]
+  },
+  {
     "id": "pp-recommender",
     "title": "osu! ML Beatmap Recommender",
     "description": "Machine learning recommendation engine using autoencoded map embeddings and user performance scoring vectors.",
