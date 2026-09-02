@@ -968,7 +968,6 @@ blockquote li:last-child {
 /* Indent and format lists inside blog content (.prose container) */
 .prose ul {
   list-style-type: disc !important;
-  margin-left: 2rem !important;
   margin-top: 0.5rem !important;
   margin-bottom: 0.5rem !important;
   padding-left: 1.5rem !important;
@@ -976,7 +975,6 @@ blockquote li:last-child {
 
 .prose ol {
   list-style-type: decimal !important;
-  margin-left: 2rem !important;
   margin-top: 0.5rem !important;
   margin-bottom: 0.5rem !important;
   padding-left: 1.5rem !important;
@@ -2585,9 +2583,20 @@ blockquote li:last-child {
 }
 
 @keyframes pulse {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(106, 13, 173, 0.7); }
-  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(106, 13, 173, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(106, 13, 173, 0); }
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(106, 13, 173, 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 6px rgba(106, 13, 173, 0);
+  }
+
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(106, 13, 173, 0);
+  }
 }
 
 .home-hero {
@@ -3264,7 +3273,7 @@ code {
   color: #e4e4e7;
 }
 
-.code-block-header + pre {
+.code-block-header+pre {
   margin-top: 0 !important;
   border-top-left-radius: 0 !important;
   border-top-right-radius: 0 !important;
@@ -3277,4 +3286,4 @@ code {
   text-align: center;
   margin: 1.5rem 0;
   overflow-x: auto;
-}
+}

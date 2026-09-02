@@ -466,8 +466,34 @@ fn preprocess_math(content: &str) -> String {
     let mut i = 0;
 
     while i < len {
+        // Code block: ``` ... ``` (skip math processing inside code blocks)
+        if i + 2 < len && chars[i] == '`' && chars[i + 1] == '`' && chars[i + 2] == '`' {
+            result.push_str("```");
+            i += 3;
+            while i + 2 < len && !(chars[i] == '`' && chars[i + 1] == '`' && chars[i + 2] == '`') {
+                result.push(chars[i]);
+                i += 1;
+            }
+            if i + 2 < len {
+                result.push_str("```");
+                i += 3;
+            }
+        }
+        // Inline code span: ` ... ` (skip math processing inside inline code)
+        else if chars[i] == '`' {
+            result.push('`');
+            i += 1;
+            while i < len && chars[i] != '`' && chars[i] != '\n' {
+                result.push(chars[i]);
+                i += 1;
+            }
+            if i < len && chars[i] == '`' {
+                result.push('`');
+                i += 1;
+            }
+        }
         // Display math: $$ ... $$
-        if i + 1 < len && chars[i] == '$' && chars[i + 1] == '$' {
+        else if i + 1 < len && chars[i] == '$' && chars[i + 1] == '$' {
             // Find the closing $$
             let start = i + 2;
             let mut j = start;

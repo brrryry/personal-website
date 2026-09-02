@@ -18,6 +18,9 @@
     "id": "aster",
     "title": "aster",
     "description": "A real-time Ethereum whale watcher with surface-level analysis features. Utilizes a local node to subscribe to the Ethereum mempool and process transactions in real-time. Grafana dashboard TBD.",
+    "url": "https://aster.bryanchan.org/",
+    "external": true,
+    "blog": "/blog/aster",
     "status": "building",
     "featured": false,
     "technologies": [
