@@ -241,7 +241,7 @@ In traditional finance, hedge funds and institutional market makers hide their o
 You rarely know when a multi-billion dollar fund is entering or exiting a position until regulatory filings come out months later.
 
 However, **everything is public** on a blockchain. 
-If an entity holding $\$100\text{M}$ worth of ETH decides to move funds, that transaction is broadcast to the network
+If an entity holding a significant amount of ETH decides to move funds, that transaction is broadcast to the network
 for everyone to see immediately.
 
 In particular, observing **Exchange Flows** provides valuable market intelligence:
@@ -255,7 +255,7 @@ Regardless, we can track money movement.
 
 ### System Architecture: The Rust Actor Model
 
-Aster is built in **Rust** using <a href="https://github.com/alloy-rs/alloy" target="_blank">Alloy</a> <sub>[\[10\]](#citation10)</sub>, **Tokio**, and **Axum**. Instead of relying on expensive third-party RPC services with strict rate limits (like Infura or Alchemy), Aster connects directly to a private <a href="https://github.com/paradigmxyz/reth" target="_blank">Reth</a> <sub>[\[9\]](#citation9)</sub> execution node running locally on my home Synology NAS over WebSocket.
+Aster is built in **Rust** using <a href="https://github.com/alloy-rs/alloy" target="_blank">Alloy</a> <sub>[\[10\]](#citation10)</sub>, **Tokio**, and **Axum**. Instead of relying on expensive third-party RPC services with strict rate limits (like Infura or Alchemy), Aster connects directly to a private <a href="https://github.com/paradigmxyz/reth" target="_blank">Reth</a> <sub>[\[9\]](#citation9)</sub> execution node running locally on my NAS over WebSocket.
 
 ```
 ┌─────────────────────────┐          ┌──────────────────────────────────────────────┐
@@ -277,6 +277,9 @@ Aster is built in **Rust** using <a href="https://github.com/alloy-rs/alloy" tar
                                      │  4. Axum Web Server (:3000)                  │
                                      └──────────────────────────────────────────────┘
 ```
+
+The Reth Node is a client that connects to other nodes to "gossip" about blocks and transactions. Aster reads the gossip (it gets all the tea ;D).
+This is our information source.
 
 The service is split into concurrent, asynchronous actors:
 
