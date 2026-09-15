@@ -10,9 +10,6 @@
     <p>
       This is my about page! Here, you can find more information on my education, experience, and projects.
     </p>
-    <p>
-      My complete professional resume can be viewed or downloaded <a href="/static/Chan_Bryan_Resume.pdf" target="_blank" rel="noopener noreferrer">here (PDF) ↗</a>!
-    </p>
   </div>
 
   <!-- Education Section -->
@@ -41,11 +38,11 @@
                     {% endif %}
                   </a>
                   {% else %}
-                    {% if course.code %}
-                    <span>{{ course.code }} — {{ course.name }}</span>
-                    {% else %}
-                    <span>{{ course.name }}</span>
-                    {% endif %}
+                  {% if course.code %}
+                  <span>{{ course.code }} — {{ course.name }}</span>
+                  {% else %}
+                  <span>{{ course.name }}</span>
+                  {% endif %}
                   {% endif %}
                 </li>
                 {% endfor %}
@@ -123,7 +120,8 @@
         {% if p.url or p.github or p.blog %}
         <div class="project-card-links">
           {% if p.url %}
-          <a href="{{ p.url }}" {% if p.external %}target="_blank" rel="noopener noreferrer"{% endif %} class="project-card-link">
+          <a href="{{ p.url }}" {% if p.external %}target="_blank" rel="noopener noreferrer" {% endif %}
+            class="project-card-link">
             {% if p.external %}Project Link ↗{% else %}Interactive Demo ↗{% endif %}
           </a>
           {% endif %}

@@ -1,7 +1,17 @@
 [
   {
+    "company": "Racket Gallery",
+    "role": "Front Desk Receptionist & Stringer",
+    "duration": "Jan 2026 - Apr 2026",
+    "description": "Managed front desk operations at a badminton store, handling customer inquiries and stringing badminton rackets.",
+    "highlights": [
+      "Learned how to string badminton rackets (Li Ning 2 Knot, Yonex 4 Knot) and strung approximately 75 rackets.",
+      "Served as first point of contact for store customers, answering product questions and processing sales."
+    ]
+  },
+  {
     "company": "INSuRE+E Program (Illinois State University)",
-    "role": "Graduate Researcher — AI & Enterprise Data Security",
+    "role": "Researcher — AI & Enterprise Data Security",
     "duration": "Jun 2025 - Present",
     "description": "Leading research on adversarial robustness and bias mitigation in Enterprise Retrieval-Augmented Generation (RAG) pipelines under Dr. Dmitry Zhdanov.",
     "highlights": [
@@ -12,7 +22,7 @@
   },
   {
     "company": "INSuRE+E Program (Iowa State University)",
-    "role": "Undergraduate Researcher — BGP & Network Security",
+    "role": "Researcher — BGP & Network Security",
     "duration": "Jun 2024 - Aug 2024",
     "description": "Investigated Internet-scale routing security protocols through topology graph simulations under Dr. Burk Gulmezoglu.",
     "highlights": [

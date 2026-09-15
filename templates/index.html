@@ -3,11 +3,9 @@
 {% block content %}
 <div class="home-container">
   <!-- Latest Research Banner (Live Remote Update Support - hidden by default if remote_url is used) -->
-  <a id="latest-news-badge"
-    href="{{ news.url | default(value='#') }}"
-    target="_blank" rel="noopener noreferrer" class="latest-news-badge"
-    data-remote-url="{{ news.remote_url | default(value='') }}"
-    {% if news.remote_url or news.hidden %}style="display: none;"{% endif %}>
+  <a id="latest-news-badge" href="{{ news.url | default(value='#') }}" target="_blank" rel="noopener noreferrer"
+    class="latest-news-badge" data-remote-url="{{ news.remote_url | default(value='') }}" {% if news.remote_url or
+    news.hidden %}style="display: none;" {% endif %}>
     <span class="pulse-dot"></span>
     <span id="latest-news-text">{{ news.text | default(value='') }}</span>
   </a>
@@ -60,9 +58,10 @@
           target="_blank" rel="noopener noreferrer">Stevens Institute of Technology</a>.
       </p>
       <p class="hero-text">
-        I'm passionate about research and engineering in <strong>statistical learning, artificial intelligence, and
-          optimization</strong>. Recently, I've focused on security in Retrieval-Augmented Generation (RAG) systems and
-        deep learning pipelines. You can view my projects <a href="/about#projects">here</a>!
+        I'm passionate about <strong>statistical learning, artificial intelligence, and
+          optimization</strong>. Recently, I've focused on Retrieval-Augmented Generation (RAG) security and
+        Federated Learning.
+        You can view my projects <a href="/about#projects">here</a>!
       </p>
       <p class="hero-text">
         In my free time, I like to code new things, play badminton/video games, compose music, and chill out with my
