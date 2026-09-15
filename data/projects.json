@@ -30,6 +30,21 @@
     ]
   },
   {
+    "id": "lunaria",
+    "title": "lunaria",
+    "description": "A financial budgeting/tracking website (app TBD) that uses Plaid to automatically sync and categorize transactions. I built this because it was a cheap alternative to proprietary technologies.",
+    "url": "https://lunaria.bryanchan.org/",
+    "external": true,
+    "status": "maintained",
+    "featured": false,
+    "technologies": [
+      "NextJS",
+      "PostgreSQL",
+      "Plaid",
+      "TypeScript"
+    ]
+  },
+  {
     "id": "pp-recommender",
     "title": "osu! ML Beatmap Recommender",
     "description": "Machine learning recommendation engine using autoencoded map embeddings and user performance scoring vectors.",
