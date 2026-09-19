@@ -56,16 +56,20 @@
       <p class="hero-text">
         I hold an M.S. in Data Science and a B.S. in Computer Science from <a href="https://www.stevens.edu/"
           target="_blank" rel="noopener noreferrer">Stevens Institute of Technology</a>.
+        I'm looking to focus on research in <strong>edge computing, environmentally sustainable federated learning, and
+          distributed ML systems</strong>.
       </p>
       <p class="hero-text">
-        I'm passionate about <strong>statistical learning, artificial intelligence, and
-          optimization</strong>. Recently, I've focused on Retrieval-Augmented Generation (RAG) security and
-        Federated Learning.
-        You can view my projects <a href="/about#projects">here</a>!
+        My recent research has focused on adversarial robustness in RAG systems
+        (presented at <a href="https://jindal.utdallas.edu/biz-ai-conference/biz-ai-conference-2026/" target="_blank"
+          rel="noopener noreferrer">BizAI 2026</a> and the <a href="https://www.caecommunity.org/symposium"
+          target="_blank" rel="noopener noreferrer">2026 CAE Symposium</a>)
+        and Internet routing security.
+        You can view my projects <a href="/about#projects">here</a>.
       </p>
       <p class="hero-text">
-        In my free time, I like to code new things, play badminton/video games, compose music, and chill out with my
-        cat. Feel free to reach out :D
+        In my free time, I like to code new things, play badminton, compose music, and hang out with my cat.
+        Feel free to reach out!
       </p>
 
       <!-- Minimalist CTAs -->
@@ -143,54 +147,42 @@
   </div>
   {% endif %}
 
-  <!-- Active / In-Progress Projects -->
-  {% if active_projects %}
+
+  <!-- Presentations -->
   <div>
-    <h2 class="section-title">Open Project Board</h2>
-    <div class="project-grid">
-      {% for p in active_projects %}
-      <div class="project-card">
-        <div>
-          <div class="project-card-header">
-            <h3 class="project-card-title">{{ p.title }}</h3>
-            <span class="project-card-badge">{{ p.status }}</span>
-          </div>
-          <p class="project-card-desc">{{ p.description }}</p>
-
-          {% if p.technologies %}
-          <div class="project-tech-tags">
-            {% for tech in p.technologies %}
-            <span class="tech-tag">{{ tech }}</span>
-            {% endfor %}
-          </div>
-          {% endif %}
+    <h2 class="section-title">Presentations</h2>
+    <div class="presentations-list">
+      <div class="presentation-item">
+        <div class="presentation-venue">
+          <span class="presentation-type">Paper</span>
+          <span class="presentation-conf">BizAI 2026 &amp; CAE Symposium 2026</span>
         </div>
-
-        {% if p.github or p.url or p.blog %}
-        <div class="project-card-links">
-          {% if p.github %}
-          <a href="{{ p.github }}" target="_blank" rel="noopener noreferrer" class="project-card-link">
-            GitHub ↗
+        <p class="presentation-title">
+          <a href="https://www.caecommunity.org/symposium-archive/2026-cae-in-cybersecurity-symposium" target="_blank"
+            rel="noopener noreferrer">
+            A Machine Learning-based Approach to Malicious Document Detection for RAG Chunk Ingestion
           </a>
-          {% endif %}
-          {% if p.url %}
-          <a href="{{ p.url }}" {% if p.external %}target="_blank" rel="noopener noreferrer" {% endif %}
-            class="project-card-link">
-            Project Link ↗
-          </a>
-          {% endif %}
-          {% if p.blog %}
-          <a href="{{ p.blog }}" class="project-card-link">
-            Blog →
-          </a>
-          {% endif %}
-        </div>
-        {% endif %}
+        </p>
+        <p class="presentation-authors"><strong>Bryan Chan</strong>, James Davenport, Stephen Ward — Under Dr. Dmitry
+          Zhdanov (Illinois State University), CAE INSuRE+E Program</p>
       </div>
-      {% endfor %}
+
+      <div class="presentation-item">
+        <div class="presentation-venue">
+          <span class="presentation-type">Poster</span>
+          <span class="presentation-conf">CAE Symposium 2024</span>
+        </div>
+        <p class="presentation-title">
+          <a href="https://www.caecommunity.org/_files/ugd/eeb746_ca1016804fc0441597a22f1d72ae651d.pdf" target="_blank"
+            rel="noopener noreferrer">
+            A Survey of ROV++: We May Need Another Napkin
+          </a>
+        </p>
+        <p class="presentation-authors">Nathan Ferrell, <strong>Bryan Chan</strong>, Arrianna Szymczak, Henry Schmidt —
+          Under Dr. Burk Gulmezoglu (Iowa State University), CAE INSuRE+E Program</p>
+      </div>
     </div>
   </div>
-  {% endif %}
 
   <!-- Recent News & Research Timeline -->
   <div>
@@ -226,8 +218,8 @@
         <span class="timeline-node"></span>
         <span class="timeline-date">10-2024</span>
         <p class="timeline-content">
-          <a href="https://131b1d64-a91b-4e72-9201-2d47ce0a189a.filesusr.com/ugd/eeb746_ca1016804fc0441597a22f1d72ae651d.pdf"
-            target="_blank" rel="noopener noreferrer">
+          <a href="https://www.caecommunity.org/_files/ugd/eeb746_ca1016804fc0441597a22f1d72ae651d.pdf" target="_blank"
+            rel="noopener noreferrer">
             A Survey of ROV++: We May Need Another Napkin
           </a> poster presented at <a
             href="https://www.caecommunity.org/cop-cyber-research/cae-r-research-symposium/2024-cae-r-cop-research-symposium"
@@ -259,7 +251,10 @@
             target="_blank" rel="noopener noreferrer"><em>CS 284: Data Structures</em></a>, and <a
             href="https://stevens.smartcatalogiq.com/en/2021-2022/academic-catalog/courses/ma-mathematics/300/ma-331"
             target="_blank" rel="noopener noreferrer"><em>MA 331: Intermediate Statistics</em></a> at Stevens Institute
-          of Technology. (Fall 2023 - Spring 2025)
+          of Technology under <a href="https://www.stevens.edu/profile/zakcamki" target="_blank"
+            rel="noopener noreferrer">Dr. Zumrut Akcam-Kibis</a> and <a href="https://www.stevens.edu/profile/xli82"
+            target="_blank" rel="noopener noreferrer">Dr. Xiaohu Li</a>. <br />
+          (Fall 2023 - Spring 2025)
         </p>
       </div>
 
@@ -269,32 +264,11 @@
         <p class="timeline-content">
           Started research (<em>Analyzing Collapse of Online Gaming Communities</em>) at Stevens Institute of Technology
           under <a href="https://www.stevens.edu/profile/jssun54" target="_blank" rel="noopener noreferrer">Dr. Jingyi
-            Sun</a>. (Fall 2022 - Summer 2023)
+            Sun</a>. <br />
+          (Fall 2022 - Summer 2023)
         </p>
       </div>
     </div>
-  </div>
-
-  <!-- Recent Blog Posts -->
-  <div>
-    <div class="section-header-row">
-      <h2 class="section-title">Recent Blog Posts</h2>
-      <a href="/blog" class="section-more-link">All Posts →</a>
-    </div>
-    {% if recent_posts %}
-    <div class="recent-blog-list">
-      {% for post in recent_posts %}
-      <a href="/blog/{{ post.id }}" class="blog-row">
-        <span class="blog-row-title">
-          {{ post.title }}
-        </span>
-        <span class="blog-row-date">
-          {{ post.date }}
-        </span>
-      </a>
-      {% endfor %}
-    </div>
-    {% endif %}
   </div>
 </div>
 {% endblock %}

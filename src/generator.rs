@@ -1,6 +1,6 @@
 use std::fs::{self, File};
 use std::io::{self, Read, Write};
-use std::path::{Path};
+use std::path::Path;
 use serde::{Serialize, Deserialize};
 use serde_json::Value as JsonValue;
 use pulldown_cmark::{Parser, Options, html};
@@ -113,6 +113,12 @@ pub fn build_site() -> Result<(), Box<dyn std::error::Error>> {
                 
                 // Unindent HTML tags to prevent markdown parser from treating them as indented code blocks
                 let mut processed_body = unindent_html_blocks(body);
+
+                // Collapse multi-line HTML tags into single lines for proper markdown parsing
+                processed_body = collapse_multiline_html_tags(&processed_body);
+
+                // Strip JSX artifacts like {" "} from old React codebase
+                processed_body = strip_jsx_artifacts(&processed_body);
                 
                 // Process LatexWrapper -> render with KaTeX server-side
                 processed_body = re_latex.replace_all(&processed_body, |caps: &regex::Captures| {
@@ -129,6 +135,9 @@ pub fn build_site() -> Result<(), Box<dyn std::error::Error>> {
 
                 // Process BlogImage manually to capture multiple optional parameters
                 processed_body = replace_blog_images(&processed_body);
+
+                // Process BlogList -> standard HTML <ul> list
+                processed_body = replace_blog_lists(&processed_body);
 
                 // Convert Markdown headers to HTML header tags to avoid HTML block conflicts
                 processed_body = replace_markdown_headers(&processed_body);
@@ -222,9 +231,9 @@ pub fn build_site() -> Result<(), Box<dyn std::error::Error>> {
 
     // 6.2 about.html (About Page)
     let skills = Skills {
-        programming: vec!["Python", "R", "Javascript", "Bash", "Java", "Git", "C", "C++"],
+        programming: vec!["Python", "Rust", "R", "JavaScript", "Bash", "Java", "C", "C++"],
         databases: vec!["PostgreSQL", "MySQL / MariaDB", "MongoDB", "Firebase", "SQLite"],
-        tools: vec!["Linux", "Docker", "RStudio", "Jupyter", "Git", "MS Azure"],
+        tools: vec!["Linux", "Docker", "Git", "RStudio", "Jupyter", "MS Azure"],
         frameworks: vec!["TensorFlow", "PyTorch", "Scikit-learn", "Pandas", "Seaborn", "NextJS", "Flask"],
         certifications: vec!["Microsoft Azure: Data Science Associate (DP-100)"],
     };
@@ -678,6 +687,90 @@ fn unindent_html_blocks(content: &str) -> String {
     }
 
     result
+}
+
+// Replace <BlogList>...</BlogList> with standard HTML <ul> lists
+fn replace_blog_lists(content: &str) -> String {
+    content
+        .replace("<BlogList>", "<ul class=\"blog-list-items\">")
+        .replace("</BlogList>", "</ul>")
+}
+
+// Collapse multi-line HTML tags (e.g. <a\n  href="..."\n  target="_blank"\n>) into single lines
+// so that pulldown-cmark can properly parse them.
+fn collapse_multiline_html_tags(content: &str) -> String {
+    let mut result = String::with_capacity(content.len());
+    let mut in_code_block = false;
+    let mut in_tag = false;
+    let mut tag_buffer = String::new();
+
+    for line in content.lines() {
+        let trimmed = line.trim();
+        if trimmed.starts_with("```") {
+            in_code_block = !in_code_block;
+            if in_tag {
+                // Flush any pending tag buffer if we hit a code block (shouldn't happen, but safety)
+                result.push_str(&tag_buffer);
+                result.push('\n');
+                tag_buffer.clear();
+                in_tag = false;
+            }
+            result.push_str(line);
+            result.push('\n');
+            continue;
+        }
+
+        if in_code_block {
+            result.push_str(line);
+            result.push('\n');
+            continue;
+        }
+
+        if in_tag {
+            // We're inside a multi-line tag, accumulate
+            tag_buffer.push(' ');
+            tag_buffer.push_str(trimmed);
+            // Check if this line closes the tag
+            if trimmed.contains('>') {
+                result.push_str(&tag_buffer);
+                result.push('\n');
+                tag_buffer.clear();
+                in_tag = false;
+            }
+            continue;
+        }
+
+        // Check if this line starts an HTML tag that doesn't close on the same line
+        // Match lines that start with < but don't have a closing > on the same line
+        if trimmed.starts_with('<') && !trimmed.starts_with("</") && !trimmed.starts_with("<!--") {
+            // Count < and > to see if the tag is complete
+            let open_count: usize = trimmed.chars().filter(|c| *c == '<').count();
+            let close_count: usize = trimmed.chars().filter(|c| *c == '>').count();
+            if open_count > close_count {
+                // Tag is not closed on this line
+                in_tag = true;
+                tag_buffer = trimmed.to_string();
+                continue;
+            }
+        }
+
+        result.push_str(line);
+        result.push('\n');
+    }
+
+    // Flush any remaining tag buffer
+    if !tag_buffer.is_empty() {
+        result.push_str(&tag_buffer);
+        result.push('\n');
+    }
+
+    result
+}
+
+// Strip JSX spacer artifacts like {" "} that leak from the old React-based codebase
+fn strip_jsx_artifacts(content: &str) -> String {
+    let re_jsx = Regex::new(r#"\{"\s*"\}"#).unwrap();
+    re_jsx.replace_all(content, "").into_owned()
 }
 
 // Add <br /> to citations lists at the bottom of posts if they are on consecutive lines.

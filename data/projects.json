@@ -1,5 +1,17 @@
 [
   {
+    "id": "uav-trajectory-prediction",
+    "title": "UAV Trajectory Prediction with Telemetry xApps  ",
+    "description": "Devised a Python xApp to process telemetry data from a BladeRF SDR, using machine learning models to detect and optimize path prediction in GPS-limited areas.",
+    "status": "complete",
+    "featured": true,
+    "technologies": [
+      "PyTorch",
+      "gNB/O-RAN",
+      "Ardupilot"
+    ]
+  },
+  {
     "id": "rov-plus-plus-survey",
     "title": "ROV++ Security Empirical Survey",
     "url": "https://www.caecommunity.org/_files/ugd/eeb746_ca1016804fc0441597a22f1d72ae651d.pdf",
@@ -9,39 +21,8 @@
     "status": "complete",
     "featured": true,
     "technologies": [
-      "Python",
       "BGPy",
       "NetworkX"
-    ]
-  },
-  {
-    "id": "aster",
-    "title": "aster",
-    "description": "A real-time Ethereum whale watcher with surface-level analysis features. Utilizes a local node to subscribe to the Ethereum mempool and process transactions in real-time. Grafana dashboard TBD.",
-    "url": "https://aster.bryanchan.org/",
-    "external": true,
-    "blog": "/blog/aster",
-    "status": "building",
-    "featured": false,
-    "technologies": [
-      "Rust",
-      "Svelte 5",
-      "SSE/WebSockets"
-    ]
-  },
-  {
-    "id": "lunaria",
-    "title": "lunaria",
-    "description": "A financial budgeting/tracking website (app TBD) that uses Plaid to automatically sync and categorize transactions. I built this because it was a cheap alternative to proprietary technologies.",
-    "url": "https://lunaria.bryanchan.org/",
-    "external": true,
-    "status": "maintained",
-    "featured": false,
-    "technologies": [
-      "NextJS",
-      "PostgreSQL",
-      "Plaid",
-      "TypeScript"
     ]
   },
   {
@@ -75,17 +56,18 @@
     ]
   },
   {
-    "id": "brew-review",
-    "title": "Brew Review",
-    "description": "Full-stack web platform for discovering and reviewing local coffee shops with real-time state and Firebase authentication.",
-    "github": "https://github.com/Dedicated-RAM/brewreview",
-    "status": "complete",
+    "id": "aster",
+    "title": "aster",
+    "description": "A real-time Ethereum whale watcher with surface-level analysis features. Utilizes a local node to subscribe to the Ethereum mempool and process transactions in real-time.",
+    "url": "https://aster.bryanchan.org/",
+    "external": true,
+    "blog": "/blog/aster",
+    "status": "building",
     "featured": false,
     "technologies": [
-      "Next.js",
-      "Firebase",
-      "React",
-      "Tailwind CSS"
+      "Rust",
+      "Svelte 5",
+      "SSE/WebSockets"
     ]
   },
   {
@@ -104,30 +86,18 @@
     ]
   },
   {
-    "id": "goodminton",
-    "title": "Goodminton Club Platform",
-    "github": "https://github.com/JasonQiu21/goodminton",
-    "description": "Badminton club tournament management and court reservation system with role-based access control.",
-    "status": "complete",
+    "id": "lunaria",
+    "title": "lunaria",
+    "description": "A financial budgeting/tracking website that uses Plaid to automatically sync and categorize transactions.",
+    "url": "https://lunaria.bryanchan.org/",
+    "external": true,
+    "status": "maintained",
     "featured": false,
     "technologies": [
-      "Node.js",
-      "Express",
-      "MongoDB",
-      "Handlebars"
-    ]
-  },
-  {
-    "id": "discord-bot",
-    "title": "Community Automation Bot",
-    "github": "https://github.com/brrryry/discord-bot",
-    "description": "Automated Discord bot supporting server moderation, custom leveling systems, and game API integrations.",
-    "status": "deprecated",
-    "featured": false,
-    "technologies": [
-      "Node.js",
-      "Discord.js",
-      "REST APIs"
+      "NextJS",
+      "PostgreSQL",
+      "Plaid",
+      "TypeScript"
     ]
   }
 ]
