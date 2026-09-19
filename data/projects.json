@@ -1,7 +1,7 @@
 [
   {
     "id": "uav-trajectory-prediction",
-    "title": "UAV Trajectory Prediction with Telemetry xApps  ",
+    "title": "UAV Trajectory Prediction",
     "description": "Devised a Python xApp to process telemetry data from a BladeRF SDR, using machine learning models to detect and optimize path prediction in GPS-limited areas.",
     "status": "complete",
     "featured": true,
