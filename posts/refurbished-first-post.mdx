@@ -1,0 +1,93 @@
+---
+title: "First Blog"
+date: "2026-09-20"
+description: "Wait, where did all my old blogs go?"
+tags: []
+---
+
+### Hello - Bryan here.
+
+If you're new to my blog, welcome!
+
+If you're are not new to my blog, you may notice that I've "unpublished" all of my old blogs.
+
+After making so many changes and writing about many different topics, I came to a few unfortunate realizations:
+
+1. In the past, I didn't organize my thoughts or proofread my writing.
+2. Most of my older blogs used outdated components (back when I used NextJS).
+
+Because of this, a lot of my older pieces were hard to read. In particular, my technical blogs weren't well-structured, making it 
+super hard to follow along.
+
+All in all, I decided that it would be easier to start fresh. Thus, here we are.
+
+In this blog, I will provide a quick overview of the current tech stack I'm using for my website.
+After that, I'll write about what I plan to use this platform for and what kind of content you can expect to see.
+
+### Website Stack
+This website is a hybrid static site generator and web server that is written in <a href="https://www.rust-lang.org/" target="_blank">Rust</a>.
+
+In particular, I am using <a href="https://docs.rs/axum/latest/axum/" target="_blank">Axum</a> for the web server framework. 
+There's one dynamic route that returns the song that I'm listening to on Spotify: ``/api/current-spotify``.
+Other than that, everything else is static.
+
+I keep some information (education and experience, etc.) in a JSON file so that I can easily update it without adjusting the website code itself.
+An example (my education history) is shown below:
+
+<BlogCode language="json" title="data/education.json">
+[
+  {
+    "institution": "Stevens Institute of Technology",
+    "degree": "Master of Science in Data Science",
+    "startDate": "2025",
+    "endDate": "2026",
+    "location": "Hoboken, NJ",
+    "gpa": "3.900/4.0",
+    "courses": [...]
+  },
+  {
+    "institution": "Stevens Institute of Technology",
+    "degree": "Bachelor of Science in Computer Science",
+    "startDate": "2022",
+    "endDate": "2025",
+    "location": "Hoboken, NJ",
+    "gpa": "3.769/4.0",
+    "courses": [...]
+  },
+  ...
+]
+</BlogCode>
+
+To generate the static files (such as this blog), I am using <a href="https://docs.rs/tera/latest/tera/" target="_blank">Tera</a> as my 
+templating engine. To render the actual markdown in the blogs, I use <a href="https://docs.rs/pulldown-cmark/latest/pulldown_cmark/" target="_blank">pulldown-cmark</a>.
+<a href="https://katex.org/" target="_blank">KaTeX</a> is used to render any LaTeX math expressions (like the one below).
+
+$$
+P(A|B) = \frac{P(B|A)P(A)}{P(B)}
+$$
+
+### The Deployment Process
+
+Let's say that I've finished editing my code and am ready to deploy from my laptop.
+
+I have a GitHub actions workflow that builds a docker image of my website on push. After the image is built,
+it is pushed to <a href="https://docs.docker.com/docker-hub/" target="_blank">DockerHub</a>.
+
+The actual machine that hosts my website is a <a href="https://www.ugreen.com/products/6530a-3500-4bay-nas-enclosure" target="_blank">UGREEN NAS DXP4800</a>.
+This machine has an instance of <a href="https://github.com/containrrr/watchtower" target="_blank">Watchtower</a> running.
+It regularly pulls the latest version of my website's docker image and updates the container if there's a new version.
+
+My router has a reverse proxy configured such that requests to ``bryanchan.org`` are forwarded to my NAS.
+
+### Plans for the new Blog?
+
+I will continue to write as I usually do. This means that the topics may still be messy and scattered around.
+
+However, I'm hoping that I will be able to do it more authentically and carefully.
+This may mean that I will lose some blog length in exchange, but I think that's a trade-off I'm willing to make.
+After all, who wants to read a 5,000-word blog anyway?
+
+I plan on starting by going through some of my previous blogs and renovating them for this new style.
+You'll probably see some rewrites of my old blogs soon.
+
+See you soon!

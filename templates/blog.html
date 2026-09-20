@@ -145,13 +145,13 @@
       </p>
     </li>
     {% endfor %}
-
-    <!-- No Results Message -->
-    <li id="no-results-msg" class="text-center text-gray-600 dark:text-gray-400 hidden"
-      style="padding: 2rem 0; list-style: none;">
-      No posts or series found for selected filter.
-    </li>
   </ul>
+
+  <!-- No Results Message -->
+  <div id="no-results-msg" class="text-center text-gray-600 dark:text-gray-400 hidden"
+    style="padding: 2.5rem 0;">
+    No posts or series found for selected filter.
+  </div>
 </div>
 
 <script>
@@ -229,6 +229,13 @@
           item.classList.add('hidden');
         }
       });
+
+      // Ensure the last visible post has no bottom border so it stays flush with the footer
+      const visiblePosts = Array.from(postItems).filter(item => !item.classList.contains('hidden'));
+      postItems.forEach(item => item.classList.remove('no-border'));
+      if (visiblePosts.length > 0) {
+        visiblePosts[visiblePosts.length - 1].classList.add('no-border');
+      }
 
       if (visibleCount === 0) {
         noResultsMsg.classList.remove('hidden');

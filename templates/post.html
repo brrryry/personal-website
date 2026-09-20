@@ -19,17 +19,18 @@
 <div class="blog-post-container">
   <article class="min-w-0 max-w-full">
     <div class="space-y-4 mb-6">
-      <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-purple-900 dark:text-purple-100">
+      <h1 class="blog-post-title font-extrabold tracking-tight text-purple-900 dark:text-purple-100">
         {{ post.title }}
       </h1>
       <!-- Series Tag (Highlighted on its own line) -->
       {% if post.seriestag %}
       <div class="blog-series-line">
         <a href="/blog?tag={{ post.seriestag }}" class="series-badge" title="View all posts in {{ post.seriestag }}">
-          <svg class="series-badge-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-            <polyline points="2 17 12 22 22 17"/>
-            <polyline points="2 12 12 17 22 12"/>
+          <svg class="series-badge-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2" />
+            <polyline points="2 17 12 22 22 17" />
+            <polyline points="2 12 12 17 22 12" />
           </svg>
           <span class="series-badge-label">Series:</span>
           <span class="series-badge-tag">#{{ post.seriestag }}</span>
@@ -82,6 +83,7 @@
       </div>
     </div>
 
+    <div style="border-top: 1px solid #444; margin: 20px 0;"></div>
     <!-- Compile HTML Content -->
     <div class="prose dark:prose-invert max-w-none text-[#1e1e1e] dark:text-[#f8f8ff] leading-relaxed text-pretty">
       {{ post.html_content | safe }}
