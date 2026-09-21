@@ -75,13 +75,22 @@
       <!-- Minimalist CTAs -->
       <div class="hero-cta-group">
         <a href="/static/Chan_Bryan_Resume.pdf" target="_blank" rel="noopener noreferrer" class="btn-primary">
-          Resume ↗
+          Resume
+          <svg class="link-arrow-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M7 17L17 7M7 7h10v10"/>
+          </svg>
         </a>
         <a href="https://github.com/brrryry" target="_blank" rel="noopener noreferrer" class="btn-secondary">
-          GitHub ↗
+          GitHub
+          <svg class="link-arrow-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M7 17L17 7M7 7h10v10"/>
+          </svg>
         </a>
         <a href="https://linkedin.com/in/brrryry" target="_blank" rel="noopener noreferrer" class="btn-secondary">
-          LinkedIn ↗
+          LinkedIn
+          <svg class="link-arrow-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M7 17L17 7M7 7h10v10"/>
+          </svg>
         </a>
         <a href="mailto:contact@bryanchan.org" class="btn-secondary">
           Email
@@ -98,7 +107,12 @@
   <div>
     <div class="section-header-row">
       <h2 class="section-title">Featured Projects</h2>
-      <a href="/about#projects" class="section-more-link">All Projects →</a>
+      <a href="/about#projects" class="section-more-link">
+        All Projects
+        <svg class="link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
     </div>
     <div class="project-grid">
       {% for p in featured_projects %}
@@ -126,17 +140,17 @@
           {% if p.url %}
           <a href="{{ p.url }}" {% if p.external %}target="_blank" rel="noopener noreferrer" {% endif %}
             class="project-card-link">
-            {% if p.external %}Project Link ↗{% else %}Interactive Demo ↗{% endif %}
+            {% if p.external %}Project Link <svg class="link-arrow-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"/></svg>{% else %}Interactive Demo <svg class="link-arrow-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"/></svg>{% endif %}
           </a>
           {% endif %}
           {% if p.github %}
           <a href="{{ p.github }}" target="_blank" rel="noopener noreferrer" class="project-card-link">
-            GitHub ↗
+            GitHub <svg class="link-arrow-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"/></svg>
           </a>
           {% endif %}
           {% if p.blog %}
           <a href="{{ p.blog }}" class="project-card-link">
-            Blog →
+            Blog <svg class="link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
           {% endif %}
         </div>

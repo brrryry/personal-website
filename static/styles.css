@@ -818,6 +818,9 @@ blockquote li:last-child {
 
 
 .navbar-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
   font-size: 0.75rem;
   font-weight: 600;
   color: #6b21a8;
@@ -2790,6 +2793,9 @@ blockquote li:last-child {
 }
 
 .section-more-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   font-size: 0.95rem;
   font-weight: 700;
   color: #7e22ce;
@@ -2951,6 +2957,9 @@ blockquote li:last-child {
 }
 
 .project-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
   color: var(--primary);
   transition: color 0.2s;
 }
@@ -2958,6 +2967,27 @@ blockquote li:last-child {
 .project-card-link:hover {
   color: #7e22ce;
   text-decoration: underline;
+}
+
+/* Link & Button Arrow SVG Icons */
+.link-arrow,
+.link-arrow-ext {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+.section-more-link:hover .link-arrow,
+.project-card-link:hover .link-arrow {
+  transform: translateX(3px);
+}
+
+.navbar-link:hover .link-arrow-ext,
+.btn-primary:hover .link-arrow-ext,
+.btn-secondary:hover .link-arrow-ext,
+.project-card-link:hover .link-arrow-ext {
+  transform: translate(2px, -2px);
 }
 
 /* Presentations & Publications */
