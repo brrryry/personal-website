@@ -42,9 +42,10 @@
               #{{ s.tag }}
             </button>
           </div>
-          
+
           <div class="series-card-badges">
-            <span class="series-count-pill">{{ s.post_count }} {% if s.post_count == 1 %}Part{% else %}Parts{% endif %}</span>
+            <span class="series-count-pill">{{ s.post_count }} {% if s.post_count == 1 %}Part{% else %}Parts{% endif
+              %}</span>
           </div>
         </div>
 
@@ -54,11 +55,13 @@
         <!-- Metadata date range -->
         <div class="series-card-meta">
           <span class="series-meta-dates">
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-1 opacity-70">
-              <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
-              <line x1="16" x2="16" y1="2" y2="6"/>
-              <line x1="8" x2="8" y1="2" y2="6"/>
-              <line x1="3" x2="21" y1="10" y2="10"/>
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="inline-block mr-1 opacity-70">
+              <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+              <line x1="16" x2="16" y1="2" y2="6" />
+              <line x1="8" x2="8" y1="2" y2="6" />
+              <line x1="3" x2="21" y1="10" y2="10" />
             </svg>
             {{ s.start_date }}{% if s.start_date != s.end_date %} &ndash; {{ s.end_date }}{% endif %}
           </span>
@@ -74,7 +77,8 @@
                 <span class="episode-index">Part {{ loop.index }}</span>
                 <span class="episode-title">{{ ep.title }}</span>
                 {% if ep.status %}
-                <span class="blog-status {% if ep.status == 'in progress' %}status-progress{% else %}status-complete{% endif %}">
+                <span
+                  class="blog-status {% if ep.status == 'in progress' %}status-progress{% else %}status-complete{% endif %}">
                   {{ ep.status }}
                 </span>
                 {% endif %}
@@ -104,11 +108,13 @@
       <!-- Series Tag (Highlighted on its own line) -->
       {% if post.seriestag %}
       <div class="blog-series-line">
-        <button onclick="selectTag('{{ post.seriestag }}'); event.preventDefault();" class="series-badge" title="Filter by {{ post.seriestag }}">
-          <svg class="series-badge-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-            <polyline points="2 17 12 22 22 17"/>
-            <polyline points="2 12 12 17 22 12"/>
+        <button onclick="selectTag('{{ post.seriestag }}'); event.preventDefault();" class="series-badge"
+          title="Filter by {{ post.seriestag }}">
+          <svg class="series-badge-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2" />
+            <polyline points="2 17 12 22 22 17" />
+            <polyline points="2 12 12 17 22 12" />
           </svg>
           <span class="series-badge-label">Series:</span>
           <span class="series-badge-tag">#{{ post.seriestag }}</span>
@@ -121,8 +127,7 @@
         <span class="blog-date">{{ post.date }}</span>
 
         {% if post.status %}
-        <span
-          class="blog-status {% if post.status == 'in progress' %}status-progress{% else %}status-complete{% endif %}">
+        <span class="blog-status {% if post.status == 'finished' %}status-complete{% else %}status-progress{% endif %}">
           {{ post.status }}
         </span>
         {% endif %}
@@ -148,8 +153,7 @@
   </ul>
 
   <!-- No Results Message -->
-  <div id="no-results-msg" class="text-center text-gray-600 dark:text-gray-400 hidden"
-    style="padding: 2.5rem 0;">
+  <div id="no-results-msg" class="text-center text-gray-600 dark:text-gray-400 hidden" style="padding: 2.5rem 0;">
     No posts or series found for selected filter.
   </div>
 </div>
