@@ -2,12 +2,11 @@
 
 {% block content %}
 <div class="home-container">
-  <!-- Latest Research Banner (Live Remote Update Support - hidden by default if remote_url is used) -->
-  <a id="latest-news-badge" href="{{ news.url | default(value='#') }}" target="_blank" rel="noopener noreferrer"
-    class="latest-news-badge" data-remote-url="{{ news.remote_url | default(value='') }}" {% if news.remote_url or
-    news.hidden %}style="display: none;" {% endif %}>
+  <!-- Latest News Banner (Live Remote Update Support) -->
+  <a id="latest-news-badge"
+    class="latest-news-badge" data-remote-url="{{ news.remote_url | default(value='https://gist.github.com/brrryry/2bc308654de2fef66c24cc2628641e51') }}" style="display: none;">
     <span class="pulse-dot"></span>
-    <span id="latest-news-text">{{ news.text | default(value='') }}</span>
+    <span id="latest-news-text"></span>
   </a>
   <script>
     (async function checkLiveNews() {
@@ -19,6 +18,9 @@
       if (!remoteUrl) return;
 
       // Automatically normalize gist.github.com to direct raw gist.githubusercontent.com
+      if (!remoteUrl.includes("/raw")) {
+        remoteUrl = remoteUrl.replace(/\/$/, "") + "/raw/news.json";
+      }
       if (remoteUrl.includes("gist.github.com") && !remoteUrl.includes("gist.githubusercontent.com")) {
         remoteUrl = remoteUrl.replace("gist.github.com", "gist.githubusercontent.com");
       }
@@ -39,7 +41,15 @@
           return;
         }
         textSpan.textContent = data.text;
-        if (data.url) badge.href = data.url;
+        if (data.url) {
+          badge.href = data.url;
+          badge.target = "_blank";
+          badge.rel = "noopener noreferrer";
+        } else {
+          badge.removeAttribute("href");
+          badge.removeAttribute("target");
+          badge.removeAttribute("rel");
+        }
         badge.style.display = "inline-flex";
       } catch (e) {
         badge.style.display = "none";

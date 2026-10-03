@@ -82,10 +82,7 @@ pub fn build_site() -> Result<(), Box<dyn std::error::Error>> {
         .ok()
         .and_then(|raw| serde_json::from_str(&raw).ok())
         .unwrap_or_else(|| serde_json::json!({
-            "text": "Latest Research: RAG Document Ingestion Security @ BizAI & CAE 2026 ↗",
-            "url": "https://www.caecommunity.org/symposium-archive/2026-cae-in-cybersecurity-symposium",
-            "remote_url": "",
-            "hidden": false
+            "remote_url": "https://gist.github.com/brrryry/2bc308654de2fef66c24cc2628641e51"
         }));
 
     // 4. Parse Blog Posts
